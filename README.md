@@ -1,6 +1,6 @@
 # Jarn Neow (จารย์เหนียว)
 
-**Will your forex strategy survive?**
+**Will your forex strategy survive?** → **[Open the app](https://0xtrvkc.github.io/Jarn-Neow/)**
 
 Jarn Neow is a free risk-management tool for forex traders. It doesn't look for profits. It asks a different question: *if your numbers are true, how likely is your account to survive, how deep can the falls get, and what position size keeps the risk acceptable?*
 
@@ -12,8 +12,8 @@ Everything runs in your browser from a single HTML file. There is no account, no
 
 ## Use it
 
-- **Online:** turn on GitHub Pages for this repository (Settings → Pages → deploy from the `main` branch, root folder), then open the published link.
-- **Offline:** download `index.html` and open it in any modern browser. It works with no internet connection; only the fonts need one, and system fonts are used otherwise.
+- **Online:** **[0xtrvkc.github.io/Jarn-Neow](https://0xtrvkc.github.io/Jarn-Neow/)**
+- **Offline:** download `index.html` and open it in any modern browser. Everything works without a connection except the gold backtest, which needs the online version. Fonts also need a connection; system fonts are used otherwise.
 
 The interface is in **English and Thai (ไทย)**. Switch with the EN / ไทย buttons at the top.
 
