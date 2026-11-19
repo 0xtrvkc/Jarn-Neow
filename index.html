@@ -668,24 +668,28 @@ function tradesNeeded(p,b){ // smallest n where the Wilson lower bound still sho
   if(expectancy(p,b)<=0)return null;for(let n=10;n<=5000;n+=5){if(expectancy(wilson(p,n)[0],b)>0)return n;}return null;}
 
 /* ---------- Monte Carlo ---------- */
-const binarySampler=(p,b)=>rnd=>rnd()<p?b:-1;
-const resampler=R=>rnd=>R[(rnd()*R.length)|0];
+/* samplers carry their parameters so simulate() can draw inline (same random sequence, no per-draw calls) */
+const binPay=(p,w,l)=>{const f=rnd=>rnd()<p?w:l;f.bin=[p,w,l];return f;};
+const binarySampler=(p,b)=>binPay(p,b,-1);
+const resampler=R=>{const f=rnd=>R[(rnd()*R.length)|0];f.res=R;return f;};
 function simulate(o){
   const rnd=mulberry32(o.seed||1234567),n=o.n,sims=o.sims,floor=1-o.ruin,risk=o.risk,smp=o.sampler;
   const keep=o.keep||0,keepEvery=keep?Math.max(1,Math.floor(sims/keep)):0;
   const bandN=o.bands?Math.min(sims,300):0,M=bandN?new Float64Array(bandN*(n+1)):null;
   const dd=new Float64Array(sims),fin=new Float64Array(sims),curves=[],ruinAt=new Int32Array(sims),fixed=!!o.fixed,dA=o.deriskAfter|0,dM=1-(o.deriskCut||0);let ruined=0;
+  const bin=smp.bin,res=smp.res,RL=res?res.length:0,bp=bin?bin[0]:0,bw=bin?bin[1]:0,bl=bin?bin[2]:0;let a=(o.seed||1234567)|0;
   for(let s=0;s<sims;s++){
     let eq=1,peak=1,mdd=0,dead=false,ls=0;
-    const rec=keep&&s%keepEvery===0&&curves.length<keep,path=rec?new Float64Array(n+1):null;
-    if(rec)path[0]=1;if(M&&s<bandN)M[s*(n+1)]=1;
+    const rec=keep&&s%keepEvery===0&&curves.length<keep,path=rec?new Float64Array(n+1):null,band=M&&s<bandN;
+    if(rec)path[0]=1;if(band)M[s*(n+1)]=1;
     for(let i=1;i<=n;i++){
-      if(!dead){const r=smp(rnd),rk=dA&&ls>=dA?risk*dM:risk;if(fixed)eq+=rk*r;else eq*=1+rk*r;if(r<0)ls++;else if(r>0)ls=0;if(eq<0)eq=0;if(eq>1e150)eq=1e150;if(eq>peak)peak=eq;const d=1-eq/peak;if(d>mdd)mdd=d;if(eq<=floor){dead=true;ruinAt[s]=i;}}
-      if(rec)path[i]=eq;if(M&&s<bandN)M[s*(n+1)+i]=eq;}
+      if(dead){if(!rec&&!band)break;}
+      else{let r;if(bin||res){a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;const u=((t^t>>>14)>>>0)/4294967296;r=bin?(u<bp?bw:bl):res[(u*RL)|0];}else r=smp(rnd);const rk=dA&&ls>=dA?risk*dM:risk;if(fixed)eq+=rk*r;else eq*=1+rk*r;if(r<0)ls++;else if(r>0)ls=0;if(eq<0)eq=0;if(eq>1e150)eq=1e150;if(eq>peak)peak=eq;const d=1-eq/peak;if(d>mdd)mdd=d;if(eq<=floor){dead=true;ruinAt[s]=i;}}
+      if(rec)path[i]=eq;if(band)M[s*(n+1)+i]=eq;}
     if(dead)ruined++;dd[s]=mdd;fin[s]=eq;if(rec)curves.push({path,ruined:dead});}
   let bands=null;
   if(M){bands={q05:[],q50:[],q95:[]};const col=new Float64Array(bandN);
-    for(let i=0;i<=n;i++){for(let s=0;s<bandN;s++)col[s]=M[s*(n+1)+i];const sc=Array.from(col).sort((a,b)=>a-b);
+    for(let i=0;i<=n;i++){for(let s=0;s<bandN;s++)col[s]=M[s*(n+1)+i];const sc=col.slice().sort();
       bands.q05.push(quantile(sc,0.05));bands.q50.push(quantile(sc,0.5));bands.q95.push(quantile(sc,0.95));}}
   dd.sort();fin.sort();
   return{ruinProb:ruined/sims,dd,fin,curves,bands,n,floor,ruinAt};}
@@ -801,9 +805,10 @@ function behavior(trades,R){
 /* ---------- grid / martingale / no-stop: one cycle = first order until the basket closes ----------
    Long side without loss of generality. Price in pips relative to the first entry. Money in account currency. */
 function gridPool(o){
-  const rnd=mulberry32(o.seed||77),N=o.N||4000,SPD=48,cap=(o.capDays||120)*SPD,sig=o.sigD/Math.sqrt(SPD),TAU=6.283185307179586;
-  let spare=null;const nrm=()=>{if(spare!==null){const v=spare;spare=null;return v;}let u=0;while(u<1e-12)u=rnd();const v=rnd(),r=Math.sqrt(-2*Math.log(u));spare=r*Math.sin(TAU*v);return r*Math.cos(TAU*v);};
-  const t3=()=>{const z=nrm(),a=nrm(),b=nrm(),c=nrm();return z/Math.sqrt((a*a+b*b+c*c)/3)*0.5773502691896258;};
+  const rnd=mulberry32(o.seed||77),N=o.N||4000,SPD=48,cap=(o.capDays||120)*SPD,sig=o.sigD/Math.sqrt(SPD);
+  /* Marsaglia polar normals; Student-t(3) by Bailey's polar method, scaled to unit variance (no trig, one draw per variate) */
+  let spare=null;const nrm=()=>{if(spare!==null){const v=spare;spare=null;return v;}let u,v,w;do{u=2*rnd()-1;v=2*rnd()-1;w=u*u+v*v;}while(w>=1||w===0);const f=Math.sqrt(-2*Math.log(w)/w);spare=v*f;return u*f;};
+  const t3=()=>{let u,v,w;do{u=2*rnd()-1;v=2*rnd()-1;w=u*u+v*v;}while(w>=1||w===0);return u*Math.sqrt(3*(Math.pow(w,-2/3)-1)/w)*0.5773502691896258;};
   const M=o.maxN,lots=[],px=[];for(let k=0;k<M;k++){lots.push(o.lot0*Math.pow(o.mult,k));px.push(-k*o.step);}
   const pv=o.pv,cpl=o.cpl,fat=!!o.fat,stopPx=o.sl>0?px[M-1]-o.sl:-Infinity,capLoss=o.lossCap;
   const pnl=new Float64Array(N),mae=new Float64Array(N),days=new Float64Array(N),lev=new Int16Array(N),kind=new Int8Array(N);
@@ -838,11 +843,11 @@ function gridPaths(pool,o){
     if(r)ruined++;if(w)wiped++;dd[s]=mdd;fin[s]=eq;if(rec)curves.push({path,ruined:r});}
   let bands=null;
   if(BM){bands={q05:[],q50:[],q95:[]};const col=new Float64Array(bandN);
-    for(let i=0;i<=H;i++){for(let s=0;s<bandN;s++)col[s]=BM[s*(H+1)+i];const sc=Array.from(col).sort((a,b)=>a-b);bands.q05.push(quantile(sc,0.05));bands.q50.push(quantile(sc,0.5));bands.q95.push(quantile(sc,0.95));}}
+    for(let i=0;i<=H;i++){for(let s=0;s<bandN;s++)col[s]=BM[s*(H+1)+i];const sc=col.slice().sort();bands.q05.push(quantile(sc,0.05));bands.q50.push(quantile(sc,0.5));bands.q95.push(quantile(sc,0.95));}}
   dd.sort();fin.sort();
   return{ruinProb:ruined/sims,wipeProb:wiped/sims,dd,fin,curves,bands,n:H,floor,ruinAt,wipeAt};}
 
-return{gridPool,gridPaths,mulberry32,clamp,mean,sd,quantile,median,wilson,expectancy,breakEvenWR,kelly,growth,zeroGrowthRisk,probStreak,typicalStreak,tradesNeeded,
+return{binPay,gridPool,gridPaths,mulberry32,clamp,mean,sd,quantile,median,wilson,expectancy,breakEvenWR,kelly,growth,zeroGrowthRisk,probStreak,typicalStreak,tradesNeeded,
   binarySampler,resampler,simulate,RISK_GRID,safeRisk,analyzeSimple,suggestFix,growthCurve,streaks,tradeStats,bootstrapMean,cumulative,underwater,rolling,hist,
   optimalF,sweepRisk,deskVerdict,parseCSV,parseMyfxbook,toR,behavior};
 })();
@@ -2103,7 +2108,7 @@ return{init,render,readHash,shareURL,syncInputs,setState,renderUnset,touched:()=
 const DESK=(function(){
 'use strict';
 const D={parsed:null,fileName:'',symbol:'',sl:0,risk:1,ruin:50,hor:200,sims:10000,explain:true,net:'net',layout:'full',reached:1,res:null,err:null,
-  wr:45,rr:1.5,n:40,tpd:2,sizing:'comp',dAfter:0,dCut:50,bal:10000,spread:0,comm:0,pv:0,model:null,histMsg:'',
+  wr:45,rr:1.5,n:40,tpd:2,sizing:'comp',dAfter:0,dCut:50,bal:10000,spread:0,comm:0,pv:0,model:null,histMsg:()=>'',fileId:0,
   stype:'fixed',gLot:0.01,gStep:20,gMult:1.5,gMax:8,gTp:15,gSl:0,gVol:80,gAuto:'fixed',gMkt:'real',gm:null};
 const GDEF={grid:{gLot:0.01,gTp:15,gSl:0},nostop:{gLot:0.5,gTp:30,gSl:0}};
 const STEPS=['sum','edge','surv','size','streak','cost','hist'];
@@ -2125,8 +2130,8 @@ function readFile(file){
   const fr=new FileReader();
   fr.onload=()=>{
     const p=SFX.parseMyfxbook(String(fr.result));
-    if(!p.ok){D.parsed=null;D.res=null;showErr(t('err_'+p.error));$('symwrap').hidden=true;analyze();return;}
-    D.parsed=p;D.fileName=file.name;showErr(null);
+    if(!p.ok){D.parsed=null;D.fileId++;D.res=null;showErr(t('err_'+p.error));$('symwrap').hidden=true;analyze();return;}
+    D.parsed=p;D.fileId++;D.fileName=file.name;showErr(null);
     const syms=Object.keys(p.symbols).sort((a,b)=>p.symbols[b]-p.symbols[a]);D.symbol=syms[0];
     const sel=$('symsel');sel.innerHTML=syms.map(s=>`<option value="${esc(s)}">${esc(s)} (${p.symbols[s]})</option>`).join('');sel.value=D.symbol;
     $('symwrap').hidden=syms.length<2;if(!(D.pv>0)){const v=SFX.toR(p.trades.filter(x=>x.symbol===D.symbol),1,true).vpp;if(isFinite(v)&&v>0){D.pv=+v.toPrecision(4);$('d-pv').value=D.pv;}}autoFill();statusLine();hint();analyze();};
@@ -2165,9 +2170,10 @@ const eqFmt=x=>x>=100?'×'+cmpNum(x):Math.round(x*100)+'%';
 function erf(x){const s=x<0?-1:1;x=Math.abs(x);const tt=1/(1+0.3275911*x);return s*(1-(((((1.061405429*tt-1.453152027)*tt)+1.421413741)*tt-0.284496736)*tt+0.254829592)*tt*Math.exp(-x*x));}
 const Phi=x=>0.5*(1+erf(x/Math.SQRT2));
 function costR(){if(!(D.sl>0))return 0;let c=D.spread>0?D.spread/D.sl:0;if(D.comm>0&&D.pv>0)c+=D.comm/D.pv/D.sl;return c;}
-function runSim(p,riskPct,extra){const m=D._pay;return SFX.simulate(Object.assign({sampler:rnd=>rnd()<p?m.W:-m.L,risk:riskPct/100,n:D.hor,sims:D._sub||1000,ruin:D.ruin/100,seed:21,fixed:D.sizing==='fixed',deriskAfter:D.dAfter,deriskCut:D.dCut/100},extra||{}));}
+function runSim(p,riskPct,extra){if(!extra&&D._memo){const k=p+'|'+riskPct,c=D._memo.get(k);if(c)return c;const r=runSimRaw(p,riskPct);D._memo.set(k,r);return r;}return runSimRaw(p,riskPct,extra);}
+function runSimRaw(p,riskPct,extra){const m=D._pay;return SFX.simulate(Object.assign({sampler:SFX.binPay(p,m.W,-m.L),risk:riskPct/100,n:D.hor,sims:D._sub||1000,ruin:D.ruin/100,seed:21,fixed:D.sizing==='fixed',deriskAfter:D.dAfter,deriskCut:D.dCut/100},extra||{}));}
 function computeModel(){
-  const p=D.wr/100,b=D.rr,c=costR(),W=b-c,L=1+c,q=1-p,H=D.hor;D._pay={W,L};
+  const p=D.wr/100,b=D.rr,c=costR(),W=b-c,L=1+c,q=1-p,H=D.hor;D._pay={W,L};D._memo=new Map();
   const Eg=SFX.expectancy(p,b),En=p*W-q*L,ci=SFX.wilson(p,D.n),eAt=x=>x*W-(1-x)*L,Elo=eAt(ci[0]),Ehi=eAt(ci[1]);
   const kf=pp=>W>0?Math.max(0,Math.min(0.999/L,pp/L-(1-pp)/W)):0,K=kf(p),Klo=kf(ci[0]);
   const g=f=>{if(f<=0)return 0;const d=1-f*L;if(d<=0)return q>0?-Infinity:p*Math.log(1+f*W);return p*Math.log(1+f*W)+(q>0?q*Math.log(d):0);};
@@ -2181,20 +2187,26 @@ function computeModel(){
   const be=L/(W+L),sdR=Math.sqrt(Math.max(0,p*W*W+q*L*L-En*En));
   let nNeed=null;if(En>0){for(let n=10;n<=20000;n+=(n<500?5:50)){if(eAt(SFX.wilson(p,n)[0])>0){nNeed=n;break;}}}
   const ruinP=sim.ruinProb;let v;if(En<=0||ruinP>=0.30)v='bad';else if(ruinP>0.05||Elo<=0||D.n<30||p>=1)v='warn';else v='ok';
-  D.model={p,b,c,W,L,q,H,Eg,En,ci,Elo,Ehi,K,Klo,Z,g,sim,sweep,scen,stress,be,sdR,nNeed,v,eAt};}
+  D._memo=null;D.model={p,b,c,W,L,q,H,Eg,En,ci,Elo,Ehi,K,Klo,Z,g,sim,sweep,scen,stress,be,sdR,nNeed,v,eAt};}
 function computeHistory(){
-  D.res=null;D.histMsg='';
-  if(!D.parsed){D.histMsg=t('h_none');return;}
-  if(!(D.sl>0)){D.histMsg=t('d_need_sl');return;}
+  D.res=null;D.histMsg=()=>'';
+  if(!D.parsed){D.histMsg=()=>t('h_none');return;}
+  if(!(D.sl>0)){D.histMsg=()=>t('d_need_sl');return;}
   const trades=curTrades();
-  if(trades.length<5){D.histMsg=t('d_few',{n:trades.length});return;}
+  if(trades.length<5){const n=trades.length;D.histMsg=()=>t('d_few',{n});return;}
   const conv=SFX.toR(trades,D.sl,D.net==='net'),R=conv.R,n=R.length,H=D.hor;
   const stats=SFX.tradeStats(R),boot=SFX.bootstrapMean(R,4000,5),cum=SFX.cumulative(R),uw=SFX.underwater(cum);
   const sim=SFX.simulate({sampler:SFX.resampler(R),risk:D.risk/100,n:H,sims:D.sims,ruin:D.ruin/100,seed:11,keep:50,bands:true});
   const optF=SFX.optimalF(R),beh=SFX.behavior(trades,R),gcum=SFX.cumulative(conv.gross);
   const verdict=SFX.deskVerdict(stats,boot,sim.ruinProb);
   D.res={trades,conv,R,n,H,stats,boot,cum,uw,sim,optF,beh,gcum,verdict,wl:SFX.wilson(stats.winRate,n)};}
-function analyze(){if(D.stype!=='fixed'){D.model=null;D.res=null;computeGrid();drawGrid();return;}D.gm=null;computeModel();computeHistory();$('d-apply').hidden=!D.res;draw();}
+/* results are cached per input set: switching language or mode only redraws the text */
+const SIGF=['wr','rr','n','tpd','sizing','dAfter','dCut','bal','spread','comm','pv','sl','hor','ruin','sims','risk','net','symbol','fileId'];
+const SIGG=['stype','gLot','gStep','gMult','gMax','gTp','gSl','gVol','gAuto','gMkt','bal','spread','comm','pv','hor','ruin'];
+let lastF=null,lastG=null;const sigOf=keys=>JSON.stringify(keys.map(k=>D[k]));
+function analyze(){
+  if(D.stype!=='fixed'){const k=sigOf(SIGG);if(k!==lastG||!D.gm){computeGrid();lastG=k;}drawGrid();return;}
+  const k=sigOf(SIGF);if(k!==lastF||!D.model){computeModel();computeHistory();lastF=k;}$('d-apply').hidden=!D.res;draw();}
 
 /* ---------- model sections ---------- */
 const tbl=(head,rows)=>`<div style="overflow-x:auto"><table class="kv mt"><thead><tr>${head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i?'n':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
@@ -2778,7 +2790,7 @@ function wiApply(box,fast){
 function draw(){
   const m=D.model,r=D.res,main=$('d-main');if(!m)return;
   EXPL=Object.assign({},buildModelExpl(m),r?buildHistExpl(r):{});
-  const hist=r?(secSummary(r)+secEdge(r)+secSurvival(r)+secBehavior(r)+secCosts(r)):`<section class="dsec" data-step="7">${mHead(6)}<div class="card empty">${esc(D.histMsg)}</div></section>`;
+  const hist=r?(secSummary(r)+secEdge(r)+secSurvival(r)+secBehavior(r)+secCosts(r)):`<section class="dsec" data-step="7">${mHead(6)}<div class="card empty">${esc(D.histMsg())}</div></section>`;
   main.innerHTML=mSummary(m)+mEdge(m)+mSurvival(m)+mSizing(m)+mStreaks(m)+mCosts(m)+hist;wiInit();rowAlign();applyLayout();}
 function applyLayout(){
   const secs=Array.from($('d-main').querySelectorAll('.dsec'));
@@ -2845,7 +2857,7 @@ function setType(st,quiet){
   const prev=D.stype;D.stype=st;document.documentElement.dataset.st=st;
   document.querySelectorAll('.stypes button').forEach(b=>{const on=b.dataset.st===st;b.setAttribute('aria-checked',String(on));b.tabIndex=on?0:-1;});
   if(st!=='fixed'&&st!==prev){const d=GDEF[st];[['g-lot','gLot'],['g-tp','gTp'],['g-sl','gSl']].forEach(([id,key])=>{if(!dtouch[key]){D[key]=d[key];$(id).value=key==='gSl'&&!d[key]?'':d[key];}});}
-  if(window.__sfxTip)window.__sfxTip.hide();typeLabels();revalidate();if(!quiet)analyze();}
+  if(window.__sfxTip)window.__sfxTip.hide();typeLabels();revalidate();if(!quiet)requestAnimationFrame(()=>setTimeout(analyze,0));}
 function refreshText(){typeLabels();hint();if(D.parsed)statusLine();else if(D.err)$('file-status').innerHTML='';renderErr();analyze();}
 function seed(st,tc){if(tc)['wr','rr','risk','n'].forEach(k=>{dtouch[k]=tc[k]?1:0;});D.wr=st.wr;D.rr=st.rr;D.risk=st.risk;D.n=Math.round(st.n);$('d-wr').value=D.wr;$('d-rr').value=D.rr;$('d-risk').value=D.risk;$('d-n').value=D.n;revalidate();}
 return{init,setLayout,setExplain,refreshText,analyze,state:()=>D,seed,touched:()=>({wr:dtouch.wr,rr:dtouch.rr,risk:dtouch.risk,n:dtouch.n})};
