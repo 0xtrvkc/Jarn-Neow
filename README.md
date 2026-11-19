@@ -77,6 +77,15 @@ Every Expert strategy type ends with a **Backtest on real gold** section. It rep
   - the date the account fell to the ruin line or was wiped out;
   - the 5 deepest cycles, how many orders each cycle reached, and results by year.
 - **Fixed stop** uses your SL, reward:risk, risk rules, trades per day and costs with **random entries**. It measures the win rate your stop and target produce on real gold with no skill, and compares it with the win rate you claim. You also get one chronological run and results by year.
+- **Deeper analysis**, only what real prices can show, so none of it repeats the simulation sections above:
+  - **Start-date luck:** the same rules rerun from up to 36 different start months, each for the same length. It shows how many starts survived, how many were wiped out, and the best and worst start.
+  - **Simulation vs real gold:** what the simulation predicted next to what gold actually did, plus a one-click button to use gold's real daily range in the simulation.
+  - **Gold volatility by year:** the average daily range per year against your grid spacing, stop or take-profit.
+  - **Trend vs range months:** each month classed as ranging, mixed, trending up or trending down, with your results in each.
+  - **When trouble starts (grid / no stop):** the hour and weekday when the deepest floating losses happened (in your time zone), and what weekend gaps did to open positions.
+  - **Win rate by time of day (fixed stop):** random-entry win rate by entry hour, plus weekend gaps.
+  - **Real losing streaks (fixed stop):** real streaks against what independent trades would produce, which checks whether losses cluster.
+- The available date range is shown as a timeline, with your selected months highlighted.
 - Only the months in your range are downloaded (about 50 KB per month), and the backtest runs in the background, so the page stays responsive. A full 16-year run takes about 1–2 seconds.
 
 **How the replay works:**

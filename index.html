@@ -155,7 +155,7 @@ html[data-mode=desk] select,html[data-mode=desk] .txt{border-radius:2px;backgrou
 .rp p,.rp li{font-size:.9em;line-height:1.5;margin:0 0 .3rem}.rp ul{margin:0;padding-left:1.05rem}
 @media (max-width:760px){.rp{grid-template-columns:1fr}}
 .split{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:1.4rem;align-items:center}
-@media (max-width:760px){.split{grid-template-columns:1fr}}
+@media (max-width:760px){.split{grid-template-columns:minmax(0,1fr)}}
 .plan{border:2px solid var(--accent);background:linear-gradient(180deg,rgba(255,176,0,.07),transparent 140px),var(--card)}
 .planh{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;justify-content:space-between}
 .planh h2{font-family:var(--mono);font-size:1.15rem;color:var(--accent);margin:0}
@@ -409,6 +409,10 @@ html[data-st=nostop] .g-only,html:not([data-st=nostop]) .ns-only{display:none!im
 .btctl input,.btctl select{min-width:9.5rem}
 .btpre{display:flex;gap:.4rem;flex-wrap:wrap}.btpre .btn{padding:.35rem .6rem;font-size:.85em}
 .gtile>div>span+b+span{margin-top:.15rem}
+.btavail{border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--card));padding:.75rem .9rem .5rem;margin-bottom:.9rem;border-radius:2px}
+.btav-t{display:flex;flex-wrap:wrap;gap:.2rem 1rem;align-items:baseline}.btav-t b{font-size:1.05rem;color:var(--ink)}.btav-t span{font-size:.85rem;color:var(--muted)}
+.btavail svg{display:block;width:100%;height:auto;margin-top:.35rem}.btavail .all{fill:var(--grid)}.btavail .sel{fill:var(--accent)}.btavail .tk{stroke:var(--muted);stroke-width:1}
+.btavail text{fill:var(--muted);font-family:var(--mono);font-size:13px}.btav-s{margin:.1rem 0 0;font-weight:600;color:var(--accent);font-size:.9rem}
 /* ============ gate ============ */
 .gate{position:fixed;inset:0;z-index:100;background:rgba(20,12,50,.72);display:grid;place-items:start center;padding:2rem 1rem;overflow:auto}
 html[data-mode=desk] .gate{background:rgba(2,5,9,.86)}
@@ -673,13 +677,19 @@ function join(parts,rolls){
 /* ---------- shared bookkeeping ---------- */
 const DAY=1440;
 function Book(bal0,ruin){
-  const b={bal0,floor:bal0*(1-ruin),peak:bal0,mdd:0,mddAt:0,ruinAt:-1,wipeAt:-1,dead:false,days:[],curDay:-1,dMin:Infinity,dEq:bal0,dPx:0,years:new Map()};
+  const b={bal0,floor:bal0*(1-ruin),peak:bal0,mdd:0,mddAt:0,ruinAt:-1,wipeAt:-1,dead:false,days:[],curDay:-1,dMin:Infinity,dEq:bal0,dPx:0,dPa:0,years:new Map(),months:[],mo:null};
   b.mark=(eq,t)=>{if(eq>b.peak)b.peak=eq;const d=1-eq/b.peak;if(d>b.mdd){b.mdd=d;b.mddAt=t;}if(eq<b.dMin)b.dMin=eq;
     const y=b.yr(t);if(eq<y.min)y.min=eq;if(eq>y.peak)y.peak=eq;const yd=1-eq/y.peak;if(yd>y.mdd)y.mdd=yd;
     if(b.ruinAt<0&&eq<=b.floor)b.ruinAt=t;if(eq<=0&&!b.dead){b.dead=true;b.wipeAt=t;}};
-  b.yr=t=>{const Y=new Date(t*60000).getUTCFullYear();let y=b.years.get(Y);if(!y){y={y:Y,start:b.dEq,end:b.dEq,min:Infinity,peak:b.dEq,mdd:0,n:0,w:0};b.years.set(Y,y);}return y;};
-  b.day=(t,eq,px)=>{const d=Math.floor(t/DAY);if(d!==b.curDay){if(b.curDay>=0)b.days.push([b.curDay*DAY,b.dEq,Math.min(b.dMin,b.dEq),b.dPx]);b.curDay=d;b.dMin=Infinity;}b.dEq=eq;b.dPx=px;b.yr(t).end=eq;};
-  b.finish=()=>{if(b.curDay>=0)b.days.push([b.curDay*DAY,b.dEq,Math.min(b.dMin,b.dEq),b.dPx]);
+  let ys=1,ye=0,yc=null;
+  b.yr=t=>{if(t>=ys&&t<ye)return yc;const Y=new Date(t*60000).getUTCFullYear();ys=Date.UTC(Y,0,1)/60000;ye=Date.UTC(Y+1,0,1)/60000;
+    let y=b.years.get(Y);if(!y){y={y:Y,start:b.dEq,end:b.dEq,min:Infinity,peak:b.dEq,mdd:0,n:0,w:0};b.years.set(Y,y);}yc=y;return y;};
+  b.closeDay=()=>{b.days.push([b.curDay*DAY,b.dEq,Math.min(b.dMin,b.dEq),b.dPx]);
+    const k=new Date(b.curDay*DAY*60000).toISOString().slice(0,7);let m=b.mo;
+    if(!m||m.k!==k){if(m)b.months.push(m);m=b.mo={k,eq0:m?m.eq1:bal0,pa0:m?m.pa1:b.pa0,path:0,last:m?m.pa1:b.pa0,eq1:0,pa1:0};}
+    m.path+=Math.abs(b.dPa-m.last);m.last=b.dPa;m.eq1=b.dEq;m.pa1=b.dPa;};
+  b.day=(t,eq,px,pa)=>{const d=Math.floor(t/DAY);if(d!==b.curDay){if(b.curDay>=0)b.closeDay();b.curDay=d;b.dMin=Infinity;}b.dEq=eq;b.dPx=px;b.dPa=pa;b.yr(t).end=eq;};
+  b.finish=()=>{if(b.curDay>=0){b.closeDay();b.months.push(b.mo);}
     const D=b.days,mx=1200;if(D.length>mx){const g=Math.ceil(D.length/mx),o=[];for(let i=0;i<D.length;i+=g){const s=D.slice(i,i+g);o.push([s[0][0],s[s.length-1][1],Math.min(...s.map(x=>x[2])),s[s.length-1][3]]);}b.days=o;}};
   return b;}
 function bars(B){let days=0,last=-1;for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d!==last){days++;last=d;}}return days;}
@@ -688,18 +698,19 @@ function avgRange(B){let s=0,k=0,last=-1,hi=-Infinity,lo=Infinity;for(let i=0;i<
 /* ---------- grid / martingale / no hard stop ---------- */
 function runGrid(B,P){
   const M=P.maxN,pv=P.pv,lots=[];for(let k=0;k<M;k++)lots.push(P.lot0*Math.pow(P.mult,k));
-  const bk=Book(P.bal0,P.ruin);
+  const bk=Book(P.bal0,P.ruin);bk.pa0=B.n?B.o[0]:0;
   let bal=P.bal0,open=false,s=1,n=0,Lt=0,S=0,A=0,y0=0,yLast=0,lf=1,cyc=0,cStart=0,cMae=0,cCost=0;
-  const st={cycles:0,wins:0,sumW:0,sumL:0,worst:0,worstAt:0,maeMax:0,maeAt:0,stops:0,longest:0,longestAt:0,reach:new Array(M).fill(0),worstList:[]};
+  const st={cycles:0,wins:0,sumW:0,sumL:0,worst:0,worstAt:0,maeMax:0,maeAt:0,stops:0,longest:0,longestAt:0,reach:new Array(M).fill(0),worstList:[],cycR:0,cycW:0,dur:[],maeV:[],maeT:[],gapN:0,gapSum:0,gapWorst:0,gapWorstAt:0};let cMaeAt=0;
   const fl=y=>open?Lt*(y-A)*pv:0;
   function openCycle(price,t){s=P.dir==='sell'?-1:P.dir==='alt'?(cyc%2?-1:1):1;lf=P.scale?Math.max(bal,0)/P.bal0:1;y0=s*price;n=0;Lt=0;S=0;A=0;cCost=0;cMae=0;cStart=t;cyc++;open=true;fill(y0);}
   function fill(y){const lot=lots[n]*lf,cost=lot*P.cpl;Lt+=lot;S+=lot*y;A=S/Lt;yLast=y;n++;bal-=cost;cCost+=cost;}
   function close(y,t,kind){const g=Lt*(y-A)*pv;bal+=g;open=false;const net=g-cCost,yr=bk.yr(t);
     st.cycles++;yr.n++;st.reach[n-1]++;if(net>0){st.wins++;st.sumW+=net;yr.w++;}else st.sumL+=net;if(kind==='stop')st.stops++;
+    if(cMae>=P.bal0*P.ruin)st.cycR++;if(cMae>=P.bal0)st.cycW++;if(st.dur.length<200000){st.dur.push(t-cStart);if(cMae>0){st.maeV.push(cMae);st.maeT.push(cMaeAt);}}
     if(net<st.worst){st.worst=net;st.worstAt=t;}const dur=t-cStart;if(dur>st.longest){st.longest=dur;st.longestAt=cStart;}
     if(cMae>0){const L=st.worstList;if(L.length<5||cMae>L[L.length-1].mae){L.push({start:cStart,end:t,mae:cMae,net,orders:n,side:s});L.sort((a,b)=>b.mae-a.mae);if(L.length>5)L.pop();}}
     bk.mark(bal,t);}
-  function mark(y,t){const f=fl(y);if(-f>cMae)cMae=-f;if(-f>st.maeMax){st.maeMax=-f;st.maeAt=t;}bk.mark(bal+f,t);}
+  function mark(y,t){const f=fl(y);if(-f>cMae){cMae=-f;cMaeAt=t;}if(-f>st.maeMax){st.maeMax=-f;st.maeAt=t;}bk.mark(bal+f,t);}
   function move(p1,p2,gap,t){
     let p=p1;
     for(let guard=0;guard<100000;guard++){
@@ -714,44 +725,62 @@ function runGrid(B,P){
       return;}}
   for(let i=0;i<B.n;i++){
     const t=B.t[i],o=B.o[i],h=B.h[i],l=B.l[i],c=B.c[i];
-    if(i===0)openCycle(o,t);else move(B.c[i-1],o,true,t);
+    if(i===0)openCycle(o,t);else if(t-B.t[i-1]>=1440&&open){const e0=bal+fl(s*B.c[i-1]);move(B.c[i-1],o,true,t);const d=(bk.dead?0:bal+fl(s*o))-e0;st.gapN++;st.gapSum+=d;if(d<st.gapWorst){st.gapWorst=d;st.gapWorstAt=t;}}else move(B.c[i-1],o,true,t);
     if(c>=o){move(o,l,false,t);move(l,h,false,t);move(h,c,false,t);}else{move(o,h,false,t);move(h,l,false,t);move(l,c,false,t);}
-    bk.day(t,bk.dead?0:bal+fl(s*c),c-B.adj[i]);if(bk.dead){break;}}
+    bk.day(t,bk.dead?0:bal+fl(s*c),c-B.adj[i],c);if(bk.dead){break;}}
   const lastC=B.n?B.c[B.n-1]:0,floatEnd=bk.dead?0:fl(s*lastC),final=bk.dead?0:bal+floatEnd;
-  if(open&&cMae>0){const L=st.worstList;L.push({start:cStart,end:bk.dead?bk.wipeAt:B.t[B.n-1],mae:cMae,net:null,state:bk.dead?'wiped':'open',orders:n,side:s});L.sort((a,b)=>b.mae-a.mae);if(L.length>5)L.pop();}
+  if(open&&cMae>0){if(cMae>=P.bal0*P.ruin)st.cycR++;if(cMae>=P.bal0)st.cycW++;st.maeV.push(cMae);st.maeT.push(cMaeAt);const L=st.worstList;L.push({start:cStart,end:bk.dead?bk.wipeAt:B.t[B.n-1],mae:cMae,net:null,state:bk.dead?'wiped':'open',orders:n,side:s});L.sort((a,b)=>b.mae-a.mae);if(L.length>5)L.pop();}
   bk.finish();
   return{kind:'grid',final,floatEnd,openOrders:open&&!bk.dead?n:0,book:pack(bk),st};}
 
 /* ---------- fixed stop with random entries ---------- */
 function runFixed(B,P){
   const SL=P.sl,TP=P.sl*P.rr,cR=P.costR,rnd=mulberry32(P.seed||7),days=bars(B),q=Math.min(0.5,P.tpd*days/Math.max(1,B.n));
-  const bk=Book(P.bal0,P.ruin);let eq=P.bal0,inT=false,s=1,e=0,stopY=0,tgtY=0,rm=0,ls=0,ent=0;
-  const st={trades:0,wins:0,sumR:0,worstR:0,worstAt:0,gaps:0,R:[]};
+  const bk=Book(P.bal0,P.ruin);bk.pa0=B.n?B.o[0]:0;let eq=P.bal0,inT=false,s=1,e=0,stopY=0,tgtY=0,rm=0,ls=0,ent=0;
+  const st={trades:0,wins:0,sumR:0,worstR:0,worstAt:0,gaps:0,R:[],runs:[],run:0,maxRun:0,gapN:0,gapSum:0,gapWorst:0,gapWorstAt:0};
   const fixedBase=P.bal0;
   function enter(px,t){s=rnd()<0.5?1:-1;e=s*px;stopY=e-SL;tgtY=e+TP;const rk=P.dAfter&&ls>=P.dAfter?P.risk*(1-P.dCut):P.risk;rm=(P.fixed?fixedBase:eq)*rk;inT=true;ent=t;}
-  function exit(y,t){const R=(y-e)/SL-cR;eq+=rm*R;inT=false;st.trades++;st.sumR+=R;if(R>0){st.wins++;ls=0;}else ls++;if(R<st.worstR){st.worstR=R;st.worstAt=t;}if(R<-1-cR-1e-9)st.gaps++;
+  function exit(y,t){const R=(y-e)/SL-cR;eq+=rm*R;inT=false;st.trades++;st.sumR+=R;if(R>0){st.wins++;ls=0;if(st.run){st.runs[st.run]=(st.runs[st.run]||0)+1;st.run=0;}}else{ls++;st.run++;if(st.run>st.maxRun)st.maxRun=st.run;}if(R<st.worstR){st.worstR=R;st.worstAt=t;}if(R<-1-cR-1e-9)st.gaps++;
     const yr=bk.yr(t);yr.n++;if(R>0)yr.w++;if(st.R.length<20000)st.R.push(R);if(eq<0)eq=0;bk.mark(eq,t);}
   function move(p1,p2,gap,t){if(!inT||bk.dead)return;const yE=s*p2;
     if(yE<=stopY){exit(gap?yE:stopY,t);return;}if(yE>=tgtY){exit(gap?yE:tgtY,t);return;}bk.mark(eq+rm*(yE-e)/SL,t);}
   for(let i=0;i<B.n;i++){
     const t=B.t[i],o=B.o[i],h=B.h[i],l=B.l[i],c=B.c[i];
-    if(i>0)move(B.c[i-1],o,true,t);
+    if(i>0){if(t-B.t[i-1]>=1440&&inT){const e0=eq+rm*(s*B.c[i-1]-e)/SL;move(B.c[i-1],o,true,t);const d=(inT?eq+rm*(s*o-e)/SL:eq)-e0;st.gapN++;st.gapSum+=d;if(d<st.gapWorst){st.gapWorst=d;st.gapWorstAt=t;}}else move(B.c[i-1],o,true,t);}
     if(!inT&&!bk.dead&&rnd()<q)enter(o,t);
     if(c>=o){move(o,l,false,t);move(l,h,false,t);move(h,c,false,t);}else{move(o,h,false,t);move(h,l,false,t);move(l,c,false,t);}
-    const f=inT?rm*(s*c-e)/SL:0;bk.day(t,eq+f,c-B.adj[i]);if(bk.dead)break;}
+    const f=inT?rm*(s*c-e)/SL:0;bk.day(t,eq+f,c-B.adj[i],c);if(bk.dead)break;}
+  if(st.run)st.runs[st.run]=(st.runs[st.run]||0)+1;
   bk.finish();
+  if(P.noSample)return{kind:'fixed',final:bk.dead?0:eq,book:{ruinAt:bk.ruinAt,wipeAt:bk.wipeAt,mdd:bk.mdd}};
   /* independent random entries across the whole range: the no-skill baseline for this stop and target */
-  const K=Math.min(4000,Math.max(200,Math.floor(B.n/20))),rs=mulberry32((P.seed||7)+101),smp=[],dur=[];let hit=0,gapL=0;
+  const K=Math.min(4000,Math.max(200,Math.floor(B.n/20))),rs=mulberry32((P.seed||7)+101),smp=[],dur=[],hrN=new Array(24).fill(0),hrW=new Array(24).fill(0);let hit=0,gapL=0,sumLoss=0,nLoss=0;
   for(let k=0;k<K;k++){const i0=Math.floor(rs()*(B.n-1)),sd=rs()<0.5?1:-1,en=sd*B.o[i0],sY=en-SL,tY=en+TP,lim=B.t[i0]+30*DAY;let R=null,tEnd=0;
     for(let i=i0;i<B.n&&B.t[i]<=lim;i++){const pts=i===i0?[]:[B.o[i]];const o=B.o[i],h=B.h[i],l=B.l[i],c=B.c[i];if(c>=o)pts.push(l,h,c);else pts.push(h,l,c);
       for(let j=0;j<pts.length;j++){const y=sd*pts[j],g=(i>i0&&j===0);if(y<=sY){R=((g?y:sY)-en)/SL;break;}if(y>=tY){R=((g?y:tY)-en)/SL;break;}}
       if(R!==null){tEnd=B.t[i];break;}}
-    if(R===null)continue;R-=cR;smp.push(R);dur.push(tEnd-B.t[i0]);if(R>0)hit++;if(R<-1-cR-1e-9)gapL++;}
-  return{kind:'fixed',final:bk.dead?0:eq,book:pack(bk),st:{trades:st.trades,wins:st.wins,sumR:st.sumR,worstR:st.worstR,worstAt:st.worstAt,gaps:st.gaps},
-    sample:{n:smp.length,wins:hit,meanR:smp.reduce((a,x)=>a+x,0)/Math.max(1,smp.length),worstR:Math.min(0,...smp),gapLoss:gapL,medMin:dur.sort((a,b)=>a-b)[Math.floor(dur.length/2)]||0,q}};}
-function pack(b){return{days:b.days,mdd:b.mdd,mddAt:b.mddAt,ruinAt:b.ruinAt,wipeAt:b.wipeAt,dead:b.dead,peak:b.peak,years:[...b.years.values()].sort((a,c)=>a.y-c.y)};}
+    if(R===null)continue;R-=cR;smp.push(R);dur.push(tEnd-B.t[i0]);if(R>0)hit++;else{sumLoss+=R;nLoss++;}if(R<-1-cR-1e-9)gapL++;const hr=Math.floor(B.t[i0]/60)%24;hrN[hr]++;if(R>0)hrW[hr]++;}
+  return{kind:'fixed',final:bk.dead?0:eq,book:pack(bk),st:{trades:st.trades,wins:st.wins,sumR:st.sumR,worstR:st.worstR,worstAt:st.worstAt,gaps:st.gaps,runs:Array.from(st.runs,x=>x||0),maxRun:st.maxRun,gapN:st.gapN,gapSum:st.gapSum,gapWorst:st.gapWorst,gapWorstAt:st.gapWorstAt},
+    sample:{n:smp.length,wins:hit,meanR:smp.reduce((a,x)=>a+x,0)/Math.max(1,smp.length),worstR:Math.min(0,...smp),gapLoss:gapL,medMin:dur.sort((a,b)=>a-b)[Math.floor(dur.length/2)]||0,q,hrN,hrW,avgLoss:nLoss?sumLoss/nLoss:0}};}
+function yearAdr(B){const Y=new Map();let last=-1,hi=-Infinity,lo=Infinity,yr=0;const push=()=>{if(last<0)return;let y=Y.get(yr);if(!y){y={y:yr,s:0,n:0};Y.set(yr,y);}y.s+=hi-lo;y.n++;};
+  for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d!==last){push();last=d;hi=-Infinity;lo=Infinity;yr=new Date(d*DAY*60000).getUTCFullYear();}if(B.h[i]>hi)hi=B.h[i];if(B.l[i]<lo)lo=B.l[i];}push();
+  return[...Y.values()].map(y=>({y:y.y,adr:y.s/y.n,days:y.n}));}
+function sub(B,a,b){return{n:b-a,t:B.t.subarray(a,b),o:B.o.subarray(a,b),h:B.h.subarray(a,b),l:B.l.subarray(a,b),c:B.c.subarray(a,b),adj:B.adj.subarray(a,b)};}
+/* the same rules started at the beginning of different months, each run for the same length */
+function startRuns(B,P,progress){
+  const firsts=[];let last='',ld=-1;for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d===ld)continue;ld=d;const k=new Date(d*DAY*60000).toISOString().slice(0,7);if(k!==last){firsts.push({k,i});last=k;}}
+  const nm=firsts.length;if(nm<3)return null;const W=nm<=24?Math.max(1,Math.floor(nm/2)):12,cand=firsts.slice(0,nm-W+1);
+  const pick=cand.length<=36?cand:Array.from({length:36},(_,j)=>cand[Math.round(j*(cand.length-1)/35)]);
+  const out=[];pick.forEach((f,j)=>{const endIdx=f.k===firsts[nm-1].k?B.n:(firsts[firsts.indexOf(f)+W]||{i:B.n}).i,S=sub(B,f.i,endIdx);
+    const r=P.kind==='fixed'?runFixed(S,Object.assign({},P,{noSample:true})):runGrid(S,P);
+    out.push({k:f.k,ret:r.final/P.bal0-1,ruin:r.book.ruinAt>0,wipe:r.book.wipeAt>0,wipeAt:r.book.wipeAt,mdd:Math.min(1,r.book.mdd)});if(progress)progress(j+1,pick.length);});
+  return{W,runs:out};}
+function slim(r){if(r.kind!=='grid')return r;const st=r.st,v=st.maeV,tt=st.maeT,ix=v.map((x,i)=>i).sort((a,b)=>v[b]-v[a]),top=ix.slice(0,Math.max(10,Math.min(300,Math.ceil(ix.length*0.1))));
+  const hr=new Array(24).fill(0),dw=new Array(7).fill(0);top.forEach(i=>{const d=new Date(tt[i]*60000);hr[d.getUTCHours()]++;dw[d.getUTCDay()]++;});
+  const du=st.dur.slice().sort((a,b)=>a-b);st.durMed=du.length?du[Math.floor(du.length/2)]:0;st.troubleN=top.length;st.troubleHr=hr;st.troubleDw=dw;delete st.maeV;delete st.maeT;delete st.dur;return r;}
+function pack(b){return{months:b.months.map(m=>({m:m.k,eq0:m.eq0,eq1:m.eq1,move:m.pa1-m.pa0,path:m.path})),days:b.days,mdd:b.mdd,mddAt:b.mddAt,ruinAt:b.ruinAt,wipeAt:b.wipeAt,dead:b.dead,peak:b.peak,years:[...b.years.values()].sort((a,c)=>a.y-c.y)};}
 
-const API={decode,join,runGrid,runFixed,avgRange,bars};
+const API={decode,join,runGrid,runFixed,avgRange,bars,yearAdr,startRuns,slim,sub};
 if(typeof self!=='undefined'&&typeof window==='undefined'&&typeof importScripts==='function'){
   self.onmessage=async ev=>{const m=ev.data;
     try{const parts=[];let done=0;
@@ -760,7 +789,10 @@ if(typeof self!=='undefined'&&typeof window==='undefined'&&typeof importScripts=
       for(const r of res)parts.push(r);
       self.postMessage({type:'progress',done:list.length,total:list.length,stage:'run'});
       const B=join(parts,m.rolls),P=m.params;
-      const out=P.kind==='fixed'?runFixed(B,P):runGrid(B,P);
+      const out=slim(P.kind==='fixed'?runFixed(B,P):runGrid(B,P));
+      out.yAdr=yearAdr(B);
+      self.postMessage({type:'progress',stage:'starts',done:0,total:1});
+      out.starts=startRuns(B,P,(d,n)=>{if(d%4===0||d===n)self.postMessage({type:'progress',stage:'starts',done:d,total:n});});
       out.n=B.n;out.from=B.n?B.t[0]:0;out.to=B.n?B.t[B.n-1]:0;out.rolls=B.rolls||0;out.adr=avgRange(B);out.days=bars(B);
       out.px0=B.n?B.o[0]:0;out.px1=B.n?B.c[B.n-1]:0;
       self.postMessage({type:'done',out,id:m.id});
@@ -1937,7 +1969,7 @@ bn_years:"Results by calendar year. The deepest fall is measured within each yea
 bn_rand:"Thousands of trades opened at random times in random directions across the range, each with your stop and target. This is what the stop and target do on real gold with no skill.",
 bn_eqf:"One chronological run: random entries at roughly your trades per day, one trade at a time, sized with your risk rules. Another run with different random entries would look different; the sample on the left is the steadier guide.",
 bn_years_f:"Results of the chronological run by calendar year.",
-sc_bt_can:["Backtest on real gold","Replays your exact inputs on 16 years of 1-minute COMEX gold prices for any range of months: equity day by day, the deepest falls and when they happened, the worst grid cycles, and results by year. For fixed-stop strategies, it measures the win rate your stop and target produce with random entries, so you can compare it with yours."],
+sc_bt_can:["Backtest on real gold","Replays your exact inputs on 16 years of 1-minute COMEX gold prices for any range of months: equity day by day, the deepest falls and when they happened, the worst grid cycles, and results by year. It also reruns the test from many start dates, compares the simulation with reality, shows how gold's volatility changed, splits results into trend and range months, finds the hours when trouble starts, and checks whether real losing streaks cluster. For fixed-stop strategies, it measures the win rate your stop and target produce with random entries, so you can compare it with yours."],
 sc_bt_cant:["Backtest on real gold",[["Gold only, and futures rather than spot","The data is COMEX gold futures. Broker XAUUSD spot prices differ slightly, trading hours and gaps aren't identical, and roll jumps between futures contracts are removed by estimate (30 of the 81 rolls fall across a weekend and are estimated from neighbouring rolls)."],["What happens inside each minute","Only open, high, low and close are known. The backtest assumes a rising minute went open → low → high → close and a falling one open → high → low → close. When a stop and a target sit inside the same minute, the real order may have been different."],["Fills and costs","Orders fill exactly at their level unless price gaps past it, in which case they fill at the gap price. There is no slippage beyond that, no swap, no lot rounding to 0.01 and no margin check. Spread is charged once per order."],["Not your actual entries","Fixed-stop backtests use random entries, because win rate and reward:risk don't describe when you enter. They test your stop, target and risk rules against real gold, not your entry skill."],["Fixed data","The data ends on the last date shown and isn't updated. One past path is one sample: a grid that survived these years could still fail on the next big move."]]]
 });
 Object.assign(I18N.th,{
@@ -1973,8 +2005,72 @@ bn_years:"ผลแยกตามปีปฏิทิน การลดลง
 bn_rand:"เปิดไม้หลายพันไม้ ณ เวลาสุ่มและทิศทางสุ่มตลอดช่วง แต่ละไม้ใช้ Stop loss และเป้ากำไรของคุณ นี่คือผลของ Stop loss และเป้ากำไรบนทองจริงเมื่อไม่มีฝีมือ",
 bn_eqf:"รันตามลำดับเวลาหนึ่งครั้ง: เข้าแบบสุ่มประมาณจำนวนไม้ต่อวันของคุณ ทีละไม้ ขนาดตามกฎความเสี่ยงของคุณ ถ้าสุ่มใหม่ผลจะต่างไป ตัวอย่างทางซ้ายจึงเชื่อถือได้มากกว่า",
 bn_years_f:"ผลของการรันตามลำดับเวลา แยกตามปีปฏิทิน",
-sc_bt_can:["Backtest บนทองจริง","นำค่าที่คุณใส่มาเทรดซ้ำกับราคาทอง COMEX ราย 1 นาที 16 ปี ในช่วงเดือนใดก็ได้ แสดงมูลค่าพอร์ตรายวัน การลดลงลึกที่สุดและเกิดเมื่อไร รอบกริดที่แย่ที่สุด และผลรายปี สำหรับกลยุทธ์แบบ Stop loss ตายตัว จะวัด Win rate ที่ Stop loss และเป้ากำไรของคุณทำได้เมื่อเข้าแบบสุ่ม เพื่อเทียบกับของคุณ"],
+sc_bt_can:["Backtest บนทองจริง","นำค่าที่คุณใส่มาเทรดซ้ำกับราคาทอง COMEX ราย 1 นาที 16 ปี ในช่วงเดือนใดก็ได้ แสดงมูลค่าพอร์ตรายวัน การลดลงลึกที่สุดและเกิดเมื่อไร รอบกริดที่แย่ที่สุด และผลรายปี พร้อมรันซ้ำจากหลายวันเริ่ม เทียบการจำลองกับของจริง แสดงความผันผวนของทองที่เปลี่ยนไป แยกผลตามเดือนเทรนด์และไซด์เวย์ หาช่วงเวลาที่ปัญหาเริ่ม และตรวจว่าการแพ้ติดกันจริงเกาะกลุ่มหรือไม่ สำหรับกลยุทธ์แบบ Stop loss ตายตัว จะวัด Win rate ที่ Stop loss และเป้ากำไรของคุณทำได้เมื่อเข้าแบบสุ่ม เพื่อเทียบกับของคุณ"],
 sc_bt_cant:["Backtest บนทองจริง",[["ทองคำเท่านั้น และเป็นฟิวเจอร์ส ไม่ใช่ Spot","ข้อมูลเป็นฟิวเจอร์สทองคำ COMEX ราคา XAUUSD Spot ของโบรกเกอร์ต่างกันเล็กน้อย เวลาเทรดและช่องว่างราคาไม่เหมือนกันทั้งหมด และส่วนต่างตรงรอยต่อสัญญาถูกตัดออกโดยการประมาณ (30 จาก 81 รอยต่อคร่อมวันหยุดสุดสัปดาห์ จึงประมาณจากรอยต่อใกล้เคียง)"],["สิ่งที่เกิดภายในแต่ละนาที","รู้แค่ราคาเปิด สูงสุด ต่ำสุด และปิด Backtest ถือว่านาทีที่ราคาขึ้นวิ่ง เปิด → ต่ำสุด → สูงสุด → ปิด และนาทีที่ราคาลงวิ่ง เปิด → สูงสุด → ต่ำสุด → ปิด ถ้า Stop loss และเป้ากำไรอยู่ในนาทีเดียวกัน ลำดับจริงอาจต่างออกไป"],["การจับคู่คำสั่งและต้นทุน","คำสั่งได้ราคาตรงระดับพอดี ยกเว้นราคากระโดดข้าม จึงได้ราคาหลังกระโดด ไม่มี Slippage นอกจากนั้น ไม่มี Swap ไม่ปัดล็อตเป็น 0.01 และไม่ตรวจมาร์จิ้น สเปรดคิดครั้งเดียวต่อออเดอร์"],["ไม่ใช่จุดเข้าจริงของคุณ","Backtest แบบ Stop loss ตายตัวใช้จุดเข้าแบบสุ่ม เพราะ Win rate และ Reward:risk ไม่ได้บอกว่าคุณเข้าเมื่อไร จึงทดสอบ Stop loss เป้ากำไร และกฎความเสี่ยงกับทองจริง ไม่ได้ทดสอบฝีมือการหาจุดเข้า"],["ข้อมูลตายตัว","ข้อมูลสิ้นสุดที่วันที่แสดงและไม่อัปเดต อดีตหนึ่งเส้นทางคือตัวอย่างเดียว กริดที่รอดในช่วงปีเหล่านี้อาจพังในการเคลื่อนไหวใหญ่ครั้งถัดไป"]]]
+});
+Object.assign(I18N.en,{
+bt_starts:"Testing other start dates: {done} of {total}…",
+bt_avail:"Data available: {a} to {b}",bt_avail2:"{y} years of 1-minute gold prices, {n} million bars. Nothing before or after these dates.",bt_sel:"Selected: {a} to {b}, {n} months",
+bs_y:"result after {W} months",lg_bs_ok:"Stayed above the ruin line",lg_bs_ruin:"Fell {x}% or more",lg_bs_wipe:"Wiped out",
+bs_now:"Started on {ok} of {n} different dates, the account stayed above the ruin line for {W} months; {wp} starts were wiped out. The worst start was {worst}, the best {best}.",
+bs_note:"The same rules started at the beginning of different months, each run for the same length. The main backtest above is only one of these paths; this shows how much the result depended on the day you happened to start.",
+bsv_few:"Too few cycles in this range to compare reliably. Pick a longer range.",
+bsv_worse:"Real gold pushed cycles to the ruin line {x}× as often as the simulation predicted. The simulation sections above are too optimistic for gold with these settings.",
+bsv_better:"Real gold was gentler than the simulation in this range. That can be luck of the period: try other ranges before relying on it.",
+bsv_close:"Real gold behaved roughly as the simulation predicted for these settings.",
+bsv_worse0:"On real gold {x} of cycles dipped to the ruin line; the simulation never produced one. The simulation sections above are too optimistic for gold with these settings.",bsv_btn:"Use gold's real daily range ({x} pips) in the simulation",bsv_typ:"about {k}",
+bsv_fx_hi:"Your stated win rate is {d} points above what your stop and target achieve with random entries on real gold. Everything above that assumes your win rate rests on that extra edge being real.",
+bsv_fx_ok:"Your stated win rate is close to or below what random entries achieve, so the simulation above isn't relying on an edge real gold doesn't support.",
+bsv_note:"The simulation above against the same settings on real gold. Large gaps mean the simulated price model doesn't fit gold in this period; matching the daily range is the first fix.",
+bsv_note_f:"The numbers the simulation above assumes, next to what the same stop and target did on real gold. Losses beyond the stop come from price gaps the model ignores.",
+bv_ref_sl:"Your stop",bv_ref_tp:"Your take-profit",bv_ref_step:"Your grid spacing",bv_ref_full:"Depth when every order is open",bv_ref_wipe:"Move that wipes the account",bv_lg_adr:"Average daily range",
+bv_now:"Gold moved {a} pips a day in {y0} and {b} in {y1}, {x}× as much. {name} of {v} pips was {r0}% of a day's range in {y0} and {r1}% in {y1}.",
+bv_note:"Gold's average daily range for each year, with your key distances as dashed lines. Settings sized for a calm year can be far too tight when gold gets more volatile.",
+btr_x:"gold's move in the month (pips)",btr_y:"account change in the month",btr_range:"Ranging",btr_mixed:"Mixed",btr_up:"Trending up",btr_down:"Trending down",
+btr_now:"Your strategy did best in {best} months (average {b}) and worst in {worst} months (average {w}).",
+btr_note:"Each dot is one month. A month counts as trending when gold's net move was at least 35% of the distance it travelled day by day, and as ranging when it was under 15%. The table shows how your strategy did in each kind of month.",
+bq_hour:"hour ({tz})",bq_count:"deep moments",bq_wr:"win rate",
+bq_now:"Of the {n} cycles with the deepest floating losses, the most hit their worst point between {h0}:00 and {h1}:00 ({tz}).",
+bq_now_f:"Random entries won least when opened around {lo}:00 ({wlo}%) and most around {hi}:00 ({whi}%), {tz}. Break-even is {be}%. Small differences between hours are mostly noise.",
+bq_note:"When the worst 10% of cycles reached their deepest floating loss, by hour of day in your time zone and by weekday, plus what weekend and holiday gaps did to open positions.",
+bq_note_f:"The win rate of random entries by the hour they opened, in your time zone. Faded bars have fewer than 20 entries. The dashed line is break-even. Also what weekend and holiday gaps did to open trades.",
+bk_few:"Too few trades to judge streaks. Pick a longer range or more trades per day.",
+bk_more:"Real losing streaks of 5 or more happened {x}× as often as independent trades would produce. Losses cluster, so expect longer streaks than the streak section above predicts.",
+bk_less:"Real long losing streaks were rarer than independent trades would produce in this range.",
+bk_same:"Real losing streaks matched what independent trades would produce, so the streak section above is a fair guide here.",
+bk_note:"Losing streaks in the chronological run against the number expected if every trade were independent, at the win rate actually achieved."
+});
+Object.assign(I18N.th,{
+bt_starts:"กำลังทดสอบวันเริ่มอื่น: {done} จาก {total}…",
+bt_avail:"ข้อมูลที่มี: {a} ถึง {b}",bt_avail2:"ราคาทองราย 1 นาที {y} ปี จำนวน {n} ล้านแท่ง ไม่มีข้อมูลก่อนหรือหลังช่วงนี้",bt_sel:"ช่วงที่เลือก: {a} ถึง {b} รวม {n} เดือน",
+bs_y:"ผลหลัง {W} เดือน",lg_bs_ok:"อยู่เหนือเส้นพอร์ตแตก",lg_bs_ruin:"ลดลง {x}% ขึ้นไป",lg_bs_wipe:"เสียพอร์ตทั้งหมด",
+bs_now:"เริ่มต่างวันกัน {n} ครั้ง พอร์ตอยู่เหนือเส้นพอร์ตแตกตลอด {W} เดือน {ok} ครั้ง และเสียพอร์ตทั้งหมด {wp} ครั้ง วันเริ่มที่แย่ที่สุดคือ {worst} ที่ดีที่สุดคือ {best}",
+bs_note:"ใช้กฎเดียวกันแต่เริ่มต้นเดือนต่างกัน แต่ละครั้งรันยาวเท่ากัน Backtest หลักด้านบนเป็นแค่หนึ่งในเส้นทางเหล่านี้ การ์ดนี้แสดงว่าผลขึ้นกับวันที่บังเอิญเริ่มมากแค่ไหน",
+bsv_few:"รอบในช่วงนี้น้อยเกินไปที่จะเทียบได้น่าเชื่อถือ ให้เลือกช่วงที่ยาวขึ้น",
+bsv_worse:"ทองจริงทำให้รอบลงไปถึงเส้นพอร์ตแตกบ่อยกว่าที่การจำลองคาดไว้ {x} เท่า การจำลองด้านบนจึงมองโลกในแง่ดีเกินไปสำหรับทองด้วยค่าที่ตั้งนี้",
+bsv_better:"ทองจริงในช่วงนี้รุนแรงน้อยกว่าการจำลอง อาจเป็นแค่โชคของช่วงเวลา ลองช่วงอื่นก่อนเชื่อผลนี้",
+bsv_close:"ทองจริงเคลื่อนไหวใกล้เคียงกับที่การจำลองคาดไว้สำหรับค่าที่ตั้งนี้",
+bsv_worse0:"บนทองจริง {x} ของรอบลงไปถึงเส้นพอร์ตแตก แต่การจำลองไม่เกิดเลย การจำลองด้านบนจึงมองโลกในแง่ดีเกินไปสำหรับทองด้วยค่าที่ตั้งนี้",bsv_btn:"ใช้ช่วงราคาต่อวันจริงของทอง ({x} pips) ในการจำลอง",bsv_typ:"ประมาณ {k}",
+bsv_fx_hi:"Win rate ที่คุณใส่สูงกว่าที่ Stop loss และเป้ากำไรของคุณทำได้เมื่อเข้าแบบสุ่มบนทองจริง {d} จุด ทุกอย่างด้านบนจึงอาศัยความได้เปรียบส่วนเกินนั้นว่าเป็นของจริง",
+bsv_fx_ok:"Win rate ที่คุณใส่ใกล้เคียงหรือต่ำกว่าที่จุดเข้าแบบสุ่มทำได้ การจำลองด้านบนจึงไม่ได้อาศัยความได้เปรียบที่ทองจริงไม่รองรับ",
+bsv_note:"การจำลองด้านบน เทียบกับค่าเดียวกันบนทองจริง ถ้าต่างกันมาก แปลว่าแบบจำลองราคาไม่เข้ากับทองในช่วงนี้ สิ่งแรกที่ควรแก้คือช่วงราคาต่อวัน",
+bsv_note_f:"ตัวเลขที่การจำลองด้านบนใช้ เทียบกับผลของ Stop loss และเป้ากำไรเดียวกันบนทองจริง ขาดทุนเกิน Stop loss มาจากราคากระโดดที่แบบจำลองไม่ได้คิด",
+bv_ref_sl:"Stop loss ของคุณ",bv_ref_tp:"เป้ากำไรของคุณ",bv_ref_step:"ระยะห่างกริดของคุณ",bv_ref_full:"ความลึกเมื่อเปิดครบทุกออเดอร์",bv_ref_wipe:"ระยะสวนที่ล้างพอร์ต",bv_lg_adr:"ช่วงราคาเฉลี่ยต่อวัน",
+bv_now:"ทองวิ่งเฉลี่ยวันละ {a} pips ในปี {y0} และ {b} pips ในปี {y1} มากขึ้น {x} เท่า {name} {v} pips เท่ากับ {r0}% ของช่วงราคาต่อวันในปี {y0} และ {r1}% ในปี {y1}",
+bv_note:"ช่วงราคาเฉลี่ยต่อวันของทองในแต่ละปี พร้อมระยะสำคัญของคุณเป็นเส้นประ ค่าที่ตั้งไว้สำหรับปีที่ตลาดเงียบอาจแคบเกินไปมากเมื่อทองผันผวนขึ้น",
+btr_x:"ราคาทองเปลี่ยนในเดือนนั้น (pips)",btr_y:"พอร์ตเปลี่ยนในเดือนนั้น",btr_range:"ไซด์เวย์",btr_mixed:"ผสม",btr_up:"เทรนด์ขึ้น",btr_down:"เทรนด์ลง",
+btr_now:"กลยุทธ์ของคุณทำได้ดีที่สุดในเดือนแบบ{best} (เฉลี่ย {b}) และแย่ที่สุดในเดือนแบบ{worst} (เฉลี่ย {w})",
+btr_note:"แต่ละจุดคือหนึ่งเดือน เดือนที่นับเป็นเทรนด์คือเดือนที่ราคาเปลี่ยนสุทธิอย่างน้อย 35% ของระยะที่วิ่งรายวันรวมกัน และเป็นไซด์เวย์เมื่อต่ำกว่า 15% ตารางแสดงผลของกลยุทธ์ในแต่ละแบบเดือน",
+bq_hour:"ชั่วโมง ({tz})",bq_count:"ครั้งที่ลึกสุด",bq_wr:"Win rate",
+bq_now:"ใน {n} รอบที่ขาดทุนลอยตัวลึกที่สุด ส่วนใหญ่ลงไปถึงจุดต่ำสุดระหว่าง {h0}:00 ถึง {h1}:00 ({tz})",
+bq_now_f:"จุดเข้าแบบสุ่มชนะน้อยที่สุดเมื่อเปิดราว {lo}:00 ({wlo}%) และมากที่สุดราว {hi}:00 ({whi}%) เวลา {tz} จุดคุ้มทุนคือ {be}% ความต่างเล็กน้อยระหว่างชั่วโมงส่วนใหญ่เป็นแค่ความบังเอิญ",
+bq_note:"เวลาที่ 10% ของรอบที่แย่ที่สุดลงไปถึงขาดทุนลอยตัวลึกสุด แยกตามชั่วโมงในเขตเวลาของคุณและวันในสัปดาห์ พร้อมผลของช่องว่างราคาช่วงสุดสัปดาห์และวันหยุดต่อออเดอร์ที่เปิดอยู่",
+bq_note_f:"Win rate ของจุดเข้าแบบสุ่ม แยกตามชั่วโมงที่เปิดในเขตเวลาของคุณ แท่งจางมีไม่ถึง 20 ไม้ เส้นประคือจุดคุ้มทุน พร้อมผลของช่องว่างราคาช่วงสุดสัปดาห์และวันหยุดต่อไม้ที่เปิดอยู่",
+bk_few:"จำนวนไม้น้อยเกินไปที่จะดูการแพ้ติดกัน ให้เลือกช่วงที่ยาวขึ้นหรือเพิ่มจำนวนไม้ต่อวัน",
+bk_more:"บนทองจริง การแพ้ติดกัน 5 ไม้ขึ้นไปเกิดบ่อยกว่าที่ไม้อิสระต่อกันจะเกิด {x} เท่า การขาดทุนเกาะกลุ่ม จึงควรเผื่อการแพ้ติดกันนานกว่าที่ส่วนการแพ้ติดกันด้านบนคาด",
+bk_less:"ในช่วงนี้ การแพ้ติดกันนานๆ บนทองจริงเกิดน้อยกว่าที่ไม้อิสระต่อกันจะเกิด",
+bk_same:"การแพ้ติดกันบนทองจริงใกล้เคียงกับไม้ที่อิสระต่อกัน ส่วนการแพ้ติดกันด้านบนจึงใช้เป็นแนวทางได้ในกรณีนี้",
+bk_note:"การแพ้ติดกันในการรันตามลำดับเวลา เทียบกับจำนวนที่คาดไว้ถ้าทุกไม้อิสระต่อกัน ที่ Win rate ที่ทำได้จริง"
 });
 function t(k,v){
   let s=I18N[LANG]&&I18N[LANG][k];if(s===undefined)s=I18N.en[k];
@@ -2051,6 +2147,7 @@ function bars(o){
     s+=`<rect x="${f1(x)}" y="${f1(Math.min(y,y0))}" width="${f1(w)}" height="${f1(Math.max(1,Math.abs(y-y0)))}" style="fill:${b.color||(b.value<0?'var(--c2)':'var(--c1)')};opacity:${b.faint?0.35:0.9}"/>`;
     if(!o.every||i%o.every===0)s+=`<text x="${f1(x+w/2)}" y="${f.H-f.m.b+14}" text-anchor="middle">${esc(b.label)}</text>`;
     if(o.valFmt&&bw>22)s+=`<text x="${f1(x+w/2)}" y="${f1(b.value<0?y+11:y-3)}" text-anchor="middle" style="font-size:9.5px">${esc(o.valFmt(b.value))}</text>`;});
+  (o.hlines||[]).forEach(h=>{const y=f1(f.Y(h.y));s+=`<line x1="${f.m.l}" x2="${f.W-f.m.r}" y1="${y}" y2="${y}" style="stroke:${h.color||'var(--ink)'};stroke-width:1.6;stroke-dasharray:5 3"/>`;});
   return wrap(f,s,o.label);}
 /* fan chart of simulated equity curves (values are multiples of starting balance) */
 function fan(sim,o){
@@ -2617,7 +2714,7 @@ function btRun(){
   const ms=BT.idx.months.map(x=>x.m).filter(m=>m>=BT.from&&m<=BT.to);if(!ms.length){BT.err=t('bt_range_bad');btRedraw();return;}
   if(!BT.worker){BT.worker=new Worker(URL.createObjectURL(new Blob([$('s-btw').textContent],{type:'text/javascript'})));
     BT.worker.onmessage=e=>{const m=e.data;if(m.id!==undefined&&m.id!==BT.id)return;
-      if(m.type==='progress'){BT.prog=m.stage==='run'?t('bt_running'):t('bt_load',{done:m.done,total:m.total});const el=$('bt-status');if(el)el.textContent=BT.prog;return;}
+      if(m.type==='progress'){BT.prog=m.stage==='run'?t('bt_running'):m.stage==='starts'?t('bt_starts',{done:m.done,total:m.total}):t('bt_load',{done:m.done,total:m.total});const el=$('bt-status');if(el)el.textContent=BT.prog;return;}
       BT.busy=false;if(m.type==='error'){BT.err=t('bt_err',{msg:m.msg});}else{BT.res=m.out;BT.err=null;}btRedraw();};}
   BT.busy=true;BT.err=null;BT.res=null;BT.prog=t('bt_load',{done:0,total:ms.length});BT.sig=btSig();BT.kind=D.stype;BT.id++;
   BT.worker.postMessage({id:BT.id,base:btBase(),months:ms,rolls:BT.idx.rolls,params:btParams()});btRedraw();}
@@ -2642,7 +2739,7 @@ function btSection(){
   else if(!I){btIndex();body=`<div class="card"><p class="small muted" style="margin:0">${esc(t('bt_idx'))}</p></div>`;}
   else{
     const need=D.stype==='fixed'&&!(D.sl>0);
-    body=`<div class="card"><p class="small" style="margin:0 0 .4rem">${esc(t('bt_intro'))}</p><p class="small muted" style="margin:0 0 .8rem">${esc(t(D.stype==='fixed'?'bt_uses_fixed':D.stype==='grid'?'bt_uses_grid':'bt_uses_ns'))}</p>
+    body=`<div class="card">${btAvail()}<p class="small" style="margin:0 0 .4rem">${esc(t('bt_intro'))}</p><p class="small muted" style="margin:0 0 .8rem">${esc(t(D.stype==='fixed'?'bt_uses_fixed':D.stype==='grid'?'bt_uses_grid':'bt_uses_ns'))}</p>
       ${need?`<p class="warnnote" style="margin:0">${esc(t('bt_need_sl'))}</p>`:btControls()}
       ${BT.err?`<p class="errnote" style="margin:.7rem 0 0">${esc(BT.err)}</p>`:''}
       ${BT.res&&BT.kind===D.stype&&BT.sig!==btSig()&&!BT.busy?`<p class="warnnote" style="margin:.7rem 0 0">${esc(t('bt_stale'))}</p>`:''}</div>`;
@@ -2677,7 +2774,8 @@ function btGrid(r){
   <div class="s7">${card('Gold price',ch(pc2)+lg([['var(--c1)',t('lg_bt_px')],['var(--bad)',t('lg_bt_worst')]])+note('bn_price'))}</div>
   <div class="s7">${card('Deepest cycles',wt+note('bn_worst'))}</div>
   <div class="s5">${card('Orders reached',D.stype==='grid'?ch(CH.bars({w:420,h:200,items:reach(),ymax:100,yfmt:v=>v+'%',valFmt:v=>v<1?(v<0.1?'<.1':v.toFixed(1)):Math.round(v)+'',xlabel:'order number',ylabel:'cycles reaching it',label:'Orders reached in the backtest'}))+note('gn_reach_bt'):kv([['Stops hit',String(st.stops)]])+note('gn_reach_bt'))}</div>
-  <div class="s12">${card('By year',btYears(r)+note('bn_years'))}</div></div>`;}
+  <div class="s12">${card('By year',btYears(r)+note('bn_years'))}</div>
+  ${btDeeper(r)}</div>`;}
 function btFixed(r){
   const st=r.st,sm=r.sample,b=r.book,o=btOutcome(r),wr=sm.n?sm.wins/sm.n:0,ci=SFX.wilson(wr,sm.n),you=D.wr/100,c=costR(),be=(1+c)/(D.rr+1),ret=D.bal>0?sgn((r.final/D.bal-1)*100,1)+'%':'–';
   const cmp=you>ci[1]?'bt_fx_above':you>=ci[0]?'bt_fx_within':'bt_fx_below';
@@ -2690,10 +2788,90 @@ function btFixed(r){
     <div class="gtile">${tiles.map(x=>`<div class="${x[0]}"><span>${esc(x[1])}</span><b>${esc(x[2])}</b>${x[3]?`<span>${esc(x[3])}</span>`:''}</div>`).join('')}</div></div>
   <div class="dgrid"><div class="s5">${card('Random-entry check',kv(rows)+note('bn_rand'))}</div>
   <div class="s7">${card('Equity: one random-entry run',ch(btEquity(r))+lg([['var(--accent)',t('lg_bt_close')],['var(--bad)',t('lg_bt_low')]])+kv(runRows)+note('bn_eqf'))}</div>
-  <div class="s12">${card('By year',btYears(r)+note('bn_years_f'))}</div></div>`;}
+  <div class="s12">${card('By year',btYears(r)+note('bn_years_f'))}</div>
+  ${btDeeper(r)}</div>`;}
+/* ---------- backtest: deeper analysis (only what real prices can show) ---------- */
+const lday=min=>new Date(min*60000).toLocaleDateString(LANG==='th'?'th-TH-u-ca-gregory':'en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
+const lmon=ym=>new Date(ym+'-01T00:00:00Z').toLocaleDateString(LANG==='th'?'th-TH-u-ca-gregory':'en-GB',{month:'short',year:'numeric',timeZone:'UTC'});
+function btAvail(){
+  const I=BT.idx,ms=I.months.map(x=>x.m),a=ms.indexOf(BT.from),b=ms.indexOf(BT.to),N=ms.length,W=1000,X=i=>8+i/N*(W-16);
+  const y0=+ms[0].slice(0,4),y1=+ms[N-1].slice(0,4),yrs=((I.to-I.from)/525960).toFixed(1);let ticks='';
+  for(let y=y0;y<=y1;y++){const i=ms.indexOf(y+'-01');if(i<0)continue;ticks+=`<line x1="${X(i).toFixed(1)}" x2="${X(i).toFixed(1)}" y1="16" y2="34" class="tk"/>`+((y-y0)%2===0||N<40?`<text x="${X(i).toFixed(1)}" y="50" text-anchor="middle">${y}</text>`:'');}
+  const sel=a>=0&&b>=a?`<rect x="${X(a).toFixed(1)}" y="12" width="${Math.max(3,X(b+1)-X(a)).toFixed(1)}" height="26" rx="2" class="sel"/>`:'';
+  return`<div class="btavail"><div class="btav-t"><b>${esc(t('bt_avail',{a:lday(I.from),b:lday(I.to)}))}</b><span>${esc(t('bt_avail2',{y:yrs,n:(I.bars/1e6).toFixed(1)}))}</span></div>
+    <svg viewBox="0 0 ${W} 56" role="img" aria-label="${esc(t('bt_sel',{a:lmon(BT.from),b:lmon(BT.to),n:b-a+1}))}"><rect x="8" y="18" width="${W-16}" height="14" rx="2" class="all"/>${sel}${ticks}</svg>
+    <p class="btav-s">${esc(t('bt_sel',{a:lmon(BT.from),b:lmon(BT.to),n:b-a+1}))}</p></div>`;}
+const hourOff=()=>Math.round(-new Date().getTimezoneOffset()/60);
+const tzLab=()=>{const o=hourOff();return'UTC'+(o>=0?'+':'−')+Math.abs(o);};
+const rot=a=>{const o=hourOff();return a.map((_,i)=>a[((i-o)%24+24)%24]);};
+const pctS=v=>(v<0?'−':'+')+Math.abs(v*100).toFixed(Math.abs(v)<0.1?1:0)+'%';
+function btStarts(r){
+  const S=r.starts;if(!S||!S.runs.length)return'';const R=S.runs,n=R.length,ok=R.filter(x=>!x.ruin).length,wp=R.filter(x=>x.wipe).length;
+  const srt=R.slice().sort((a,b)=>a.ret-b.ret||(a.wipeAt||0)-(b.wipeAt||0)),worst=srt[0],best=srt[n-1],med=srt[Math.floor(n/2)];
+  const every=Math.ceil(n/12),items=R.map((x,i)=>({label:i%every===0?x.k.slice(2):'',value:Math.max(-100,x.ret*100),color:x.wipe?'var(--bad)':x.ruin?'var(--warn)':'var(--ok)'}));
+  const chv=CH.bars({w:860,h:230,m:{l:56},items,yfmt:v=>Math.round(v)+'%',ylabel:t('bs_y',{W:S.W}),label:'Result by start month'});
+  const rows=[['Start dates tested',String(n)],['Length of each run',S.W+' months'],['Stayed above the ruin line',ok+' of '+n+' ('+pc(ok/n,0)+')'],['Wiped out',wp+' of '+n],['Median result',pctS(med.ret)],
+    ['Best start',lmon(best.k)+' ('+pctS(best.ret)+')'],['Worst start',lmon(worst.k)+' ('+(worst.wipe?t('bt_out_wipe'):pctS(worst.ret))+')']];
+  return`<div class="s12">${card('Start-date luck',`<div class="split">${ch(chv)}<div>${kv(rows)}</div></div>`+lg([['var(--ok)',t('lg_bs_ok')],['var(--warn)',t('lg_bs_ruin',{x:D.ruin})],['var(--bad)',t('lg_bs_wipe')]])+
+    `<p class="small" style="margin:.6rem 0 0">${esc(t('bs_now',{ok,n,W:S.W,wp,worst:lmon(worst.k),best:lmon(best.k)}))}</p>`+note('bs_note'))}</div>`;}
+function btSimReal(r){
+  let rows=[],line='',btn='';
+  if(r.kind==='grid'){const g=D.gm;if(!g)return'';const st=r.st,c=Math.max(1,st.cycles),M=st.reach.length,rl=st.reach[M-1]/c,sl=g.reach[g.G.M-1]||0;
+    const f=(a,b)=>[a,b];rows=[['Average daily range',D.gVol+' pips (your input)',Math.round(r.adr)+' pips'],['Cycles won',pc(g.win),pc(st.wins/c)],['Average win',money(g.avgW),st.wins?money(st.sumW/st.wins):'–'],['Average loss',money(g.avgL),st.cycles-st.wins?money(st.sumL/(st.cycles-st.wins)):'–'],
+      [D.stype==='grid'?'Cycles that fill every order':'—',D.stype==='grid'?pc(sl,1):'–',D.stype==='grid'?pc(rl,1):'–'],['Cycles that dip to the ruin line',pc(g.pRuin1,2),pc(st.cycR/c,2)],['Cycles that dip past the whole balance',pc(g.pWipe1,2),pc(st.cycW/c,2)],['Median cycle length',SFX.quantile(g.days,0.5).toFixed(1)+' days',(st.durMed/1440).toFixed(1)+' days']].filter(x=>x[0]!=='—');
+    const a=g.pRuin1,b=st.cycR/c;line=st.cycles<30?t('bsv_few'):b>0&&a===0?t('bsv_worse0',{x:pc(b,2)}):b>a*1.5&&b>0?t('bsv_worse',{x:(b/a).toFixed(1)}):a>b*1.5&&a>0?t('bsv_better'):t('bsv_close');
+    if(Math.abs(r.adr-D.gVol)/r.adr>0.15)btn=`<button type="button" class="btn alt" data-bt-adr="${Math.round(r.adr)}" style="margin-top:.6rem">${esc(t('bsv_btn',{x:Math.round(r.adr)}))}</button>`;}
+  else{const m=D.model;if(!m)return'';const sm=r.sample,wr=sm.n?sm.wins/sm.n:0,aw=wr>0?(sm.meanR-(1-wr)*sm.avgLoss)/wr:0,N=Math.max(1,r.st.trades);
+    rows=[['Win rate',pc(m.p),pc(wr)],['Average win',rfmt(m.W,2),rfmt(aw,2)],['Average loss',rfmt(-m.L,2),rfmt(sm.avgLoss,2)],['Losses beyond the stop',pc(0,0),pc(sm.gapLoss/Math.max(1,sm.n),1)],['Average result per trade',rfmt(m.En,3),rfmt(sm.meanR,3)],
+      ['Longest losing streak in '+N+' trades',t('bsv_typ',{k:SFX.typicalStreak(1-m.p,N)}),String(r.st.maxRun)]];
+    line=m.p>wr+0.03?t('bsv_fx_hi',{d:((m.p-wr)*100).toFixed(1)}):t('bsv_fx_ok');}
+  return`<div class="s6">${card('Simulation vs real gold',tbl(['',r.kind==='grid'?'Simulation':'Your inputs','Real gold'],rows)+`<p class="small" style="margin:.6rem 0 0">${esc(line)}</p>`+btn+note(r.kind==='grid'?'bsv_note':'bsv_note_f'))}</div>`;}
+function btVol(r){
+  const Y=r.yAdr||[];if(!Y.length)return'';const G=r.kind==='grid'?gParams():null;let refs=[];
+  if(r.kind==='fixed')refs=[[D.sl,'var(--bad)',t('bv_ref_sl')],[D.sl*D.rr,'var(--ok)',t('bv_ref_tp')]];
+  else if(D.stype==='grid')refs=[[D.gStep,'var(--warn)',t('bv_ref_step')],[(G.M-1)*D.gStep,'var(--bad)',t('bv_ref_full')]];
+  else{const w=gLadder(G).wipeD;refs=[[D.gTp,'var(--ok)',t('bv_ref_tp')]].concat(isFinite(w)?[[w,'var(--bad)',t('bv_ref_wipe')]]:[]);}
+  const mx=Math.max(...Y.map(y=>y.adr)),shown=refs.filter(x=>x[0]>0&&x[0]<=mx*2.5);
+  const chv=CH.bars({w:420,h:220,items:Y.map(y=>({label:String(y.y).slice(2),value:y.adr,color:'var(--c1)'})),ymax:Math.max(mx,...shown.map(x=>x[0]))*1.12,hlines:shown.map(x=>({y:x[0],color:x[1]})),yfmt:v=>cmpNum(v),valFmt:v=>Math.round(v)+'',ylabel:'pips a day',label:'Average daily range by year'});
+  const f=Y[0],l=Y[Y.length-1],ref=refs[0];
+  const line=t('bv_now',{y0:f.y,a:Math.round(f.adr),y1:l.y,b:Math.round(l.adr),x:(l.adr/f.adr).toFixed(1),name:ref[2],v:+ref[0].toFixed(1),r0:(ref[0]/f.adr*100).toFixed(0),r1:(ref[0]/l.adr*100).toFixed(0)});
+  return`<div class="s6">${card('Gold volatility by year',ch(chv)+lg([['var(--c1)',t('bv_lg_adr')]].concat(refs.map(x=>[x[1],x[2]+' ('+(+x[0].toFixed(1)).toLocaleString('en-US')+')'])))+`<p class="small" style="margin:.6rem 0 0">${esc(line)}</p>`+note('bv_note'))}</div>`;}
+function btTrend(r){
+  const M=(r.book.months||[]).filter(m=>m.eq0>0&&m.path>0);if(M.length<3)return'';
+  const cls=m=>{const e=Math.abs(m.move)/m.path;return e<0.15?'range':e>=0.35?(m.move>0?'up':'down'):'mixed';};
+  const col={range:'var(--c1)',mixed:'var(--muted)',up:'var(--ok)',down:'var(--bad)'},pts=M.map(m=>({x:m.move,y:Math.max(-100,(m.eq1/m.eq0-1)*100),c:cls(m),m}));
+  const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y),xm=Math.max(...xs.map(Math.abs))*1.08,ylo=Math.min(0,...ys),yhi=Math.max(0,...ys);
+  const chv=CH.plot({w:520,h:250,series:[],dots:pts.map(p=>({x:p.x,y:p.y,r:3.4,color:col[p.c],op:0.9})),hlines:[{y:0,color:'var(--muted)',dash:false}],vlines:[{x:0,color:'var(--muted)'}],xlo:-xm,xhi:xm,ylo:ylo-(yhi-ylo)*0.08,yhi:yhi+(yhi-ylo)*0.08,xfmt:v=>cmpNum(Math.abs(v))===''?'0':(v<0?'−':'+')+cmpNum(Math.abs(v)),yfmt:v=>Math.round(v)+'%',xlabel:t('btr_x'),ylabel:t('btr_y'),label:'Monthly result by gold move'});
+  const order=['range','mixed','up','down'],rows=order.map(k=>{const a=pts.filter(p=>p.c===k);if(!a.length)return[t('btr_'+k),'0','–','–','–'];const avg=a.reduce((s,p)=>s+p.y,0)/a.length,w=a.reduce((x,p)=>p.y<x.y?p:x,a[0]);
+    return[t('btr_'+k),String(a.length),(avg>=0?'+':'−')+Math.abs(avg).toFixed(1)+'%',pc(a.filter(p=>p.y<0).length/a.length,0),lmon(w.m.m)+' '+(w.y>=0?'+':'−')+Math.abs(w.y).toFixed(1)+'%'];});
+  const by=order.map(k=>{const a=pts.filter(p=>p.c===k);return{k,avg:a.length?a.reduce((s,p)=>s+p.y,0)/a.length:null,n:a.length};}).filter(x=>x.n>=2),best=by.slice().sort((a,b)=>b.avg-a.avg)[0],worst=by.slice().sort((a,b)=>a.avg-b.avg)[0];
+  const line=best&&worst&&best.k!==worst.k?t('btr_now',{best:t('btr_'+best.k).toLowerCase(),b:(best.avg>=0?'+':'−')+Math.abs(best.avg).toFixed(1)+'%',worst:t('btr_'+worst.k).toLowerCase(),w:(worst.avg>=0?'+':'−')+Math.abs(worst.avg).toFixed(1)+'%'}):'';
+  return`<div class="s12">${card('Trend months vs range months',`<div class="split">${ch(chv)}<div>${tbl(['Month type','Months','Average','Losing','Worst month'],rows)}</div></div>`+lg(order.map(k=>[col[k],t('btr_'+k)]))+(line?`<p class="small" style="margin:.6rem 0 0">${esc(line)}</p>`:'')+note('btr_note'))}</div>`;}
+function btTrouble(r){
+  const st=r.st,dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],tz=tzLab();let left,right,line;
+  const gapRows=[['Weekend and holiday gaps held',String(st.gapN)],['Total effect of those gaps',money(st.gapSum)],['Worst single gap',st.gapWorst<0?money(st.gapWorst)+' ('+dfmt(st.gapWorstAt)+')':'–']];
+  if(r.kind==='grid'){const hr=rot(st.troubleHr),mxh=hr.indexOf(Math.max(...hr));
+    left=ch(CH.bars({w:600,h:230,items:hr.map((v,i)=>({label:i%3===0?String(i):'',value:v,color:i===mxh?'var(--bad)':'var(--c2)'})),xlabel:t('bq_hour',{tz}),ylabel:t('bq_count'),label:'Hour of the deepest moments'}));
+    const dw=[1,2,3,4,5,6,0].map(i=>st.troubleDw[i]);
+    right=ch(CH.bars({w:420,h:200,items:dw.map((v,i)=>({label:dn[[1,2,3,4,5,6,0][i]],value:v,color:'var(--c2)'})),ylabel:t('bq_count'),label:'Weekday of the deepest moments'}));
+    line=t('bq_now',{n:st.troubleN,h0:mxh,h1:(mxh+1)%24,tz,k:hr[mxh]});}
+  else{const sm=r.sample,hr=rot(sm.hrW.map((w,i)=>sm.hrN[i]?w/sm.hrN[i]*100:0)),hn=rot(sm.hrN),c=costR(),be=(1+c)/(D.rr+1)*100;
+    const lo=hr.reduce((a,v,i)=>hn[i]>=20&&v<hr[a]?i:a,0),hi=hr.reduce((a,v,i)=>hn[i]>=20&&v>hr[a]?i:a,0);
+    left=ch(CH.bars({w:420,h:200,items:hr.map((v,i)=>({label:i%3===0?String(i):'',value:v,color:v>=be?'var(--ok)':'var(--c2)',faint:hn[i]<20})),ymax:100,hlines:[{y:be,color:'var(--muted)'}],xlabel:t('bq_hour',{tz}),ylabel:t('bq_wr'),label:'Random-entry win rate by hour'}));
+    right='';line=t('bq_now_f',{lo,hi,tz,wlo:hr[lo].toFixed(0),whi:hr[hi].toFixed(0),be:be.toFixed(0)});}
+  return`<div class="s12">${card(r.kind==='grid'?'When the trouble starts':'Win rate by time of day',(r.kind==='grid'?`<div class="split">${left}<div>${right}${kv(gapRows)}</div></div>`:left+kv(gapRows))+`<p class="small" style="margin:.6rem 0 0">${esc(line)}</p>`+note(r.kind==='grid'?'bq_note':'bq_note_f'))}</div>`;}
+function btStreaks(r){
+  const st=r.st,N=st.trades;if(N<20)return'';const p=st.wins/N,q=1-p,cnt=k=>st.runs.slice(k).reduce((a,x)=>a+(x||0),0),exp=k=>Math.pow(q,k)+(N-k)*p*Math.pow(q,k);
+  const rows=[3,4,5,6,7,8,10,12].filter(k=>k<=Math.max(8,st.maxRun+1)).map(k=>[k+'+',String(cnt(k)),exp(k).toFixed(1),exp(k)>0.5?(cnt(k)/exp(k)).toFixed(2)+'×':'–']);
+  const k5=cnt(5),e5=exp(5),line=e5<2?t('bk_few'):k5>e5*1.4?t('bk_more',{x:(k5/e5).toFixed(1)}):k5<e5*0.7?t('bk_less'):t('bk_same');
+  return`<div class="s6">${card('Real losing streaks',tbl(['Streak length','Real','Expected if independent','Ratio'],rows)+kv([['Longest losing streak',String(st.maxRun)],['Typical longest, if independent',String(SFX.typicalStreak(q,N))]])+`<p class="small" style="margin:.6rem 0 0">${esc(line)}</p>`+note('bk_note'))}</div>`;}
+function btDeeper(r){
+  return r.kind==='grid'?btStarts(r)+btSimReal(r)+btVol(r)+btTrend(r)+btTrouble(r):btStarts(r)+btSimReal(r)+btStreaks(r)+btVol(r)+btTrouble(r).replace('class="s12"','class="s6"')+btTrend(r);}
+
 function btEvents(){
   const main=$('d-main');
   main.addEventListener('click',e=>{const r=e.target.closest('[data-bt-run]');if(r){btRun();return;}
+    const ad=e.target.closest('[data-bt-adr]');if(ad){const v=+ad.dataset.btAdr;D.gVol=v;$('g-vol').value=v;dtouch.gVol=1;revalidate();analyze();return;}
     const p=e.target.closest('[data-bt-pre]');if(p&&BT.idx){const ms=BT.idx.months.map(x=>x.m),k=p.dataset.btPre;BT.to=ms[ms.length-1];BT.from=k==='all'?ms[0]:ms[Math.max(0,ms.length-(+k))];btRedraw();}});
   main.addEventListener('change',e=>{const el=e.target.closest('[data-bt]');if(!el)return;const k=el.dataset.bt,ms=BT.idx?BT.idx.months.map(x=>x.m):[];
     if(k==='dir')BT.dir=el.value;else if(el.value){let v=el.value;if(ms.length){if(v<ms[0])v=ms[0];if(v>ms[ms.length-1])v=ms[ms.length-1];}BT[k]=v;if(BT.from>BT.to){if(k==='from')BT.to=BT.from;else BT.from=BT.to;}}
