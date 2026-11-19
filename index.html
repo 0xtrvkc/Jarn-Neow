@@ -187,6 +187,8 @@ html[data-mode=desk] select,html[data-mode=desk] .txt{border-radius:2px;backgrou
 .formrow.tipon>label::after,.formrow.tipon>span:first-child::after{border-color:var(--accent);color:var(--accent)}
 .numwrap.unset:not(.bad),input.txt.unset:not(.bad){outline:2px dashed var(--warn);outline-offset:1px}
 .unsetnote{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;justify-content:space-between;margin-bottom:1rem;font-weight:600}
+.xbar{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;justify-content:space-between}.xbar>div:first-child{flex:1;min-width:16em}.xbar b{display:block;margin-bottom:.15rem}.xbtns{display:flex;gap:.5rem;flex-wrap:wrap}
+.takeaway{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}.mdnote{margin:.6rem 0 0}
 .unsetnote>span:first-child{flex:1;min-width:14em}.unsetnote .ubtns{display:flex;gap:.5rem;flex-wrap:wrap}
 html[data-mode=play] .unsetnote .btn{padding:.35rem .9rem}
 .bplan{list-style:none;margin:.7rem 0 0;padding:0;display:grid;gap:.55rem}
@@ -534,7 +536,8 @@ html[data-mode=desk] footer{max-width:1600px}
           <input id="r_n" type="range" min="5" max="1000" step="1" aria-label="Number of trades">
           <div class="helptxt" id="h_n" hidden></div>
         </div>
-        <button type="button" class="btn alt" id="share-btn" data-i18n="share"></button>
+        <div class="takeaway"><button type="button" class="btn alt" id="share-btn" data-i18n="share"></button><button type="button" class="btn" id="md-play" data-i18n="md_dl_play"></button><button type="button" class="btn alt" id="md-play-copy" data-i18n="md_copy"></button></div>
+        <p class="small muted mdnote" data-i18n="md_play_note"></p>
       </div>
     </div>
 
@@ -623,7 +626,7 @@ html[data-mode=desk] footer{max-width:1600px}
         <button type="button" class="btn alt" id="d-apply" hidden data-i18n="d_apply"></button>
       </div>
     </aside>
-    <div class="d-col"><div class="errnote inerr" id="desk-err" role="alert" hidden></div><div class="warnnote unsetnote" id="desk-unset" role="status" hidden></div><p class="warnnote testflag" hidden style="margin-bottom:1rem"></p><div class="d-main" id="d-main"><div class="card empty" data-i18n="d_empty"></div></div></div>
+    <div class="d-col"><div class="errnote inerr" id="desk-err" role="alert" hidden></div><div class="warnnote unsetnote" id="desk-unset" role="status" hidden></div><p class="warnnote testflag" hidden style="margin-bottom:1rem"></p><div class="card xbar"><div><b data-i18n="md_title"></b><span class="small muted" data-i18n="md_text"></span></div><div class="xbtns"><button type="button" class="btn" id="md-desk" data-i18n="md_dl"></button><button type="button" class="btn alt" id="md-desk-copy" data-i18n="md_copy"></button></div></div><div class="d-main" id="d-main"><div class="card empty" data-i18n="d_empty"></div></div></div>
   </div>
 </section>
 </main>
@@ -1125,7 +1128,7 @@ f_wr:"Win rate",h_wr:"Out of 100 trades, how many closed in profit? Use your for
 f_rr:"Average reward : risk",h_rr:"On average, how much do winners make compared with what a loser costs? If you risk 1 to make 1.5, type 1.5.",
 f_risk:"Risk per trade",h_risk:"The share of your account you lose when the stop loss is hit, per trade.",
 f_n:"Trades in your test",h_n:"How many trades the numbers above are based on. Fewer trades means less certainty.",
-share:"Copy link to share",share_done:"Link copied!",
+share:"Copy link to share",share_done:"Link copied!",md_dl:"Download report (.md)",md_dl_play:"Download my report (.md)",md_copy:"Copy as text",md_copied:"Copied!",md_saved:"Report downloaded",md_title:"Full report",md_text:"Every card on this page in one Markdown file: inputs, results, the data behind each chart, the action plan, trading rules, method and limits. To include the gold backtest, run it first.",md_play_note:"The report is a Markdown (.md) file with everything on this page plus more detail: a risk ladder, streak odds, how sure you can be and a rules checklist. It opens in any notes app, Notion, Obsidian or GitHub. Nothing is uploaded.",
 nudge_desk:"Want more inputs and more charts? Expert mode adds costs, sizing rules and lot size. Uploading trade history is optional.",nudge_desk_btn:"Open Expert mode",
 vs_noedge:"On average every trade you take is worth {E}. Wins and losses do not balance out, so no position size can save this strategy.",
 vs_risk_bad:"There is an edge, but at {risk}% per trade you would blow the account in about {blow} of simulated futures over the next {H} trades.",
@@ -1519,7 +1522,7 @@ f_wr:"Win rate (อัตราชนะ)",h_wr:"จากการเทรด 
 f_rr:"Reward : Risk เฉลี่ย",h_rr:"เฉลี่ยแล้วไม้ที่ชนะได้เท่าไรเมื่อเทียบกับที่ไม้แพ้เสีย ถ้าเสี่ยง 1 เพื่อได้ 1.5 ให้ใส่ 1.5",
 f_risk:"ความเสี่ยงต่อไม้",h_risk:"สัดส่วนของพอร์ตที่คุณจะเสียเมื่อโดน Stop loss ในแต่ละไม้",
 f_n:"จำนวนไม้ในการทดสอบ",h_n:"ตัวเลขข้างบนมาจากการเทรดกี่ไม้ ยิ่งน้อยยิ่งไม่แน่นอน",
-share:"คัดลอกลิงก์ไปแชร์",share_done:"คัดลอกแล้ว!",
+share:"คัดลอกลิงก์ไปแชร์",share_done:"คัดลอกแล้ว!",md_dl:"ดาวน์โหลดรายงาน (.md)",md_dl_play:"ดาวน์โหลดรายงานของฉัน (.md)",md_copy:"คัดลอกเป็นข้อความ",md_copied:"คัดลอกแล้ว!",md_saved:"ดาวน์โหลดรายงานแล้ว",md_title:"รายงานฉบับเต็ม",md_text:"ทุกการ์ดในหน้านี้รวมเป็นไฟล์ Markdown ไฟล์เดียว: ค่าที่ใส่ ผลลัพธ์ ข้อมูลเบื้องหลังทุกกราฟ แผนสิ่งที่ต้องทำ กฎการเทรด วิธีคำนวณ และข้อจำกัด ถ้าต้องการรวม Backtest ทองคำ ให้รันก่อน",md_play_note:"รายงานเป็นไฟล์ Markdown (.md) มีทุกอย่างในหน้านี้พร้อมรายละเอียดเพิ่ม: ตารางระดับความเสี่ยง โอกาสแพ้ติดกัน ความมั่นใจในตัวเลข และเช็กลิสต์กฎการเทรด เปิดได้ในแอปโน้ตทั่วไป Notion, Obsidian หรือ GitHub ไม่มีการอัปโหลดข้อมูล",
 nudge_desk:"อยากได้ค่าป้อนและกราฟมากกว่านี้ไหม? โหมดผู้เชี่ยวชาญเพิ่มต้นทุน กฎขนาดไม้ และขนาดล็อต การอัปโหลดประวัติการเทรดไม่บังคับ",nudge_desk_btn:"เปิดโหมดผู้เชี่ยวชาญ",
 vs_noedge:"โดยเฉลี่ยแล้วทุกไม้ที่คุณเทรดมีค่า {E} กำไรกับขาดทุนไม่หักล้างกัน ขนาดไม้เท่าไรก็ช่วยกลยุทธ์นี้ไม่ได้",
 vs_risk_bad:"มี Edge แต่ถ้าเสี่ยง {risk}% ต่อไม้ พอร์ตจะแตกประมาณ {blow} ของอนาคตที่จำลองไว้ ภายใน {H} ไม้ถัดไป",
@@ -2203,6 +2206,59 @@ const blowFmt=p=>p<0.005?'<1%':Math.round(p*100)+'%';
 const pct0=x=>Math.round(x*100)+'%';
 const isNarrow=()=>window.matchMedia&&window.matchMedia('(max-width:899px)').matches;
 
+/* ---------- Markdown report helpers (shared by both modes) ---------- */
+const MD=(function(){
+'use strict';
+const tx=(en,th)=>LANG==='th'&&th!==undefined?th:en;
+const strip=s=>String(s==null?'–':s).replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'");
+const cell=s=>strip(s).replace(/\|/g,'\\|').replace(/\s*\n\s*/g,' ').trim()||'–';
+/* aligns: 'l' or 'r' per column; numbers read best right-aligned */
+function table(head,rows,al){
+  if(!rows.length)return'';const a=head.map((_,i)=>(al&&al[i])||(i?'r':'l'));
+  return'| '+head.map(x=>strip(x).replace(/\|/g,'\\|').trim()).join(' | ')+' |\n| '+a.map(x=>x==='r'?'---:':':---').join(' | ')+' |\n'+rows.map(r=>'| '+r.map(cell).join(' | ')+' |').join('\n')+'\n\n';}
+const kv=(rows,h)=>table(h||[tx('Measure','ค่าที่วัด'),tx('Value','ค่า')],rows);
+/* a text bar, so the numbers keep a picture in any Markdown viewer */
+function bar(v,max,w){w=w||20;if(!(max>0)||!isFinite(v))return'';const n=Math.max(0,Math.min(w,Math.round(v/max*w)));return'█'.repeat(n)+'░'.repeat(w-n);}
+const h=(n,s)=>'\n'+'#'.repeat(n)+' '+strip(s)+'\n\n';
+const p=s=>s?strip(s)+'\n\n':'';
+const quote=s=>s?strip(s).split('\n').map(x=>'> '+x).join('\n')+'\n\n':'';
+const list=a=>a.filter(Boolean).length?a.filter(Boolean).map(x=>'- '+strip(x)).join('\n')+'\n\n':'';
+const check=a=>a.filter(Boolean).length?a.filter(Boolean).map(x=>'- [ ] '+strip(x)).join('\n')+'\n\n':'';
+const pad=n=>String(n).padStart(2,'0');
+function stamp(){const d=new Date(),o=-d.getTimezoneOffset(),sg=o>=0?'+':'−',oh=Math.floor(Math.abs(o)/60),om=Math.abs(o)%60;
+  return{file:d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'-'+pad(d.getHours())+pad(d.getMinutes()),
+    local:d.toLocaleString(LANG==='th'?'th-TH-u-ca-gregory':'en-GB',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})+' (UTC'+sg+oh+(om?':'+pad(om):'')+')',iso:d.toISOString()};}
+function download(name,text){
+  const url=URL.createObjectURL(new Blob([text],{type:'text/markdown;charset=utf-8'})),a=document.createElement('a');
+  a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},1500);}
+function flash(btn,key){if(!btn)return;btn.textContent=t(key);clearTimeout(btn._ft);btn._ft=setTimeout(()=>{btn.textContent=t(btn.dataset.i18n);},1800);}
+function copy(text,btn){
+  const ok=()=>flash(btn,'md_copied');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(ok,()=>fallback());else fallback();
+  function fallback(){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok();}catch(e){}ta.remove();}}
+const appUrl=()=>location.protocol==='file:'?'https://0xtrvkc.github.io/Jarn-Neow/':location.href.split('#')[0];
+/* labels from the page itself, so the report matches the form word for word */
+const label=id=>{const l=document.querySelector('label[for="'+id+'"]');return l?l.textContent.trim():id;};
+const optText=id=>{const s=$(id);return s&&s.selectedIndex>=0?s.options[s.selectedIndex].textContent.trim():'';};
+const glossary=()=>[
+  [tx('R (risk unit)','R (หน่วยความเสี่ยง)'),tx('The amount you lose when the stop is hit. A +1.5R win earns 1.5 times what one full loss costs.','จำนวนเงินที่เสียเมื่อโดน Stop loss ไม้ที่ได้ +1.5R ได้กำไร 1.5 เท่าของการขาดทุนเต็มหนึ่งไม้')],
+  [tx('Expectancy, E[R]','ค่าคาดหวัง E[R]'),tx('The average result per trade in R, after costs. Above zero means the strategy earns over many trades; below zero means it loses.','ผลเฉลี่ยต่อไม้ในหน่วย R หลังหักต้นทุน มากกว่าศูนย์แปลว่าระยะยาวได้กำไร น้อยกว่าศูนย์แปลว่าระยะยาวขาดทุน')],
+  [tx('95% confidence interval','ช่วงความเชื่อมั่น 95%'),tx('The range the true value probably sits in, given how many trades back the estimate. Fewer trades give a wider range.','ช่วงที่ค่าจริงน่าจะอยู่ ขึ้นกับจำนวนไม้ที่ใช้ประเมิน ยิ่งไม้น้อย ช่วงยิ่งกว้าง')],
+  [tx('Ruin','พอร์ตแตก (Ruin)'),tx('Falling below the ruin line you set (for example −50% from the start). Most traders stop or change the strategy long before 100% is lost.','ทุนลดลงต่ำกว่าเส้นที่ตั้งไว้ (เช่น −50% จากทุนเริ่มต้น) เทรดเดอร์ส่วนใหญ่หยุดหรือเปลี่ยนกลยุทธ์ก่อนเสียหมด 100%')],
+  [tx('Drawdown','Drawdown (การย่อตัวของทุน)'),tx('The fall from the highest balance so far to a later low. "p95 drawdown" is the fall that only 1 future in 20 is worse than.','การลดลงจากจุดสูงสุดของทุนไปยังจุดต่ำในภายหลัง "Drawdown p95" คือระดับที่มีเพียง 1 ใน 20 อนาคตที่แย่กว่า')],
+  [tx('Percentiles (p5, p50, p95)','เปอร์เซ็นไทล์ (p5, p50, p95)'),tx('p50 is the middle (median) outcome. p5 is a bad case: 5% of simulated futures end lower. p95 is a good case.','p50 คือผลกลาง (ค่ามัธยฐาน) p5 คือกรณีแย่ มี 5% ของอนาคตจำลองที่จบต่ำกว่านี้ p95 คือกรณีดี')],
+  [tx('Monte Carlo simulation','การจำลอง Monte Carlo'),tx('Thousands of possible futures generated at random from your numbers. It shows the spread of outcomes, not one forecast.','สร้างอนาคตที่เป็นไปได้หลายพันแบบแบบสุ่มจากตัวเลขของคุณ เพื่อดูการกระจายของผลลัพธ์ ไม่ใช่การทำนายค่าเดียว')],
+  [tx('Kelly fraction (f*)','สัดส่วน Kelly (f*)'),tx('The risk per trade that grows the account fastest in theory. Real traders use a half or a quarter of it, because the true edge is uncertain and swings at full Kelly are brutal.','ความเสี่ยงต่อไม้ที่ทำให้ทุนโตเร็วที่สุดในทางทฤษฎี เทรดเดอร์จริงใช้ครึ่งหนึ่งหรือหนึ่งในสี่ เพราะ Edge จริงไม่แน่นอน และการแกว่งที่ Kelly เต็มรุนแรงมาก')],
+  [tx('Break-even win rate','อัตราชนะที่คุ้มทุน'),tx('The win rate at which expectancy is exactly zero for your reward : risk and costs.','อัตราชนะที่ทำให้ค่าคาดหวังเป็นศูนย์พอดี สำหรับ Reward : Risk และต้นทุนของคุณ')],
+  [tx('Profit factor','Profit factor'),tx('Total money won divided by total money lost. Above 1 is profitable.','กำไรรวมหารด้วยขาดทุนรวม มากกว่า 1 แปลว่ามีกำไร')],
+  [tx('Grid cycle','รอบกริด'),tx('Everything from the first order until all orders close together at the target, the final stop or a wipe-out.','ทุกอย่างตั้งแต่ออเดอร์แรกจนทุกออเดอร์ปิดพร้อมกันที่เป้า ที่ Stop สุดท้าย หรือพอร์ตแตก')],
+  [tx('Floating loss / MAE','ขาดทุนลอยตัว / MAE'),tx('The open loss while positions are still running. MAE (maximum adverse excursion) is the deepest it got.','ขาดทุนที่ยังเปิดค้างอยู่ระหว่างถือออเดอร์ MAE คือจุดที่ขาดทุนลึกที่สุด')],
+  [tx('Average daily range (ADR)','ช่วงราคาเฉลี่ยต่อวัน (ADR)'),tx('How far price typically travels from the day\'s low to its high.','ระยะที่ราคามักเดินจากจุดต่ำสุดถึงจุดสูงสุดของวัน')],
+  [tx('Wilson interval','ช่วง Wilson'),tx('A standard way to put a confidence range around a win rate measured on a limited number of trades.','วิธีมาตรฐานในการหาช่วงความเชื่อมั่นของอัตราชนะที่วัดจากจำนวนไม้จำกัด')],
+  [tx('Bootstrap','Bootstrap'),tx('Re-drawing your own trades at random thousands of times to see how much the average could vary by luck.','สุ่มหยิบไม้จริงของคุณซ้ำหลายพันครั้ง เพื่อดูว่าค่าเฉลี่ยอาจแกว่งเพราะโชคได้แค่ไหน')]];
+return{tx,strip,cell,table,kv,bar,h,p,quote,list,check,stamp,download,copy,flash,appUrl,label,optText,glossary};
+})();
+
 /* ---------- Playground (beginner) ---------- */
 const PLAY=(function(){
 'use strict';
@@ -2262,6 +2318,10 @@ function renderVerdict(){
 function fanSvg(sim,o){return CH.fan(sim,Object.assign({floorLabel:t('fan_floor'),xlabel:t('fan_x',{H:A.H}),label:t('fan_alt'),medColor:'var(--ink)'},o||{}));}
 function legend(){return`<div class="legend"><span><i style="background:var(--c1);opacity:.5"></i>${esc(t('lg_future'))}</span><span><i style="background:var(--bad)"></i>${esc(t('lg_blown'))}</span><span><i style="background:var(--ink)"></i>${esc(t('lg_typical'))}</span></div>`;}
 function renderFan(){$('fan-card').innerHTML=`<h2>${esc(t('fan_title',{H:A.H}))}</h2><div class="chart">${fanSvg(A.sim)}</div>${legend()}<p class="small muted" style="margin:.6rem 0 0">${esc(t('fan_note'))}</p>`;}
+function findingText(id){
+  const a=A,o={E:rfmt(a.E),Eabs:Math.abs(a.E).toFixed(2),wr:a.st.wr,be:pct0(a.be),rr:a.b,risk:a.st.risk,n:a.n,K:(a.K*100).toFixed(1),hK:(a.K*50).toFixed(1),Z:(a.Z*100).toFixed(1),Elo:rfmt(a.Elo),Ehi:rfmt(a.Ehi)};
+  let body=t('f_'+id+'_p',o);if(id==='sample')body+=' '+(a.E>0?(a.nNeeded?t('f_sample_need',{x:a.nNeeded}):t('f_sample_many')):'');
+  return{title:t('f_'+id+'_t'),body:body.trim()};}
 function finding(id){
   const a=A,o={E:rfmt(a.E),Eabs:Math.abs(a.E).toFixed(2),wr:a.st.wr,be:pct0(a.be),rr:a.b,risk:a.st.risk,n:a.n,K:(a.K*100).toFixed(1),hK:(a.K*50).toFixed(1),Z:(a.Z*100).toFixed(1),Elo:rfmt(a.Elo),Ehi:rfmt(a.Ehi)};
   if(id==='noedge'){
@@ -2312,20 +2372,24 @@ function fixLabel(f){
 function paramLine(s){return t('cmp_params',{wr:s.wr,rr:s.rr,risk:s.risk});}
 function ddTxt(x){const v=Math.round(x.dd50*100);return(v?MINUS:'')+v+'%';}
 const dd=x=>{const v=Math.round(x*100);return(v?MINUS:'')+v+'%';};
+function chipText(x){
+  if(!x.after)return'';const b=x.from,f=x.after;
+  if(x.id==='sample')return t('pl3_res_range',{a:rfmt(b.Elo)+' '+t('pl_to')+' '+rfmt(b.Ehi),b:rfmt(f.Elo)+' '+t('pl_to')+' '+rfmt(f.Ehi)});
+  if(x.id==='risk')return t('pl3_res_blow',{a:blowFmt(b.ruinP),b:blowFmt(f.ruinP)})+' · '+t('pl3_res_dd',{a:dd(b.dd95),b:dd(f.dd95)});
+  return t('pl3_res_exp',{a:rfmt(b.E),b:rfmt(f.E)})+' · '+t('pl3_res_blow',{a:blowFmt(b.ruinP),b:blowFmt(f.ruinP)});}
 function chip(x){
-  if(!x.after)return'';const b=x.from,f=x.after,ar=' → ';let s;
-  if(x.id==='sample')s=t('pl3_res_range',{a:rfmt(b.Elo)+' '+t('pl_to')+' '+rfmt(b.Ehi),b:rfmt(f.Elo)+' '+t('pl_to')+' '+rfmt(f.Ehi)});
-  else if(x.id==='risk')s=t('pl3_res_blow',{a:blowFmt(b.ruinP),b:blowFmt(f.ruinP)})+' · '+t('pl3_res_dd',{a:dd(b.dd95),b:dd(f.dd95)});
-  else s=t('pl3_res_exp',{a:rfmt(b.E),b:rfmt(f.E)})+' · '+t('pl3_res_blow',{a:blowFmt(b.ruinP),b:blowFmt(f.ruinP)});
+  if(!x.after)return'';const b=x.from,f=x.after,ar=' → ',s=chipText(x);
   return`<p class="bres">${s.split(ar).map(esc).join(' → ')} <span class="bver">${ml(b.v)}${ar}${ml(f.v)} ${esc(t('v_'+f.v))}</span></p>`;}
-function stepHtml(x,i){
+function stepText(x){
   const o={x:x.value,risk:st.risk,wr:st.wr+'%',rr:st.rr,n:st.n,be:pct0(A.be),E:rfmt(A.E),k:x.k,drop:x.drop!==undefined?dd(x.drop):'',dd:x.dd!==undefined?dd(x.dd):'',rk:x.risk};
-  let title,body,btn='';
+  let title,body;
   if(x.id==='perfect'){title=t('pl_perfect_t');body=t('why_perfect');}
   else if(x.id==='sample'){title=x.value?t('pl_sample_t',o):t('pl_sample_many_t');body=t('pl3_sample_p',o);}
   else{title=t('pl3_'+x.id+'_t',o);body=t('pl3_'+x.id+'_p',o);}
+  return{title,body,lab:x.opt?t('pl_option'):t('pl3_'+x.lvl)};}
+function stepHtml(x,i){
+  const{title,body,lab}=stepText(x);let btn='';
   if(x.changes)btn=`<button type="button" class="btn" data-fix="${x.id}">${esc(t('pl_try'))}</button>`;
-  const lab=x.opt?t('pl_option'):t('pl3_'+x.lvl);
   return`<li class="bp" data-l="${x.lvl}"><span class="bpn">${i+1}</span><div><div class="bph"><span class="bpl" data-l="${x.lvl}">${esc(lab)}</span><b>${esc(title)}</b></div><p>${esc(body)}</p>${chip(x)}${btn?`<div class="bpb">${btn}</div>`:''}</div></li>`;}
 function renderFix(){
   const el=$('fix'),P=plan();let h=`<h2>🛠️ ${esc(t('fix_title'))}</h2>`;
@@ -2369,6 +2433,88 @@ function kidShow(f){
   tp.style.left=left+'px';tp.style.top=top+'px';}
 function kidHide(){kcur=null;$('ktip').hidden=true;document.querySelectorAll('#inputs .field.kon').forEach(x=>x.classList.remove('kon'));}
 
+/* ---------- Markdown report (Beginner): everything on the page, in plain words, plus the detail behind it ---------- */
+function mdReport(){
+  clearTimeout(timer);render();if(!A)return null;
+  const tx=MD.tx,a=A,P=plan(),S=MD.stamp(),H=a.H,N=a.sim.fin.length,nm=v=>Math.round(+v).toLocaleString('en-US'),pc1=x=>(x*100).toFixed(1)+'%',gk=window.__sfxGate;
+  const un=Object.keys(FIELDS).filter(k=>!touched[k]),lab=k=>MD.label('n_'+k),q=(arr,x)=>SFX.quantile(arr,x),eq=x=>Math.round(x*100)+'%';
+  let md='# '+tx('My trading risk report','รายงานความเสี่ยงการเทรดของฉัน')+' (Jarn Neow)\n\n';
+  md+=MD.quote(tx('How likely my account is to survive the next '+H+' trades with these numbers, how deep the falls can get, and what to change. Not a profit forecast and not financial advice.','โอกาสที่บัญชีของฉันจะรอดใน '+H+' ไม้ถัดไปด้วยตัวเลขชุดนี้ การย่อตัวลึกได้แค่ไหน และควรปรับอะไร ไม่ใช่การทำนายกำไร และไม่ใช่คำแนะนำทางการเงิน'));
+  md+=MD.kv([[tx('Made on','สร้างเมื่อ'),S.local],[tx('App','แอป'),tx('Jarn Neow, Beginner mode','Jarn Neow โหมดมือใหม่')],[tx('Open these numbers again','เปิดตัวเลขชุดนี้อีกครั้ง'),shareURL()],
+    [tx('Testing done','การทดสอบ'),gk?t('gate_'+gk+'_t'):tx('not answered','ยังไม่ได้ตอบ')]],[tx('Report','รายงาน'),tx('Detail','รายละเอียด')]);
+  if(example)md+=MD.quote('⚠ '+tx('These are the example numbers, not yours. Enter your own and export again.','นี่คือตัวเลขตัวอย่าง ไม่ใช่ของคุณ ใส่ตัวเลขของคุณเองแล้วออกรายงานใหม่'));
+  else if(un.length)md+=MD.quote('⚠ '+tx('Not entered by you, example value used: ','ยังไม่ได้ใส่เอง ใช้ค่าตัวอย่าง: ')+un.map(lab).join(', '));
+  /* verdict */
+  md+=MD.h(2,tx('The verdict','ผลการประเมิน'))+MD.quote('**'+ICON[a.v]+' '+t('v_'+a.v)+'**\n'+sentence(a));
+  md+=MD.kv([[t('tile_exp'),rfmt(a.E)],[t('tile_blow',{H}),blowFmt(a.ruinP)],[tx('Typical deepest drop','การย่อตัวลึกสุดแบบปกติ'),dd(a.dd50)],[tx('Bad-case deepest drop (1 in 20)','การย่อตัวลึกสุดกรณีแย่ (1 ใน 20)'),dd(a.dd95)],
+    [tx('Chance of surviving '+H+' trades','โอกาสรอด '+H+' ไม้'),pct0(a.survP)+(a.survHi-a.survLo>0.04?' ('+tx('could be','อาจอยู่ระหว่าง')+' '+pct0(a.survLo)+'–'+pct0(a.survHi)+')':'')]],[tx('Number','ตัวเลข'),tx('Value','ค่า')]);
+  if(a.survHi-a.survLo>0.04)md+=MD.p(t('range_note',{n:a.n,lo:pct0(a.survLo),hi:pct0(a.survHi)}));
+  /* inputs */
+  md+=MD.h(2,tx('My numbers','ตัวเลขของฉัน'))+MD.table([tx('Number','ตัวเลข'),tx('Value','ค่า'),tx('Entered by me?','ใส่เองไหม'),tx('What it means','หมายถึง')],
+    [['wr',st.wr+'%'],['rr',st.rr+'R'],['risk',st.risk+'%'],['n',String(st.n)]].map(([k,v])=>[lab(k),v,touched[k]?tx('yes','ใช่'):tx('no, example','ไม่ ใช้ค่าตัวอย่าง'),t('kid_'+k)]),['l','r','l','l'])+'\n';
+  /* money example */
+  const B=10000,risk$=B*st.risk/100;
+  md+=MD.h(2,tx('What it means in money','คิดเป็นเงิน'))+MD.p(tx('Example account of '+nm(B)+'. Swap in your own balance: every number scales with it.','ตัวอย่างบัญชี '+nm(B)+' ใส่ยอดเงินของคุณแทนได้ ทุกตัวเลขเปลี่ยนตามสัดส่วน'));
+  md+=MD.kv([[tx('Money at risk on each trade','เงินที่เสี่ยงต่อไม้'),nm(risk$)],[tx('One win pays','ชนะหนึ่งไม้ได้'),nm(risk$*st.rr)],[tx('One loss costs','แพ้หนึ่งไม้เสีย'),nm(risk$)],
+    [tx('Average per trade, over many trades','เฉลี่ยต่อไม้ ในระยะยาว'),(a.E<0?'−':'+')+nm(Math.abs(a.E*risk$))],[tx('Over 100 trades, same size each time','100 ไม้ ขนาดเท่ากันทุกไม้'),(a.E<0?'−':'+')+nm(Math.abs(a.E*risk$*100))],
+    [tx('Typical final balance after '+H+' trades','ยอดเงินปลายทางแบบปกติหลัง '+H+' ไม้'),nm(B*q(a.sim.fin,0.5))],[tx('Bad case (1 in 20)','กรณีแย่ (1 ใน 20)'),nm(B*q(a.sim.fin,0.05))],[tx('Good case (1 in 20)','กรณีดี (1 ใน 20)'),nm(B*q(a.sim.fin,0.95))]],[tx('Example','ตัวอย่าง'),tx('Money','เงิน')]);
+  /* why */
+  md+=MD.h(2,t('why_title'));
+  if(a.p>=1)md+=MD.quote('⚠ '+t('why_perfect'));
+  md+=a.findings.length?a.findings.map(id=>{const f=findingText(id);return MD.h(3,f.title)+MD.p(f.body);}).join(''):(a.p>=1?'':MD.p(t('why_none')));
+  /* plan */
+  md+=MD.h(2,t('fix_title'))+MD.p(P.fixes?t('pl3_intro',{n:P.acts.length}):t('pl3_intro_ok',{n:P.acts.length}));
+  md+=P.acts.map((x,i)=>{const s=stepText(x),c=chipText(x);return'- [ ] **'+(i+1)+'. '+s.title+'** ('+s.lab+')\n  '+s.body+(c?'\n  *'+tx('If you do it','ถ้าทำตามนี้')+':* '+c+' → '+t('v_'+x.after.v):'');}).join('\n')+'\n\n';
+  md+=MD.p('**'+(P.fin?t(P.alt?'pl3_final_alt':'pl_final')+' '+t('v_'+P.fin.v):t('pl3_now')+' '+t('v_'+a.v))+'**');
+  /* futures */
+  const F=a.sim,up=Array.from(F.fin).filter(x=>x>1).length/N,dbl=Array.from(F.fin).filter(x=>x>=2).length/N;
+  md+=MD.h(2,tx(N.toLocaleString('en-US')+' possible futures, '+H+' trades each','อนาคตที่เป็นไปได้ '+N.toLocaleString('en-US')+' แบบ แบบละ '+H+' ไม้'));
+  md+=MD.p(tx('The app played your numbers forward many times at random. Start = 100%.','แอปสุ่มเล่นตัวเลขของคุณไปข้างหน้าหลายครั้ง ทุนเริ่มต้น = 100%'));
+  md+=MD.table([tx('Outcome','ผลลัพธ์'),tx('Value','ค่า'),''],[[tx('Ended above the start','จบสูงกว่าทุนเริ่มต้น'),pc1(up),MD.bar(up,1)],[tx('At least doubled','โตอย่างน้อย 2 เท่า'),pc1(dbl),MD.bar(dbl,1)],[tx('Fell 50% at some point (blew up)','เคยลดลง 50% (พอร์ตแตก)'),pc1(a.ruinP),MD.bar(a.ruinP,1)]])+'\n';
+  md+=MD.table([tx('Final balance','ทุนปลายทาง'),'p5 '+tx('(bad)','(แย่)'),'p25','p50 '+tx('(typical)','(ปกติ)'),'p75','p95 '+tx('(good)','(ดี)')],[[tx('Share of start','เทียบทุนเริ่มต้น')].concat([0.05,0.25,0.5,0.75,0.95].map(x=>eq(q(F.fin,x))))])+'\n';
+  md+=MD.table([tx('Deepest drop','การย่อตัวลึกสุด'),'p25','p50','p75','p90','p95','p99'],[[tx('From the highest point','จากจุดสูงสุด')].concat([0.25,0.5,0.75,0.9,0.95,0.99].map(x=>dd(q(F.dd,x))))])+'\n';
+  if(F.bands){const b=F.bands,M=b.q50.length-1;md+=MD.p('*'+tx('Along the way','ระหว่างทาง')+'*')+MD.table([tx('After trade','หลังไม้ที่'),'p5','p50','p95'],[0,0.1,0.25,0.5,0.75,1].map(f=>Math.round(f*M)).filter((x,i,arr)=>arr.indexOf(x)===i).map(i=>i===M?[i+' '+tx('(all paths)','(ทุกเส้น)'),eq(q(F.fin,0.05)),eq(q(F.fin,0.5)),eq(q(F.fin,0.95))]:[String(i),eq(b.q05[i]),eq(b.q50[i]),eq(b.q95[i])]));}
+  /* risk ladder */
+  if(a.p<1){const lv=[0.25,0.5,1,2,3,5,10,20,st.risk].filter((x,i,arr)=>arr.indexOf(x)===i).sort((x,y)=>x-y);
+    md+=MD.h(2,tx('Same strategy, different risk per trade','กลยุทธ์เดิม เปลี่ยนความเสี่ยงต่อไม้'))+MD.p(tx('Only the size changes. Same win rate, same reward : risk, same random futures.','เปลี่ยนแค่ขนาดไม้ อัตราชนะเดิม Reward : Risk เดิม อนาคตสุ่มชุดเดิม'));
+    md+=MD.table([tx('Risk per trade','ความเสี่ยงต่อไม้'),tx('Blow-up chance','โอกาสพอร์ตแตก'),tx('Bad-case drop','ย่อตัวกรณีแย่'),tx('Typical final balance','ทุนปลายทางปกติ'),''],lv.map(r=>{const s=Math.abs(r-st.risk)<1e-9?a.sim:SFX.simulate({sampler:SFX.binarySampler(a.p,a.b),risk:r/100,n:H,sims:N,ruin:0.5,seed:42});
+      return[r+'%'+(Math.abs(r-st.risk)<1e-9?' ← '+tx('you','คุณ'):''),blowFmt(s.ruinProb),dd(q(s.dd,0.95)),eq(q(s.fin,0.5)),MD.bar(s.ruinProb,1)];}))+'\n';}
+  /* streaks */
+  if(a.p<1){const rk=st.risk/100;md+=MD.h(2,t('dp_streak_t'))+MD.p(t('dp_streak_p',{k:a.streakK,H,wr:st.wr,q:Math.round((1-a.p)*100),k2:a.streakK+2,p2:blowFmt(a.pStreak(a.streakK+2))}));
+    md+=MD.table([tx('Losses in a row','แพ้ติดกัน'),tx('Chance it happens in '+H+' trades','โอกาสเกิดใน '+H+' ไม้'),tx('Account after that streak','ทุนหลังแพ้ติดกัน'),tx('On '+nm(B),'จาก '+nm(B)),''],[2,3,4,5,6,7,8,10,12].map(k=>{const v=a.pStreak(k),left=Math.pow(1-rk,k);return[String(k)+(k===a.streakK?' ← '+tx('typical','ปกติ'):''),blowFmt(v),eq(left),nm(B*left),MD.bar(v,1)];}))+'\n';}
+  /* confidence */
+  {const wl=SFX.wilson(a.p,a.n);md+=MD.h(2,t('dp_conf_t'))+MD.p(t('dp_conf_p',{n:a.n,lo:pct0(wl[0]),hi:pct0(wl[1]),Elo:rfmt(a.Elo),Ehi:rfmt(a.Ehi)}));
+    const ns=[a.n,30,50,100,200,500,1000].filter(x=>x>=a.n).filter((x,i,arr)=>arr.indexOf(x)===i);
+    md+=MD.table([tx('Trades tested','จำนวนไม้ที่ทดสอบ'),tx('True win rate is probably between','อัตราชนะจริงน่าจะอยู่ระหว่าง'),tx('Average per trade between','ค่าเฉลี่ยต่อไม้อยู่ระหว่าง'),tx('Edge proven?','พิสูจน์ Edge แล้ว?')],ns.map(n=>{const c=SFX.wilson(a.p,n),lo=SFX.expectancy(c[0],a.b),hi=SFX.expectancy(c[1],a.b);
+      return[String(n)+(n===a.n?' ← '+tx('you','คุณ'):''),pct0(c[0])+' – '+pct0(c[1]),rfmt(lo)+' '+t('pl_to')+' '+rfmt(hi),lo>0?tx('yes','ใช่'):hi<0?tx('no edge','ไม่มี Edge'):tx('not yet','ยัง')];}))+'\n';
+    if(a.E>0)md+=MD.p(a.nNeeded?t('f_sample_need',{x:a.nNeeded}):t('f_sample_many'));}
+  /* kelly */
+  md+=MD.h(2,t('dp_kelly_t'))+MD.p(a.p>=1?t('why_perfect'):a.K>0?t('dp_kelly',{K:(a.K*100).toFixed(1),hK:(a.K*50).toFixed(1),qK:(a.K*25).toFixed(1),Z:(a.Z*100).toFixed(1),risk:st.risk}):t('dp_kelly0'));
+  if(a.K>0&&a.p<1){const fs=[[a.K/4,tx('Quarter Kelly','¼ Kelly')],[a.K/2,tx('Half Kelly','½ Kelly')],[a.K,tx('Full Kelly','Kelly เต็ม')],[a.Z,tx('Growth stops here','จุดที่หยุดโต')],[st.risk/100,tx('Your risk','ความเสี่ยงของคุณ')]].filter(x=>x[0]>0&&x[0]<1).sort((x,y)=>x[0]-y[0]);
+    md+=MD.table([tx('Size','ขนาด'),tx('Risk per trade','ความเสี่ยงต่อไม้'),tx('Growth per trade','การเติบโตต่อไม้'),tx('Trades to double','จำนวนไม้จนทุนเป็น 2 เท่า')],fs.map(([f,n])=>{const g=SFX.growth(f,a.p,a.b);return[n,pc1(f),isFinite(g)?sgn(g*100,3).replace('+','')+'%':'−∞',g>1e-6&&isFinite(g)?Math.ceil(Math.log(2)/g).toLocaleString('en-US'):tx('never','ไม่มีวัน')];}))+'\n';}
+  /* recovery */
+  md+=MD.h(2,tx('Climbing back from a drop','การกลับมาจากการขาดทุน'))+MD.p(tx('Losses hurt more than gains help. After a fall, you need a bigger percentage gain just to get back to where you were.','การขาดทุนเจ็บกว่าที่กำไรช่วยได้ หลังทุนลดลง ต้องได้กำไรเป็นเปอร์เซ็นต์ที่มากกว่าเพื่อกลับไปจุดเดิม'));
+  md+=MD.table([tx('Drop','ลดลง'),tx('Gain needed to get back','กำไรที่ต้องทำเพื่อกลับทุน'),''],[10,20,30,40,50,60,75,90].map(d=>{const g=d/(100-d);return['−'+d+'%','+'+(g*100).toFixed(0)+'%',MD.bar(Math.min(g,4),4)];}))+'\n';
+  /* rules */
+  md+=MD.h(2,tx('My trading rules','กฎการเทรดของฉัน'));
+  if(a.E<=0||a.p>=1)md+=MD.p(tx('No rules yet: these numbers don\'t show an edge to protect. Do the fix plan first.','ยังไม่มีกฎ เพราะตัวเลขชุดนี้ยังไม่มี Edge ให้ปกป้อง ทำตามแผนแก้ไขก่อน'));
+  else{const rf=P.acts.find(x=>x.id==='risk'),r=rf?rf.changes.risk:st.risk,k=a.streakK,base=rf&&rf.after?rf.after:a;
+    md+=MD.check([tx(`Risk ${r}% of my account per trade, never more.`,`เสี่ยง ${r}% ของบัญชีต่อไม้ ห้ามเกิน`),
+      k>0?tx(`Expect ${k} losses in a row at some point. It takes about ${dd(1-Math.pow(1-r/100,k))} off the account, and it's normal.`,`คาดไว้ว่าจะแพ้ติดกัน ${k} ไม้สักครั้ง ทุนจะลดประมาณ ${dd(1-Math.pow(1-r/100,k))} ซึ่งเป็นเรื่องปกติ`):'',
+      tx(`If the account falls more than ${dd(base.dd95)} from its high, stop and look again.`,`ถ้าทุนลดลงเกิน ${dd(base.dd95)} จากจุดสูงสุด ให้หยุดและทบทวน`),
+      tx(`If my real win rate falls below ${pct0(a.be)}, the edge is gone: stop.`,`ถ้าอัตราชนะจริงต่ำกว่า ${pct0(a.be)} แปลว่า Edge หายแล้ว ให้หยุด`),
+      tx(`Never raise the size to win back a loss.`,`ห้ามเพิ่มขนาดไม้เพื่อเอาคืน`),
+      tx(`Check these numbers again after ${st.n+50} trades.`,`กลับมาเช็กตัวเลขอีกครั้งเมื่อครบ ${st.n+50} ไม้`)]);
+    md+=tx('Signed: ____________________   Date: ____________','ลงชื่อ: ____________________   วันที่: ____________')+'\n';}
+  /* limits */
+  md+=MD.h(2,tx('What this report leaves out','สิ่งที่รายงานนี้ไม่ได้รวมไว้'))+MD.p(t('dp_assump_p',{H}));
+  md+=MD.list([tx('Spread, commission and swap. Costs lower the average per trade.','สเปรด คอมมิชชั่น และ Swap ต้นทุนทำให้ค่าเฉลี่ยต่อไม้ลดลง'),tx('Lot size for your broker and stop distance.','ขนาดล็อตตามโบรกเกอร์และระยะ Stop loss'),tx('Your real trade history (Myfxbook file).','ประวัติการเทรดจริง (ไฟล์ Myfxbook)'),
+    tx('A backtest on 16 years of real gold prices.','Backtest บนราคาทองจริง 16 ปี'),tx('Grid, martingale and no-stop strategies.','กลยุทธ์กริด มาร์ติงเกล และแบบไม่ตั้ง Stop')]);
+  md+=MD.p(tx('Expert mode covers all of these. Switch with the Expert button at the top.','โหมดผู้เชี่ยวชาญรองรับทั้งหมดนี้ สลับได้ที่ปุ่มผู้เชี่ยวชาญด้านบน'));
+  md+=MD.h(2,tx('Words used','คำศัพท์'))+MD.glossary().slice(0,10).map(g=>'- **'+g[0]+'**: '+g[1]).join('\n')+'\n';
+  md+=MD.h(2,tx('Disclaimer','ข้อจำกัดความรับผิดชอบ'))+MD.p(t('disclaimer'))+'---\n\n'+MD.p(tx('Made with Jarn Neow, free and open. Calculated in your browser; nothing was uploaded.','สร้างด้วย Jarn Neow ใช้ฟรี คำนวณในเบราว์เซอร์ของคุณ ไม่มีข้อมูลถูกอัปโหลด'));
+  return{text:md.replace(/\n{3,}/g,'\n\n'),file:'jarn-neow-beginner-'+S.file+'.md'};}
+
 /* ---------- events ---------- */
 function init(){
   Object.keys(FIELDS).forEach(k=>{
@@ -2396,10 +2542,12 @@ function init(){
     if(b.dataset.fix){const f=getFixes().find(x=>x.id===b.dataset.fix);if(!f)return;before={st:Object.assign({},st),A};Object.assign(st,f.changes);example=false;$('example-badge').hidden=true;syncInputs();updateHash();render();}
     else if(b.dataset.undo){if(before){Object.assign(st,before.st);before=null;syncInputs();updateHash();render();}}
     else if(b.dataset.hidecmp){before=null;renderFix();}});
+  const mdGo=cp=>{const b=$(cp?'md-play-copy':'md-play');let r=null;try{r=mdReport();}catch(e){console.error('report',e);}if(!r)return;if(cp)MD.copy(r.text,b);else{MD.download(r.file,r.text);MD.flash(b,'md_saved');}};
+  $('md-play').addEventListener('click',()=>mdGo(false));$('md-play-copy').addEventListener('click',()=>mdGo(true));
   syncInputs();
   $('play-unset').addEventListener('click',e=>{const b=e.target.closest('[data-unset-go]');if(!b)return;const el=$('n_'+b.dataset.unsetGo);el.scrollIntoView({block:'center',behavior:'smooth'});el.focus({preventScroll:true});const h=$('h_'+b.dataset.unsetGo);if(h)h.hidden=false;});
 }
-return{init,render,readHash,shareURL,syncInputs,setState,renderUnset,touched:()=>Object.assign({},touched),state:()=>st,isExample:()=>example,analysis:()=>A};
+return{init,render,readHash,shareURL,syncInputs,setState,renderUnset,mdReport,touched:()=>Object.assign({},touched),state:()=>st,isExample:()=>example,analysis:()=>A};
 })();
 </script>
 <script id="s-desk">
@@ -2990,16 +3138,19 @@ function fixesFor(o,F){
     if(!a.length)a.push(t('a_none',{x:capK(o.K,o.sweep)}));
   }
   a.push(t('a_review',{x:dpc(F.dd95)}));return a;}
-function report(o){
+function rpParts(o){
   const F=simFacts(o.sim),S=sizeFacts(o.L,o.q),kx=o.K>0?(D.risk/100)/o.K:null,H=D.hor,n100=x=>Math.round(x*100);
   const edge=t('rp_edge',{E:rfmt(o.E),E100:rfmt(o.E*100,0),wr:pc(o.wr,0),be:pc(o.be),margin:sgn((o.wr-o.be)*100,1),pf:isFinite(o.pf)?o.pf.toFixed(2):'∞',n:o.n,lo:rfmt(o.lo),hi:rfmt(o.hi),ppos:pc(o.ppos,0)});
   const out=[t('rp_out1',{up:n100(F.up),down:n100(F.down),ruin:n100(F.ruin)}),t('rp_out2',{odds:F.down>0?(F.up/F.down).toFixed(1):'∞'}),t('rp_out3',{med:eqFmt(F.med),p5:eqFmt(F.p5),p95:eqFmt(F.p95)}),t('rp_out4',{dbl:pc(F.dbl,0),dd20:pc(F.ge(0.2),0)})];
   const risk=[o.K>0?t('rp_risk1',{risk:D.risk,kx:kx===null?'–':kx.toFixed(2),K:pc(o.K)}):t('rp_risk1z',{risk:D.risk}),t('rp_risk2',{dd50:dpc(F.dd50),dd95:dpc(F.dd95),dd99:dpc(F.dd99)}),t('rp_risk3',{k:S.typ,drop:dpc(S.drop),kr:isFinite(S.kr)?S.kr:'–'})];
-  const li=a=>`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
-  return`<div class="rp"><div><h4>${esc(t('rp_edge_t'))}</h4><p>${esc(edge)}</p></div><div><h4>${esc(t('rp_out_t',{H}))}</h4>${li(out)}</div><div><h4>${esc(t('rp_risk_t'))}</h4>${li(risk)}</div></div>`;}
-function modelReport(m){
+  return{edge,out,risk,H};}
+function report(o){
+  const r=rpParts(o),li=a=>`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+  return`<div class="rp"><div><h4>${esc(t('rp_edge_t'))}</h4><p>${esc(r.edge)}</p></div><div><h4>${esc(t('rp_out_t',{H:r.H}))}</h4>${li(r.out)}</div><div><h4>${esc(t('rp_risk_t'))}</h4>${li(r.risk)}</div></div>`;}
+function modelRpo(m){
   const se=Math.sqrt(Math.max(1e-12,m.p*(1-m.p)/D.n)),need=t('a_noedge_need',{be:pc(m.be),rr:(m.p>0?((m.q*m.L)/m.p+m.c):0).toFixed(2)});
-  return report({E:m.En,wr:m.p,be:m.be,pf:m.q>0?(m.p*m.W)/(m.q*m.L):Infinity,n:D.n,lo:m.Elo,hi:m.Ehi,ppos:Phi((m.p-m.be)/se),K:m.K,L:m.L,q:m.q,sim:m.sim,sweep:m.sweep,nNeed:m.nNeed,costShare:m.Eg>0?m.c/m.Eg:0,need});}
+  return{E:m.En,wr:m.p,be:m.be,pf:m.q>0?(m.p*m.W)/(m.q*m.L):Infinity,n:D.n,lo:m.Elo,hi:m.Ehi,ppos:Phi((m.p-m.be)/se),K:m.K,L:m.L,q:m.q,sim:m.sim,sweep:m.sweep,nNeed:m.nNeed,costShare:m.Eg>0?m.c/m.Eg:0,need};}
+function modelReport(m){return report(modelRpo(m));}
 function mainTodo(o,F){
   const safe=safeFrom(o.sweep);
   if(o.E<=0)return t('a_noedge');if(F.ruin>0.05)return safe!==null&&safe<D.risk?t('a_reduce',{x:safe}):t('a_reduce_min',{x:pc(o.K/2)});
@@ -3219,6 +3370,205 @@ function planCard(m){
   return`<div class="card plan"><div class="planh"><h2>${esc(t('pl2_title'))}</h2><div class="pbs">${sum}</div></div>
   <p class="small" style="margin:.2rem 0 .9rem">${esc(t(urgent?'pl2_intro':'pl2_intro_ok',{n:P.length}))}</p>
   <ol class="plan-list">${P.map((x,i)=>`<li class="pi" data-l="${x.lvl}" data-k="${x.key}"><span class="pn">${i+1}</span><div class="pic"><div class="pih"><span class="pb" data-l="${x.lvl}">${esc(t('pl2_'+x.lvl))}</span><b>${esc(x.title)}</b></div><div class="ptext"><p class="pbody">${esc(x.body)}</p>${x.res?`<p class="pres"><span>${esc(t('pl2_res'))}</span> ${esc(x.res)}</p>`:''}</div>${(()=>{let e={vis:'',ex:''};try{e=planExtras(x,m,D.res,x.c);}catch(err){console.error('plan extras',x.key,err);}return(e.vis?`<div class="pv">${e.vis}</div>`:'<i class="pnone"></i>')+(e.ex?`<p class="pfor"><span>${esc(t('pl2_for'))}</span> ${esc(e.ex)}</p>`:'<i class="pnone"></i>');})()}</div></li>`).join('')}</ol></div>`;}
+/* ---------- Markdown report (Expert): the page's own cards turned into text, plus the data behind every chart ---------- */
+const tx=MD.tx,tt=n=>n?n.textContent.replace(/\s+/g,' ').trim():'';
+const labeled=el=>{if(!el)return'';const b=el.querySelector('b,span'),lab=b?tt(b):'',all=tt(el),rest=lab&&all.startsWith(lab)?all.slice(lab.length).trim():all;return lab&&rest!==all?'*'+lab.replace(/[.:：]+$/,'')+':* '+rest:all;};
+function mdTable(tb){
+  const th=[...tb.querySelectorAll('thead th')].map(tt),rows=[...tb.querySelectorAll('tbody tr')].map(tr=>[...tr.children].map(tt));
+  return MD.table(th.length?th:['Measure','Value'],rows)+'\n';}
+function mdPlan(ol){
+  return[...ol.children].map((li,i)=>{const q=s=>li.querySelector(s);
+    let o='- [ ] **'+(i+1)+'. '+tt(q('.pih b'))+'** ('+tt(q('.pih .pb'))+')\n  '+tt(q('.pbody'));
+    if(q('.pres'))o+='\n  '+labeled(q('.pres'));if(q('.pfor'))o+='\n  '+labeled(q('.pfor'));return o;}).join('\n')+'\n\n';}
+function mdWalk(el,inCard){
+  let s='';
+  for(const n of el.children){
+    if(n.matches('svg,.chart,.legend,.nextbar,.btctl,.wi,button,input,select,.pv,.pnone,.pvchips,.pbs,template,script,style'))continue;
+    const tg=n.tagName,cl=n.classList;
+    if(tg==='H2'){const sm=n.querySelector('small'),main=[...n.childNodes].filter(x=>x!==sm).map(x=>x.textContent).join('').trim();s+=MD.h(inCard?3:2,main+(sm?' ('+tt(sm)+')':''));}
+    else if(tg==='H3'){s+=MD.h(3,tt(n));}
+    else if(tg==='H4')s+=MD.h(4,tt(n));
+    else if(tg==='TABLE')s+=mdTable(n);
+    else if(cl.contains('dverdict')){const p=n.querySelector('p');s+=MD.quote('**'+tt(n.querySelector('.light'))+' '+tt(n.querySelector('h2'))+'**\n'+tt(p));}
+    else if(cl.contains('gtile')){const rows=[...n.children].map(d=>{const sp=d.querySelectorAll('span');return[tt(sp[0]),tt(d.querySelector('b')),sp[1]?tt(sp[1]):''];}),det=rows.some(r=>r[2]);s+=MD.table(det?['Headline','Value','Detail']:['Headline','Value'],det?rows:rows.map(r=>r.slice(0,2)));}
+    else if(cl.contains('btavail'))s+=MD.quote('**'+tt(n.querySelector('.btav-t b'))+'** ('+tt(n.querySelector('.btav-t span'))+')\n'+tt(n.querySelector('.btav-s')));
+    else if(tg==='DETAILS')n.querySelectorAll('p').forEach(p=>{s+=MD.p(labeled(p));});
+    else if(tg==='OL'&&cl.contains('plan-list'))s+=mdPlan(n);
+    else if(tg==='P'){const x=tt(n);if(x)s+=n.matches('.warnnote,.errnote')?MD.quote('⚠ '+x):MD.p(x);}
+    else if(tg==='UL'||tg==='OL')s+=MD.list([...n.children].map(tt));
+    else if(cl.contains('card')){s+=mdWalk(n,true);const h3=n.querySelector(':scope > h3');if(h3){let f='';try{f=mdExtra(tt(h3));}catch(e){console.error('md extra',tt(h3),e);}if(f)s+=f;}}
+    else s+=mdWalk(n,inCard);}
+  return s;}
+const cap=x=>MD.p('*'+x+'*');
+const cps=(N,fr)=>(fr||[0,0.1,0.25,0.5,0.75,1]).map(f=>Math.round(f*N)).filter((x,i,a)=>a.indexOf(x)===i);
+function mdFan(sim,unit){const b=sim.bands;if(!b)return'';const N=b.q50.length-1;
+  const fin=sim.fin,all=fin.length.toLocaleString('en-US');
+  return cap(tx('Equity at points along the way, start = 100%. Points along the way use '+Math.min(fin.length,300)+' sample paths; the final row uses all '+all+'.','ทุนระหว่างทาง ทุนเริ่มต้น = 100% จุดระหว่างทางใช้ '+Math.min(fin.length,300)+' เส้นตัวอย่าง แถวสุดท้ายใช้ทั้งหมด '+all+' เส้น'))+
+    MD.table([unit,'p5 (bad)','p50 (typical)','p95 (good)'],cps(N).map(i=>i===N?[i+' (all paths)',eqFmt(SFX.quantile(fin,0.05)),eqFmt(SFX.quantile(fin,0.5)),eqFmt(SFX.quantile(fin,0.95))]:[String(i),eqFmt(b.q05[i]),eqFmt(b.q50[i]),eqFmt(b.q95[i])]));}
+function mdQuant(sorted,qs,f){return qs.map(q=>f(SFX.quantile(sorted,q)));}
+function mdRuinCurve(sim,unit,wipe){const N=sim.fin.length,H=D.hor,ra=Array.from(sim.ruinAt).filter(x=>x>0),wa=wipe?Array.from(sim.wipeAt).filter(x=>x>0):null;
+  return cap(tx('Share of futures that have hit the line by each point','สัดส่วนอนาคตที่แตะเส้นแล้ว ณ แต่ละจุด'))+MD.table([unit,'Hit −'+D.ruin+'%'].concat(wipe?['Wiped out']:[]).concat(['']),cps(H,[0.1,0.25,0.5,0.75,1]).map(i=>{const r=ra.filter(x=>x<=i).length/N;return[String(i),pc(r)].concat(wipe?[pc(wa.filter(x=>x<=i).length/N)]:[]).concat([MD.bar(r,Math.max(0.05,sim.ruinProb))]);}))+'\n';}
+function mdExtra(title){
+  const st=D.stype,fixed=st==='fixed';
+  if(BT.res&&BT.kind===st){const r=BT.res;
+    if(title==='Equity on real gold'||title==='Equity: one random-entry run')return mdMonthly(r);
+    if(title==='Orders reached'&&st==='grid'){const s=r.st,c=Math.max(1,s.cycles);return cap('Orders reached in the backtest')+MD.table(['Order','Cycles reaching it','Share',''],s.reach.map((x,i)=>[String(i+1),x.toLocaleString('en-US'),pc(x/c,1),MD.bar(x,c)]))+'\n';}
+    if(title==='Start-date luck'&&r.starts){const S=r.starts;return cap(tx('Every start month tested (each run lasts '+S.W+' months)','ทุกเดือนเริ่มที่ทดสอบ (แต่ละรอบยาว '+S.W+' เดือน)'))+
+      MD.table(['Start','Result','Outcome',''],S.runs.map(x=>[x.k,pctS(x.ret),x.wipe?'wiped out':x.ruin?'hit −'+D.ruin+'%':'survived',MD.bar(Math.max(0,x.ret+1),Math.max(...S.runs.map(y=>y.ret+1)))]))+'\n';}
+    if(title==='Gold volatility by year'){const Y=r.yAdr||[],ref=fixed?D.sl:st==='grid'?D.gStep:D.gTp,nm=fixed?'Your stop':st==='grid'?'Your spacing':'Your take-profit',mx=Math.max(...Y.map(y=>y.adr));
+      return MD.table(['Year','Average daily range (pips)',nm+' as % of a day',''],Y.map(y=>[String(y.y),Math.round(y.adr).toLocaleString('en-US'),ref>0?(ref/y.adr*100).toFixed(0)+'%':'–',MD.bar(y.adr,mx)]))+'\n';}
+    if(title==='When the trouble starts'){const s=r.st,hr=rot(s.troubleHr),mx=Math.max(...hr,1),dn=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],dw=[1,2,3,4,5,6,0].map(i=>s.troubleDw[i]),mw=Math.max(...dw,1);
+      return cap('Deepest moments by hour ('+tzLab()+')')+MD.table(['Hour','Count',''],hr.map((v,i)=>[String(i).padStart(2,'0')+':00',String(v),MD.bar(v,mx)]))+'\n'+cap('By weekday')+MD.table(['Day','Count',''],dw.map((v,i)=>[dn[i],String(v),MD.bar(v,mw)]))+'\n';}
+    if(title==='Win rate by time of day'){const sm=r.sample,hr=rot(sm.hrW.map((w,i)=>sm.hrN[i]?w/sm.hrN[i]:0)),hn=rot(sm.hrN),be=(1+costR())/(D.rr+1);
+      return cap('Random-entry win rate by entry hour ('+tzLab()+'); break-even '+pc(be)+'. Hours with fewer than 20 entries are marked *.')+MD.table(['Hour','Entries','Win rate','vs break-even',''],hr.map((v,i)=>[String(i).padStart(2,'0')+':00'+(hn[i]<20?' *':''),String(hn[i]),hn[i]?pc(v):'–',hn[i]?sgn((v-be)*100,1)+' pts':'–',MD.bar(v,1)]))+'\n';}}
+  if(fixed&&D.model){const m=D.model;
+    if(title.startsWith('Monte Carlo'))return mdFan(m.sim,'Trade');
+    if(title==='Expectancy vs win rate'){const ws=[m.p-0.1,m.p-0.05,m.ci[0],m.be,m.p,m.ci[1],m.p+0.05,m.p+0.1].filter(x=>x>0&&x<1).sort((a,b)=>a-b).filter((x,i,a)=>!i||x-a[i-1]>1e-4);
+      return MD.table(['Win rate','E[R] net','Per 100 trades','Note'],ws.map(x=>[pc(x),rfmt(m.eAt(x),3),rfmt(m.eAt(x)*100,1),Math.abs(x-m.p)<1e-9?'your input':Math.abs(x-m.be)<1e-9?'break-even':Math.abs(x-m.ci[0])<1e-9?'95% CI low':Math.abs(x-m.ci[1])<1e-9?'95% CI high':'']))+'\n';}
+    if(title==='Break-even frontier'){const rs=[0.5,0.75,1,1.25,1.5,2,2.5,3,4,5,D.rr].filter((x,i,a)=>a.indexOf(x)===i).sort((a,b)=>a-b);
+      return cap('Win rate needed to break even, after your costs')+MD.table(['Reward : risk','Break-even win rate','Your win rate clears it?'],rs.map(b=>{const W=b-m.c,be=W>0?m.L/(W+m.L):1;return[b+'R'+(b===D.rr?' (yours)':''),W>0?pc(be):'never',m.p>be?'yes, by '+((m.p-be)*100).toFixed(1)+' pts':'no'];}))+'\n';}
+    if(title==='P(ruin) if the true win rate differs')return MD.table(['If the true win rate is','P(ruin) at '+D.risk+'% risk',''],m.stress.map(s=>[s.label,pc(s.ruin),MD.bar(s.ruin,Math.max(0.05,...m.stress.map(x=>x.ruin)))]))+'\n';
+    if(title==='Final equity distribution'){const F=simFacts(m.sim),qs=[0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95,0.99];
+      return MD.table(['Percentile'].concat(qs.map(q=>'p'+Math.round(q*100))),[['Final equity'].concat(mdQuant(m.sim.fin,qs,eqFmt))])+'\n'+MD.kv([['Finish above the start',pc(F.up)],['At least double',pc(F.dbl)],['Lose 20% or more at some point',pc(F.ge(0.2))]],['Probability','Value'])+'\n';}
+    if(title==='Max drawdown distribution'){const qs=[0.25,0.5,0.75,0.9,0.95,0.99];return MD.table(['Percentile'].concat(qs.map(q=>'p'+Math.round(q*100))).concat(['worst']),[['Max drawdown'].concat(mdQuant(m.sim.dd,qs,dpc)).concat([dpc(m.sim.dd[m.sim.dd.length-1])])])+'\n';}
+    if(title==='Cumulative P(ruin) by trade')return mdRuinCurve(m.sim,'By trade',false);
+    if(title==='P(ruin) vs risk per trade'){const rows=m.sweep.map(x=>[x.risk,x.ruin,x.med,x.dd95,false]);if(!m.sweep.some(x=>Math.abs(x.risk-D.risk)<1e-9))rows.push([D.risk,m.sim.ruinProb,SFX.quantile(m.sim.fin,0.5),SFX.quantile(m.sim.dd,0.95),true]);rows.sort((a,b)=>a[0]-b[0]);
+      const mx=Math.max(0.05,...rows.map(x=>x[1]));return MD.table(['Risk per trade','P(ruin)','Median equity','DD p95',''],rows.map(x=>[x[0]+'%'+(Math.abs(x[0]-D.risk)<1e-9?' (you)':''),pc(x[1]),eqFmt(x[2]),dpc(x[3]),MD.bar(x[1],mx)]));}
+    if(title==='Kelly growth curve'&&m.K>0){const fs=[[m.K/4,'¼ Kelly'],[m.K/2,'½ Kelly'],[m.K,'Full Kelly'],[m.K*1.5,'1.5× Kelly'],[m.K*2,'2× Kelly'],[m.Z,'Zero-growth point'],[D.risk/100,'Your risk']].filter(x=>x[0]>0&&x[0]*m.L<0.999).sort((a,b)=>a[0]-b[0]);
+      return MD.table(['Sizing','Risk per trade','Log growth per trade','Trades to double'],fs.map(([f,n])=>{const g=m.g(f);return[n,pc(f,2),isFinite(g)?sgn(g*100,3).replace('+','')+'%':'−∞',g>1e-6&&isFinite(g)?Math.ceil(Math.log(2)/g).toLocaleString('en-US'):'never'];}))+'\n';}
+    if(title.startsWith('P(losing streak')){const ks=[2,3,4,5,6,7,8,9,10,12,15];return MD.table(['Losses in a row (k)','P(at least one run ≥ k in '+D.hor+' trades)',''],ks.map(k=>{const v=SFX.probStreak(m.q,k,D.hor);return[String(k),pc(v),MD.bar(v,1)];}))+'\n';}
+    if(title==='Equity after k straight losses'){const r=D.risk/100*m.L,f=(rr,k)=>D.sizing==='fixed'?Math.max(0,1-k*rr):Math.pow(Math.max(0,1-rr),k);
+      return MD.table(['k losses','Equity at '+D.risk+'%','Equity at '+(D.risk/2)+'%','Money lost at '+D.risk+'% (from '+money(D.bal)+')'],[1,2,3,4,5,6,7,8,10,12,15].map(k=>[String(k),pc(f(r,k)),pc(f(r/2,k)),money(D.bal*(1-f(r,k)))]))+'\n';}
+    if(title==='Net expectancy vs spread'&&D.sl>0){const comR=m.c-(D.spread>0?D.spread/D.sl:0),be=(m.Eg-comR)*D.sl,ss=[0,D.spread*0.5,D.spread,D.spread*1.5,D.spread*2,be>0?be:null].filter(x=>x!==null&&x>=0).filter((x,i,a)=>a.indexOf(x)===i).sort((a,b)=>a-b);
+      return MD.table(['Spread','E[R] net','Per 100 trades'],ss.map(s=>[(+s.toFixed(2))+(s===D.spread?' (yours)':Math.abs(s-be)<1e-9?' (break-even)':''),rfmt(m.Eg-comR-s/D.sl,3),rfmt((m.Eg-comR-s/D.sl)*100,1)]))+'\n';}
+    const r=D.res;if(r){
+      if(title==='R-multiple distribution'){const R=r.R.slice().sort((a,b)=>a-b),qs=[0,0.1,0.25,0.5,0.75,0.9,1],bins=[[-Infinity,-1.5,'worse than −1.5R'],[-1.5,-0.85,'−1.5R to −0.85R (about a full stop)'],[-0.85,0,'small loss (−0.85R to 0)'],[0,1,'0 to +1R'],[1,2,'+1R to +2R'],[2,Infinity,'+2R or more']];
+        return MD.table(['Percentile'].concat(qs.map(q=>q===0?'min':q===1?'max':'p'+Math.round(q*100))),[['R'].concat(qs.map(q=>rfmt(SFX.quantile(R,q))))])+'\n'+MD.table(['Result band','Trades','Share',''],bins.map(b=>{const c=R.filter(x=>x>b[0]&&x<=b[1]).length;return[b[2],String(c),pc(c/R.length),MD.bar(c,R.length)];}))+'\n';}
+      if(title==='Losing runs'){const ls=r.stats.streaks.loss,mx=Math.max(4,...ls);const rows=[];for(let k=1;k<=mx;k++){const c=ls.filter(x=>x===k).length;rows.push([String(k),String(c)]);}return MD.table(['Run length','Times it happened'],rows)+'\n';}
+      if(title.startsWith('Average R by weekday')){const dw=r.beh.dw;return MD.table(['Day','Trades','Average R','Total R'],[1,2,3,4,5,6,0].filter(i=>dw[i].n>0).map(i=>[DAYS[i],String(dw[i].n),rfmt(dw[i].s/dw[i].n),rfmt(dw[i].s,1)]))+'\n';}
+      if(title.startsWith('Average R by hour')){const hr=r.beh.hr;return MD.table(['Hour (server)','Trades','Average R','Total R'],hr.map((h,i)=>[i,h]).filter(x=>x[1].n>0).map(([i,h])=>[String(i).padStart(2,'0')+':00',String(h.n),rfmt(h.s/h.n),rfmt(h.s,1)]))+'\n';}}}
+  if(!fixed&&D.gm){const g=D.gm,G=g.G,lad=g.lad;
+    if(title.startsWith('Monte Carlo'))return mdFan(g.sim,'Cycle');
+    if(title==='Cycle statistics')return cap('How cycles ended')+MD.table(['End','Share of cycles'],[['Take-profit',pc(g.kinds[0],2)],['Final stop',pc(g.kinds[1],2)],['Still open after 120 days',pc(g.kinds[2],2)],['Loss larger than 40× the balance (simulation cut off)',pc(g.kinds[3],2)]])+'\n'+
+      cap('Cycle length in days')+MD.table(['p10','p25','p50','p75','p90','p95','p99'],[mdQuant(g.days,[0.1,0.25,0.5,0.75,0.9,0.95,0.99],x=>x.toFixed(1))])+'\n';
+    if(title==='Floating loss vs adverse move'){const ms=[0.25,0.5,1,1.5,2,3,5,8,12].map(k=>k*D.gVol),extra=[lad.ruinD,lad.wipeD,lad.stopD].filter(x=>x!==null&&isFinite(x));
+      const all=ms.concat(extra).filter((x,i,a)=>a.indexOf(x)===i).sort((a,b)=>a-b);
+      return cap('Floating loss after price moves against the first entry (no bounce)')+MD.table(['Adverse move (pips)','Daily ranges','Floating loss','% of balance','',''],all.map(d=>{const l=lad.lossAt(d);return[pip(d),(d/D.gVol).toFixed(2)+'×',money(-l),pc(l/D.bal),MD.bar(Math.min(l,D.bal),D.bal),Math.abs(d-lad.wipeD)<1e-9?'wiped out':Math.abs(d-lad.ruinD)<1e-9?'ruin line':d===lad.stopD?'final stop':''];}))+'\n';}
+    if(title==='How deep cycles go')return MD.table(['Order','Opens at (pips)','Cycles reaching it',''],g.reach.map((x,i)=>[String(i+1),negp(lad.L[i].d),pc(x,2),MD.bar(x,1)]))+'\n';
+    if(title==='How deep the floating loss gets'){const mae=Array.from(g.pool.mae),lv=[1,2,5,10,25,D.ruin,50,75,100].filter((x,i,a)=>a.indexOf(x)===i).sort((a,b)=>a-b);
+      return MD.table(['Worst floating loss of at least','Share of cycles','About 1 cycle in',''],lv.map(x=>{const v=mae.filter(m=>m>=D.bal*x/100).length/g.N;return[x+'% of balance'+(x===D.ruin?' (ruin line)':''),pc(v,2),v>0?Math.round(1/v).toLocaleString('en-US'):'none in '+g.N.toLocaleString('en-US'),MD.bar(v,1)];}))+'\n';}
+    if(title.startsWith('Where the money goes'))return MD.table(['Per 1,000 cycles','Money'],[['From winning cycles',money(g.sumW/g.N*1000)],['From losing cycles',money(g.sumL/g.N*1000)],['Net',money(g.E*1000)]])+'\n';
+    if(title==='Cumulative P(ruin) by cycle')return mdRuinCurve(g.sim,'By cycle',true);}
+  return'';}
+function mdMonthly(r){
+  const M=(r.book.months||[]).filter(m=>m.eq0>0);if(!M.length)return'';const by=new Map();M.forEach(m=>{const y=m.k?m.k.slice(0,4):m.m.slice(0,4);if(!by.has(y))by.set(y,{});by.get(y)[+(m.m||m.k).slice(5,7)]=m.eq1/m.eq0-1;});
+  const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],f=v=>v===undefined?'':(v<=-1?'−100%':(v<0?'−':'+')+Math.abs(v*100).toFixed(1)+'%');
+  const yr=new Map(r.book.years.map(y=>[String(y.y),y]));
+  return cap(tx('Monthly returns (account change in each calendar month)','ผลตอบแทนรายเดือน (การเปลี่ยนแปลงของทุนในแต่ละเดือน)'))+MD.table(['Year'].concat(mn).concat(['Year']),[...by.entries()].map(([y,o])=>{const Y=yr.get(y);return[y].concat(mn.map((_,i)=>f(o[i+1]))).concat([Y&&Y.start>0?f(Y.end/Y.start-1):'']);}))+'\n';}
+function mdInputs(){
+  const fixed=D.stype==='fixed',ns=D.stype==='nostop',F=D.filled||{};
+  const rows=fixed?[['Strategy','d-wr','wr'],['Strategy','d-rr','rr'],['Strategy','d-n','n'],['Strategy','d-tpd','tpd'],['Risk rules','d-risk','risk'],['Risk rules','d-sizing','sizing'],['Risk rules','d-dafter','dAfter'],['Risk rules','d-dcut','dCut'],
+      ['Account and costs','d-bal','bal'],['Account and costs','d-sl','sl'],['Account and costs','d-spread','spread'],['Account and costs','d-comm','comm'],['Account and costs','d-pv','pv'],['Simulation','d-hor','hor'],['Simulation','d-ruin','ruin']]
+    :[['Grid','g-lot','gLot']].concat(ns?[]:[['Grid','g-step','gStep'],['Grid','g-mult','gMult'],['Grid','g-max','gMax']]).concat([['Grid','g-tp','gTp'],['Grid','g-sl','gSl'],['Grid','g-vol','gVol'],['Grid','g-auto','gAuto'],['Grid','g-mkt','gMkt'],
+      ['Account and costs','d-bal','bal'],['Account and costs','d-spread','spread'],['Account and costs','d-comm','comm'],['Account and costs','d-pv','pv'],['Simulation','d-hor','hor'],['Simulation','d-ruin','ruin']]);
+  const sel={sizing:'d-sizing',gAuto:'g-auto',gMkt:'g-mkt'},unsetKeys=UNSET.map(x=>x[1]),blankOk={sl:1,pv:1,gSl:1};
+  const out=rows.map(([grp,id,k])=>{const v=sel[k]?MD.optText(id):blankOk[k]&&!(D[k]>0)?tx('not set','ไม่ได้ใส่'):String(D[k]);
+    const src=k in F?tx('from Myfxbook file','จากไฟล์ Myfxbook'):unsetKeys.includes(k)?(isUnset(k)?tx('default, not entered','ค่าเริ่มต้น ไม่ได้ใส่เอง'):tx('entered','ใส่เอง')):tx('setting','การตั้งค่า');
+    return[grp,MD.label(id),v,src];});
+  out.push(['Simulation',tx('Simulated paths','จำนวนเส้นจำลอง'),fixed?D.sims.toLocaleString('en-US'):'4,000 cycles → 2,000 paths',tx('fixed','ค่าคงที่')]);
+  if(fixed&&D.parsed)out.push(['Trade history',tx('Myfxbook file','ไฟล์ Myfxbook'),D.fileName+' · '+D.symbol+' · '+(D.net==='net'?'net':'gross'),tx('loaded','โหลดแล้ว')]);
+  return MD.table(['Group','Input','Value','Source'],out,['l','l','r','l']);}
+function mdGlance(){
+  const st=D.stype,rows=[];let pri=[];
+  if(st==='fixed'){const m=D.model,F=simFacts(m.sim),safe=safeFrom(m.sweep),P=buildPlan(m,D.res),low=P.find(x=>x.key==='lower');
+    rows.push(['Verdict',ICON[m.v]+' '+t('dv_'+m.v)],['Net expectancy per trade',rfmt(m.En,3)+' (95% CI '+sgn(m.Elo)+' to '+sgn(m.Ehi)+')'],['Per 100 trades',rfmt(m.En*100,1)],['Break-even win rate vs yours',pc(m.be)+' vs '+pc(m.p,1)],
+      ['P(falling '+D.ruin+'% within '+D.hor+' trades)',pc(m.sim.ruinProb)],['Max drawdown, typical / 1 in 20',dpc(F.dd50)+' / '+dpc(F.dd95)],['Median final equity',eqFmt(F.med)],
+      ['Full Kelly / your risk',m.K>0?pc(m.K)+' / '+D.risk+'% ('+(D.risk/100/m.K).toFixed(2)+'× Kelly)':'no edge, Kelly = 0'],['Highest tested risk with P(ruin) ≤ 5%',safe===null?'none of the tested levels':safe+'%'],
+      ['Suggested risk per trade',low?low.v.x+'% (now '+D.risk+'%)':m.En>0?D.risk+'% (keep)':'don\'t trade it yet']);
+    pri=P.filter(x=>x.lvl!=='info').slice(0,4).map(x=>'**'+t('pl2_'+x.lvl)+':** '+x.title);}
+  else{const g=D.gm,lad=g.lad,sim=g.sim,X=gExpl(g);
+    rows.push(['Verdict',ICON[g.v]+' '+t('gv_'+g.v)],['Cycles won',pc(g.win)],['Average win / average loss',money(g.avgW)+' / '+money(g.avgL)],['Expected result per cycle',money(g.E)+' ± '+money(2*g.se)],
+      ['P(falling '+D.ruin+'% within '+D.hor+' cycles)',pc(sim.ruinProb)],['P(account wiped out)',pc(sim.wipeProb)],['Move that wipes the account',isFinite(lad.wipeD)?pip(lad.wipeD)+' pips ('+(lad.wipeD/D.gVol).toFixed(1)+' daily ranges)':'none'],
+      ['Largest tested first order with P(ruin) ≤ 5%',g.safe===null?'none of the tested sizes':lf(g.safe)+' lots (now '+D.gLot+')']);
+    pri=[X.gn_fan&&X.gn_fan.todo,X.gn_sweep&&X.gn_sweep.todo].filter((x,i,a)=>x&&a.indexOf(x)===i);}
+  if(BT.res&&BT.kind===st){const r=BT.res,b=r.book,o=btOutcome(r);rows.push(['Gold backtest '+dfmt(r.from)+' → '+dfmt(r.to),o[1]+(o[2]?' ('+o[2]+')':'')+', final '+money(r.final)+', deepest fall −'+pc(Math.min(1,b.mdd))+(BT.sig!==btSig()?' [stale: inputs changed]':'')]);
+    if(r.starts&&r.starts.runs.length){const R=r.starts.runs;rows.push(['Start-date luck',R.filter(x=>!x.ruin).length+' of '+R.length+' start months survived, '+R.filter(x=>x.wipe).length+' wiped out']);}}
+  return MD.kv(rows,['Headline','Value'])+'\n'+(pri.length?MD.h(3,tx('First things to fix','สิ่งที่ต้องแก้ก่อน'))+MD.list(pri):MD.p(tx('Nothing urgent. Keep following the rules below and re-run as trades come in.','ไม่มีเรื่องเร่งด่วน ทำตามกฎด้านล่างต่อไป และกลับมาวิเคราะห์ใหม่เมื่อมีไม้เพิ่ม')));}
+function mdRules(){
+  const st=D.stype,R=[];
+  if(st==='fixed'){const m=D.model;if(m.En<=0||m.p>=1)return MD.p(tx('No trading rules yet: the numbers you entered don\'t show an edge to protect. Fix the edge first (see the action plan), then export again.','ยังไม่มีกฎการเทรด เพราะตัวเลขที่ใส่ยังไม่มี Edge ให้ปกป้อง แก้เรื่อง Edge ก่อน (ดูแผนสิ่งที่ต้องทำ) แล้วค่อยออกรายงานใหม่'));
+    const P=buildPlan(m,D.res),low=P.find(x=>x.key==='lower'),risk=low?low.v.x:D.risk,F=simFacts(risk===D.risk?m.sim:runSim(m.p,risk)),k=SFX.typicalStreak(m.q,D.hor),rr=risk/100*m.L,drop=1-(D.sizing==='fixed'?Math.max(0,1-k*rr):Math.pow(1-rr,k));
+    R.push(tx(`Risk ${risk}% of the account per trade, never more.`,`เสี่ยง ${risk}% ของทุนต่อไม้ ห้ามเกิน`));
+    if(D.sl>0&&D.pv>0)R.push(tx(`Size each trade with lots = balance × ${risk}% ÷ (SL × ${D.pv}). At ${money(D.bal)} and a ${D.sl} stop that is ${(Math.floor(D.bal*risk/100/(D.sl*D.pv)*100)/100).toFixed(2)} lots.`,`คำนวณล็อตทุกไม้: ล็อต = ทุน × ${risk}% ÷ (SL × ${D.pv}) ที่ทุน ${money(D.bal)} และ SL ${D.sl} คือ ${(Math.floor(D.bal*risk/100/(D.sl*D.pv)*100)/100).toFixed(2)} ล็อต`));
+    else R.push(tx(`Size each trade with lots = balance × ${risk}% ÷ (SL distance × value per unit per lot).`,`คำนวณล็อตทุกไม้: ล็อต = ทุน × ${risk}% ÷ (ระยะ SL × มูลค่าต่อหน่วยต่อล็อต)`));
+    if(k>0)R.push(tx(`Expect ${k} losses in a row at some point in ${D.hor} trades. That costs about ${dpc(drop)} and is normal, not a reason to change the system.`,`คาดไว้เลยว่าจะแพ้ติดกัน ${k} ไม้สักครั้งใน ${D.hor} ไม้ ซึ่งทำให้ทุนลดลงประมาณ ${dpc(drop)} เป็นเรื่องปกติ ไม่ใช่เหตุผลให้เปลี่ยนระบบ`));
+    R.push(D.dAfter>0?tx(`After ${D.dAfter} losses in a row, cut risk by ${D.dCut}% until the next win.`,`หลังแพ้ติดกัน ${D.dAfter} ไม้ ลดความเสี่ยงลง ${D.dCut}% จนกว่าจะชนะ`):tx(`Consider halving risk after ${Math.max(2,Math.round(k/2))} losses in a row (test it with the de-risk setting).`,`พิจารณาลดความเสี่ยงครึ่งหนึ่งหลังแพ้ติดกัน ${Math.max(2,Math.round(k/2))} ไม้ (ทดลองได้ที่ช่องลดความเสี่ยง)`));
+    R.push(tx(`If the account falls more than ${dpc(F.dd95)} from its peak, stop and review. Only 1 simulated future in 20 falls that far.`,`ถ้าทุนลดลงเกิน ${dpc(F.dd95)} จากจุดสูงสุด ให้หยุดและทบทวน มีเพียง 1 ใน 20 อนาคตจำลองที่ลงลึกขนาดนี้`));
+    R.push(tx(`Hard stop: at −${D.ruin}% from the start, stop trading this strategy.`,`จุดหยุดเด็ดขาด: ติดลบ ${D.ruin}% จากทุนเริ่มต้น เลิกเทรดกลยุทธ์นี้`));
+    R.push(tx(`Track the real win rate. If it settles below ${pc(m.be)} (break-even with your R:R and costs), the edge is gone.`,`ติดตามอัตราชนะจริง ถ้านิ่งอยู่ต่ำกว่า ${pc(m.be)} (จุดคุ้มทุนตาม R:R และต้นทุนของคุณ) แปลว่า Edge หายไปแล้ว`));
+    R.push(tx(`Re-run this report after ${D.n+50} trades, or monthly, whichever comes first.`,`กลับมาออกรายงานใหม่เมื่อครบ ${D.n+50} ไม้ หรือทุกเดือน แล้วแต่อย่างไหนถึงก่อน`));}
+  else{const g=D.gm,lad=g.lad,ns=D.stype==='nostop',size=g.safe!==null?Math.min(g.safe,D.gLot):null;
+    R.push(size!==null?tx(`First order no bigger than ${lf(size)} lots at a ${money(D.bal)} balance${D.gAuto==='scale'?', scaled with the balance':''}.`,`ออเดอร์แรกไม่เกิน ${lf(size)} ล็อต ที่ทุน ${money(D.bal)}${D.gAuto==='scale'?' และปรับตามทุน':''}`):tx('No tested first-order size keeps P(ruin) under 5%. Redesign the grid before trading it.','ไม่มีขนาดออเดอร์แรกที่ทดสอบแล้วทำให้โอกาสพอร์ตแตกต่ำกว่า 5% ควรออกแบบกริดใหม่ก่อนเทรด'));
+    if(!ns)R.push(tx(`Never add orders beyond the ${g.G.M} planned, and never widen the spacing (${D.gStep} pips) or raise the multiplier (${D.gMult}) mid-cycle.`,`ห้ามเปิดออเดอร์เกิน ${g.G.M} ไม้ที่วางแผนไว้ ห้ามขยายระยะห่าง (${D.gStep} pips) หรือเพิ่มตัวคูณ (${D.gMult}) ระหว่างรอบ`));
+    if(isFinite(lad.ruinD))R.push(tx(`Set a price alert ${pip(lad.ruinD)} pips against the first entry: that is the ruin line (−${D.ruin}%). The account is wiped out at ${pip(lad.wipeD)} pips.`,`ตั้งแจ้งเตือนราคาที่ ${pip(lad.ruinD)} pips สวนจากออเดอร์แรก นั่นคือเส้นพอร์ตแตก (−${D.ruin}%) และพอร์ตจะหมดที่ ${pip(lad.wipeD)} pips`));
+    R.push(D.gSl>0?tx(`Keep the final stop at ${D.gSl} pips after the last order, and let it fire.`,`คง Stop สุดท้ายไว้ที่ ${D.gSl} pips หลังออเดอร์สุดท้าย และปล่อยให้มันทำงาน`):tx('There is no final stop, so one long trend can take the whole account. Decide in advance where you will close everything.','ไม่มี Stop สุดท้าย เทรนด์ยาวครั้งเดียวอาจกินทั้งพอร์ต กำหนดล่วงหน้าว่าจะปิดทั้งหมดที่ไหน'));
+    R.push(tx(`Re-check the pair's average daily range every month. This analysis assumes ${D.gVol} pips; if the market gets wider, every distance above shrinks in real terms.`,`ตรวจช่วงราคาเฉลี่ยต่อวันของคู่เงินทุกเดือน การวิเคราะห์นี้ใช้ ${D.gVol} pips ถ้าตลาดผันผวนขึ้น ทุกระยะด้านบนจะแคบลงในทางปฏิบัติ`));
+    if(BT.res&&BT.kind===D.stype&&BT.res.st.gapN>0&&BT.res.st.gapSum<0)R.push(tx(`Weekend gaps cost ${money(BT.res.st.gapSum)} in the gold backtest. Consider closing or hedging before the weekend.`,`Gap ช่วงสุดสัปดาห์ทำให้เสีย ${money(BT.res.st.gapSum)} ใน Backtest ทองคำ พิจารณาปิดหรือป้องกันก่อนสุดสัปดาห์`));
+    R.push(tx('Expect the rare big loss. The winning streak is the normal part; the loss in the tables above is the price of it.','เตรียมใจรับการขาดทุนก้อนใหญ่ที่นาน ๆ เกิดครั้ง ช่วงที่ชนะต่อเนื่องคือส่วนปกติ ส่วนการขาดทุนในตารางด้านบนคือราคาที่ต้องจ่าย'));}
+  return MD.check(R)+'\n'+tx('Signed: ____________________   Date: ____________','ลงชื่อ: ____________________   วันที่: ____________')+'\n';}
+function mdMethod(){
+  const st=D.stype,rows=[];
+  if(st==='fixed'){rows.push(['Trade model','Each trade wins +W R or loses −L R. W = reward : risk − cost, L = 1 + cost, cost = (spread + commission ÷ value per unit) ÷ SL.'],
+      ['Win-rate uncertainty','Wilson score interval, 95%, on '+D.n+' trades. Expectancy CI = the payoff evaluated at both ends.'],
+      ['Monte Carlo',D.sims.toLocaleString('en-US')+' paths × '+D.hor+' trades, '+(D.sizing==='fixed'?'fixed risk on the starting balance':'compounding risk on the current balance')+(D.dAfter>0?', risk cut '+D.dCut+'% after '+D.dAfter+' losses in a row':'')+'. Ruin = equity at or below '+(100-D.ruin)+'% of the start. Seed 21.'],
+      ['Sizing sweeps','1,000 paths per risk level, same seed, so levels differ only by size.'],
+      ['Kelly','f* = p/L − q/W. Zero-growth point found by bisection on g(f) = p·ln(1 + fW) + q·ln(1 − fL).'],
+      ['Streaks','Exact probability of at least one run of k losses in N trades (recursion on run length).'],
+      ['Sample size','Smallest n where the Wilson lower bound still gives positive expectancy.']);
+    if(D.res)rows.push(['Trade history','R = pips ÷ SL ('+(D.res.conv.usedNet?'net of swap and commission':'gross')+'). Bootstrap of the mean, 4,000 resamples. Monte Carlo resamples your real R values, '+D.sims.toLocaleString('en-US')+' paths, seed 11.']);}
+  else rows.push(['Price model','48 steps a day. Daily σ = average daily range ÷ 1.596. '+(D.gMkt==='real'?'Fat tails + trends: Student-t(3) steps, AR(1) log-volatility and AR(1) drift.':'Random walk: Gaussian steps.')],
+      ['Cycles','4,000 simulated cycles, fills at the simulated price, cut off after 120 days or a loss of 40× the balance. Seed 31.'],
+      ['Account paths','2,000 paths × '+D.hor+' cycles, built by resampling whole cycles, '+(D.gAuto==='scale'?'lots scaled with the balance':'fixed lots')+'. Seed 41.'],
+      ['Size sweep','800 paths per first-order size, seed 43.'],
+      ['Exposure maths','Floating loss = total lots × (distance − average entry) × value per pip + spread and commission on every order.']);
+  if(BT.res&&BT.kind===st)rows.push(['Gold backtest','COMEX gold futures, 1-minute bars, contract rolls removed, 1 pip = $0.10. Inside each minute: open → low → high → close if it closed up, open → high → low → close if down. Fills at the level, or at the open when price gaps past it.'+(st==='fixed'?' Entries are random, not yours.':'')]);
+  let s=MD.table(['Piece','How it works'],rows,['l','l'])+'\n';
+  if(st==='fixed')s+='```\nE[R]          = p·W − q·L\nbreak-even p  = L ÷ (W + L)\nKelly f*      = p/L − q/W\ngrowth g(f)   = p·ln(1 + f·W) + q·ln(1 − f·L)\nlots          = balance × risk ÷ (SL × value per unit)\n```\n\n';
+  return s+MD.p(tx('Every simulation uses a fixed seed, so the same inputs always give the same numbers. Re-enter the inputs above to reproduce this report.','ทุกการจำลองใช้ Seed คงที่ ค่าที่ใส่เหมือนเดิมจะได้ตัวเลขเหมือนเดิมเสมอ ใส่ค่าตามตารางด้านบนเพื่อสร้างรายงานนี้ซ้ำ'));}
+function mdLimits(withBt){
+  const tl=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k],li=a=>a.map(x=>'- **'+x[0]+'.** '+x[1]).join('\n')+'\n\n';let s='';
+  tl('sc_cant').forEach(g=>{s+=MD.h(3,g[0])+li(g[1]);});
+  if(withBt){const b=tl('sc_bt_cant');s+=MD.h(3,b[0])+li(b[1]);}
+  return s;}
+function mdReport(){
+  clearTimeout(timer);analyze();
+  const st=D.stype,fixed=st==='fixed';if(fixed?!D.model:!D.gm)return null;
+  const S=MD.stamp(),name={fixed:'Fixed stop',grid:'Grid / martingale',nostop:'No hard stop'}[st];let html;
+  if(fixed){const m=D.model,r=D.res;EXPL=Object.assign({},buildModelExpl(m),r?buildHistExpl(r):{});
+    html=mSummary(m)+mEdge(m)+mSurvival(m)+mSizing(m)+mStreaks(m)+mCosts(m)+(r?secSummary(r)+secEdge(r)+secSurvival(r)+secBehavior(r)+secCosts(r):`<section>${mHead(6)}<div class="card"><p>${esc(D.histMsg())}</p></div></section>`);}
+  else{const g=D.gm;EXPL=gExpl(g);html=gSummary(g)+gExposure(g)+gOutcomes(g)+gSurvival(g);}
+  const btOn=!!(BT.res&&BT.kind===st&&!BT.busy);if(btOn)html+=btSection();
+  const tpl=document.createElement('template');tpl.innerHTML=html;
+  const gk=window.__sfxGate,errs=!$('desk-err').hidden?$('desk-err').textContent:'';
+  let md='# Jarn Neow risk report: '+name+'\n\n';
+  md+=MD.quote(tx('A risk report for one trading strategy: how likely the account is to survive, how deep the falls can get and what size keeps the risk acceptable. It is not a profit forecast and not financial advice.','รายงานความเสี่ยงของกลยุทธ์เทรดหนึ่งระบบ: โอกาสที่พอร์ตจะรอด การย่อตัวลึกได้แค่ไหน และขนาดไม้ที่ทำให้ความเสี่ยงอยู่ในระดับรับได้ ไม่ใช่การทำนายกำไร และไม่ใช่คำแนะนำทางการเงิน'));
+  md+=MD.kv([['Generated',S.local],['App','Jarn Neow, Expert mode ('+MD.appUrl()+')'],['Strategy type',name+' ('+t(st==='fixed'?'st_fixed_d':st==='grid'?'st_grid_d':'st_nostop_d')+')'],['Language',LANG==='th'?'ไทย':'English'],
+    ['Testing done',gk?t('gate_'+gk+'_t'):'not answered'],['Gold backtest',btOn?dfmt(BT.res.from)+' → '+dfmt(BT.res.to):tx('not run for these inputs','ยังไม่ได้รันสำหรับค่าชุดนี้')]],['Report','Detail']);
+  if(errs)md+=MD.quote('⚠ '+errs+' '+tx('The last valid values were used.','ใช้ค่าล่าสุดที่ถูกต้องแทน'));
+  md+=MD.h(2,tx('At a glance','สรุปสั้น'))+mdGlance();
+  md+=MD.h(2,tx('Inputs','ค่าที่ใส่'))+mdInputs()+'\n';
+  if(gk)md+=MD.h(2,tx('Testing status','สถานะการทดสอบ'))+MD.p('**'+t('gate_'+gk+'_t')+'** '+t('gate_'+gk+'_p'))+(gk!=='ok'?MD.list([1,2,3].map(i=>t('gate_'+gk+'_'+i))):'');
+  md+=mdWalk(tpl.content,false);
+  if(!btOn)md+=MD.h(2,'Backtest on real gold')+MD.p(tx('Not included: the backtest hasn\'t been run for these inputs. Run it at the bottom of the Expert page (any range from 7 Jun 2010 to 13 Nov 2026), then export again.','ไม่ได้รวมไว้: ยังไม่ได้รัน Backtest สำหรับค่าชุดนี้ รันได้ที่ท้ายหน้าโหมดผู้เชี่ยวชาญ (ช่วงใดก็ได้ตั้งแต่ 7 มิ.ย. 2010 ถึง 13 พ.ย. 2026) แล้วออกรายงานใหม่'));
+  md+=MD.h(2,tx('Trading rules to commit to','กฎการเทรดที่ตั้งใจจะทำตาม'))+MD.p(tx('Derived from the numbers above. Print it, sign it, keep it next to the screen.','สรุปจากตัวเลขด้านบน พิมพ์ออกมา เซ็นชื่อ แล้ววางไว้ข้างจอ'))+mdRules();
+  md+=MD.h(2,tx('Method and reproducibility','วิธีคำนวณและการทำซ้ำ'))+mdMethod();
+  md+=MD.h(2,tx('What this report can\'t tell you','สิ่งที่รายงานนี้บอกไม่ได้'))+mdLimits(btOn);
+  md+=MD.h(2,tx('Glossary','อภิธานศัพท์'))+MD.glossary().map(g=>'- **'+g[0]+'**: '+g[1]).join('\n')+'\n';
+  md+=MD.h(2,tx('Disclaimer','ข้อจำกัดความรับผิดชอบ'))+MD.p(t('disclaimer'))+'---\n\n'+MD.p(tx('Made with Jarn Neow, free and open. Everything was calculated in your browser; nothing was uploaded.','สร้างด้วย Jarn Neow ใช้ฟรี ทุกอย่างคำนวณในเบราว์เซอร์ของคุณ ไม่มีข้อมูลถูกอัปโหลด'));
+  draw0();
+  return{text:md.replace(/\n{3,}/g,'\n\n'),file:'jarn-neow-'+st+'-'+S.file+'.md'};}
+function draw0(){if(D.stype==='fixed'){const m=D.model,r=D.res;EXPL=Object.assign({},buildModelExpl(m),r?buildHistExpl(r):{});}else EXPL=gExpl(D.gm);}
+
 /* ---------- what-if sliders on Expert charts ---------- */
 const WI_CFG=[['Monte Carlo',['wr','rr','risk','hor']],['Model statistics',['wr','rr','n']],['Expectancy vs win rate',['rr','n']],['Break-even frontier',['wr','rr']],
   ['P(ruin) if the true win rate differs',['n','risk']],['Survival metrics',['risk','wr']],['Final equity distribution',['risk','hor']],['Max drawdown distribution',['risk','wr']],
@@ -3327,6 +3677,8 @@ function init(){
     if(g){const el=$(g.dataset.unsetGo);el.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(()=>el.focus({preventScroll:true}),250);}});
   $('d-apply').addEventListener('click',()=>{autoFill();statusLine();analyze();window.scrollTo(0,0);});
   btEvents();
+  const mdGo=cp=>{const b=$(cp?'md-desk-copy':'md-desk');let r=null;try{r=mdReport();}catch(e){console.error('report',e);}if(!r)return;if(cp)MD.copy(r.text,b);else{MD.download(r.file,r.text);MD.flash(b,'md_saved');}};
+  $('md-desk').addEventListener('click',()=>mdGo(false));$('md-desk-copy').addEventListener('click',()=>mdGo(true));
   $('d-main').addEventListener('input',e=>{const inp=e.target.closest('.wi input[type=range]');if(!inp)return;const box=inp.closest('.wi'),r=wiRange(inp.dataset.k);
     inp.nextElementSibling.textContent=r.f(inp.dataset.k==='n'||inp.dataset.k==='hor'?Math.round(+inp.value):+inp.value);wiLive(box);clearTimeout(wiTimer);wiTimer=setTimeout(()=>wiApply(box),350);});
   $('d-main').addEventListener('change',e=>{const inp=e.target.closest('.wi input[type=range]');if(!inp)return;clearTimeout(wiTimer);const box=inp.closest('.wi');requestAnimationFrame(()=>wiApply(box));});
@@ -3343,7 +3695,7 @@ function setType(st,quiet){
   if(window.__sfxTip)window.__sfxTip.hide();typeLabels();revalidate();if(!quiet)requestAnimationFrame(()=>setTimeout(analyze,0));}
 function refreshText(){typeLabels();hint();if(D.parsed)statusLine();else if(D.err)$('file-status').innerHTML='';renderErr();analyze();}
 function seed(st,tc){if(tc)['wr','rr','risk','n'].forEach(k=>{dtouch[k]=tc[k]?1:0;});D.wr=st.wr;D.rr=st.rr;D.risk=st.risk;D.n=Math.round(st.n);$('d-wr').value=D.wr;$('d-rr').value=D.rr;$('d-risk').value=D.risk;$('d-n').value=D.n;revalidate();}
-return{init,setLayout,setExplain,refreshText,analyze,state:()=>D,seed,touched:()=>({wr:dtouch.wr,rr:dtouch.rr,risk:dtouch.risk,n:dtouch.n})};
+return{init,setLayout,setExplain,refreshText,analyze,mdReport,state:()=>D,seed,touched:()=>({wr:dtouch.wr,rr:dtouch.rr,risk:dtouch.risk,n:dtouch.n})};
 })();
 </script>
 <script id="s-app">

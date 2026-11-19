@@ -28,11 +28,11 @@ Built for phones and first-time users.
 - A 7-step start-up check on every visit: two quick questions about testing, and a short quiz on common trading illusions (high win rate, "10% a day", lucky streaks, one great month, risk per trade).
 - Four inputs: **win rate**, **reward : risk**, **risk per trade** and **number of trades tested**.
 - A plain-language verdict, an equity fan of possible futures, and a step-by-step plan to fix what's wrong.
-- A shareable link that carries your numbers.
+- A shareable link that carries your numbers, and a downloadable report (see below).
 
 ### Expert
 
-Built for desktop: a dense "quant desk" with detailed statistics, charts, what-if sliders on every chart, and an explanation under every card. Choose a **Full dashboard** or a **Step by step** layout. Expert opens with a full **"what it can and can't do"** briefing, which you can reopen at any time from the Strategy type panel.
+Built for desktop: a dense "quant desk" with detailed statistics, charts, what-if sliders on every chart, and an explanation under every card. Choose a **Full dashboard** or a **Step by step** layout. Expert opens with a full **"what it can and can't do"** briefing, which you can reopen at any time from the Strategy type panel. A **Full report** bar above the results downloads everything as one Markdown file.
 
 ---
 
@@ -108,6 +108,23 @@ The file is read locally and never uploaded. Jarn Neow converts closed trades in
 
 ---
 
+## Export a report (.md)
+
+Both modes can save the analysis as a Markdown file: **Download report (.md)**, or **Copy as text** to paste it straight into Notion, Obsidian, a notes app, GitHub or an AI chat. The file is built in your browser and nothing is uploaded. It's written in the language the app is set to.
+
+**Expert report** (bar above the results). Every card on the page, converted to text, plus the data behind each chart:
+- **Cover and at a glance:** date, strategy type, testing status, verdict, and the headline numbers (expectancy with its confidence interval, chance of ruin, drawdowns, Kelly, suggested risk or safest first-order size, backtest outcome).
+- **Inputs:** every field with its value and whether you entered it, left the default, or it came from the Myfxbook file.
+- **Every section of the page:** verdict, written report, action plan as a checklist, all statistics tables and every explanation ("what this shows", "what your numbers say", "what to do").
+- **Chart data as tables**, with text bars: equity percentiles along the way, final-equity and drawdown percentiles, ruin by trade or cycle, ruin by risk level, Kelly growth, streak odds, equity after k losses, spread sensitivity; for grids, the floating loss at multiples of the daily range, how deep cycles go and how cycles ended.
+- **Trade history** (if loaded): summary, R distribution, losing runs, model vs real trades, stop discipline, results by weekday and hour, costs. The trade list itself isn't included, only summaries and the few ticket numbers the action plan points to.
+- **Gold backtest** (if run for the current inputs): every card, plus a monthly returns table (year × month), every start month from the start-date luck test, volatility by year against your distances, and hour-by-hour tables.
+- **Trading rules to commit to**, a signed checklist derived from the numbers; **method and reproducibility** (models, path counts, seeds, formulas); the full **limitations** list; a **glossary**; and the disclaimer.
+
+**Beginner report** (under the inputs). In plain words: the verdict, your four numbers and what they mean, a money example on a 10,000 account, why the result looks the way it does, the fix plan as a checklist, the spread of 200-trade futures, the same strategy at different risk levels, losing-streak odds, how sure you can be at more trades, Kelly sizing, recovery maths, a rules checklist, what Beginner leaves out, a glossary and a link that reopens your numbers.
+
+---
+
 ## How it works
 
 | Piece | Method |
@@ -149,6 +166,7 @@ The in-app briefing has the full list. In short:
 - Your inputs and files stay in your browser.
 - Only your language, layout and explanation settings are saved, in your browser's local storage.
 - The gold backtest downloads data files from the same site; nothing is sent anywhere.
+- Reports are generated in the browser and saved straight to your device. They hold summaries of a Myfxbook file, not the trade list (the action plan may name a few ticket numbers).
 - The only outside request is to Google Fonts for the typefaces.
 
 ---
