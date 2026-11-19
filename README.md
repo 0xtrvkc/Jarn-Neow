@@ -67,6 +67,28 @@ Inputs: first order size, distance between orders, lot multiplier, maximum order
 
 ---
 
+## Backtest on real gold (Expert)
+
+Every Expert strategy type ends with a **Backtest on real gold** section. It replays your exact inputs on real **COMEX gold futures, 1-minute bars, 7 June 2010 to 13 November 2026** (5.7 million bars) for any range of months you pick. The data is historical and doesn't update.
+
+- **1 pip = $0.10**, so a $1 move in gold is 10 pips.
+- **Grid / martingale and no hard stop** use every grid setting, balance, spread, commission and value per pip, plus a direction (buy, sell or alternate each cycle). You get:
+  - equity day by day, including the lowest point each day with open losses;
+  - the date the account fell to the ruin line or was wiped out;
+  - the 5 deepest cycles, how many orders each cycle reached, and results by year.
+- **Fixed stop** uses your SL, reward:risk, risk rules, trades per day and costs with **random entries**. It measures the win rate your stop and target produce on real gold with no skill, and compares it with the win rate you claim. You also get one chronological run and results by year.
+- Only the months in your range are downloaded (about 50 KB per month), and the backtest runs in the background, so the page stays responsive. A full 16-year run takes about 1–2 seconds.
+
+**How the replay works:**
+- Contract-roll jumps between futures months are removed.
+- Inside each minute, price is assumed to go open → low → high → close when the minute closed up, and open → high → low → close when it closed down.
+- Orders fill exactly at their level, or at the gap price when price jumps past it.
+- It doesn't include swap, slippage beyond gaps, lot rounding or margin checks.
+
+The backtest needs the site to be served (GitHub Pages or any web server). Browsers block the data files when `index.html` is opened straight from disk.
+
+---
+
 ## Myfxbook import (optional, Expert, fixed-stop type)
 
 1. On Myfxbook, open your account page.
@@ -87,6 +109,7 @@ The file is read locally and never uploaded. Jarn Neow converts closed trades in
 | Sizing | Kelly criterion and log-growth curve, plus a ruin-probability sweep across risk levels |
 | Streaks | Exact probability of a run of *k* losses in *N* trades |
 | History | Bootstrap of your own R multiples |
+| Gold backtest | Minute-by-minute replay of your rules on real 1-minute gold futures, with contract rolls removed |
 | Grid / no stop | 4,000 simulated cycles on 30-minute price steps scaled from the daily range (Gaussian random walk, or Student-t(3) jumps with volatility clustering and short trends), then account paths built by resampling whole cycles |
 
 All simulations use a fixed random seed, so the same inputs always give the same results.
@@ -105,6 +128,7 @@ The in-app briefing has the full list. In short:
   - It can't detect a flawed backtest.
   - The grid price model isn't fitted to real history and has no edge in either direction.
   - Rare events may not appear in the simulation.
+- **Gold backtest limits:** gold futures rather than broker spot, order inside each minute assumed, rolls partly estimated, no swap or margin, fixed-stop entries are random rather than yours, and the data ends on 13 November 2026.
 - **Myfxbook import limits:** closed trades only, the stop is estimated if unknown, it can't tell a grid history from a fixed-stop one, and strategies mixed on one account are blended together.
 - **Not:** a profit predictor, a trading signal, a test of your discipline under pressure, or financial advice.
 
@@ -115,6 +139,7 @@ The in-app briefing has the full list. In short:
 - No accounts, cookies, analytics or server.
 - Your inputs and files stay in your browser.
 - Only your language, layout and explanation settings are saved, in your browser's local storage.
+- The gold backtest downloads data files from the same site; nothing is sent anywhere.
 - The only outside request is to Google Fonts for the typefaces.
 
 ---
@@ -122,8 +147,19 @@ The in-app briefing has the full list. In short:
 ## Project structure
 
 ```
-index.html   the whole app: HTML, CSS and JavaScript in one file
-README.md    this file
+index.html                   the whole app: HTML, CSS and JavaScript in one file
+data/gold/index.json         available months, bar counts and the contract-roll table
+data/gold/YYYY-MM.bin        1-minute gold bars, one compressed file per month
+tools/build_gold_data.py     rebuilds data/gold from a 1-minute OHLC parquet file
+README.md                    this file
 ```
 
-There is no build step and there are no dependencies. Edit `index.html` and refresh.
+The app itself has no build step and no dependencies. Edit `index.html` and refresh.
+
+To rebuild or extend the gold data (needs Python with `pyarrow` and `numpy`):
+
+```
+python3 tools/build_gold_data.py GC_v_0_ohlcv-1m.parquet data/gold
+```
+
+Prices are stored unadjusted in $0.10 ticks. Each month is a gzip-compressed file of variable-length integers (time step, open, high, low, close). The format is documented at the top of the script.

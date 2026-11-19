@@ -404,6 +404,11 @@ html[data-st=nostop] .g-only,html:not([data-st=nostop]) .ns-only{display:none!im
 .gtile .bad b{color:var(--bad)}.gtile .ok b{color:var(--ok)}
 @media (max-width:760px){.gtile{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+.btctl{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:flex-end}
+.btctl label{display:grid;gap:.25rem;font-size:.82rem;color:var(--muted)}
+.btctl input,.btctl select{min-width:9.5rem}
+.btpre{display:flex;gap:.4rem;flex-wrap:wrap}.btpre .btn{padding:.35rem .6rem;font-size:.85em}
+.gtile>div>span+b+span{margin-top:.15rem}
 /* ============ gate ============ */
 .gate{position:fixed;inset:0;z-index:100;background:rgba(20,12,50,.72);display:grid;place-items:start center;padding:2rem 1rem;overflow:auto}
 html[data-mode=desk] .gate{background:rgba(2,5,9,.86)}
@@ -637,6 +642,131 @@ html[data-mode=desk] footer{max-width:1600px}
   <div><button type="button" class="btn" id="dn-go" data-i18n="dn_continue"></button><button type="button" class="btn alt" id="dn-copy" data-i18n="dn_copy"></button><button type="button" class="btn alt" id="dn-back" data-i18n="dn_back"></button></div>
 </div>
 
+<script type="text/plain" id="s-btw">
+/* Jarn Neow backtest worker: loads monthly gold files, removes contract-roll jumps, replays the user's rules on 1-minute bars.
+   Prices are integers in ticks of $0.10, and 1 pip = 1 tick. */
+'use strict';
+const cache=new Map();
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function decode(buf){
+  let p=0;const rv=()=>{let v=0,m=1,b;do{b=buf[p++];v+=(b&127)*m;m*=128;}while(b&128);return v;},zz=v=>(v%2?-(v+1)/2:v/2);
+  const n=rv(),t0=rv(),p0=zz(rv()),t=new Int32Array(n),o=new Int32Array(n),h=new Int32Array(n),l=new Int32Array(n),c=new Int32Array(n);
+  let tt=t0,pc=p0;
+  for(let i=0;i<n;i++){tt+=rv();const oo=pc+zz(rv()),hi=rv(),lo=rv(),cc=oo+zz(rv());t[i]=tt;o[i]=oo;c[i]=cc;h[i]=Math.max(oo,cc)+hi;l[i]=Math.min(oo,cc)-lo;pc=cc;}
+  return{n,t,o,h,l,c};}
+async function getMonth(base,m){
+  if(cache.has(m))return cache.get(m);
+  const r=await fetch(base+m+'.bin');if(!r.ok)throw new Error('http '+r.status+' '+m);
+  let buf=new Uint8Array(await r.arrayBuffer());
+  if(buf[0]===0x1f&&buf[1]===0x8b){const ds=new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'));buf=new Uint8Array(await new Response(ds).arrayBuffer());}
+  const d=decode(buf);cache.set(m,d);return d;}
+/* join months and remove roll jumps so the last contract in the range keeps its real prices */
+function join(parts,rolls){
+  const n=parts.reduce((a,x)=>a+x.n,0),B={n,t:new Int32Array(n),o:new Int32Array(n),h:new Int32Array(n),l:new Int32Array(n),c:new Int32Array(n)};
+  let k=0;for(const x of parts){B.t.set(x.t,k);B.o.set(x.o,k);B.h.set(x.h,k);B.l.set(x.l,k);B.c.set(x.c,k);k+=x.n;}
+  if(!n){B.adj=new Int32Array(0);return B;}
+  const t0=B.t[0],t1=B.t[n-1],rs=rolls.filter(r=>r.t>t0&&r.t<=t1).sort((a,b)=>b.t-a.t);
+  let off=0,j=0;B.adj=new Int32Array(n);
+  for(let i=n-1;i>=0;i--){while(j<rs.length&&B.t[i]<rs[j].t){off+=rs[j].d;j++;}if(off){B.o[i]+=off;B.h[i]+=off;B.l[i]+=off;B.c[i]+=off;B.adj[i]=off;}}
+  B.rolls=rs.length;return B;}
+
+/* ---------- shared bookkeeping ---------- */
+const DAY=1440;
+function Book(bal0,ruin){
+  const b={bal0,floor:bal0*(1-ruin),peak:bal0,mdd:0,mddAt:0,ruinAt:-1,wipeAt:-1,dead:false,days:[],curDay:-1,dMin:Infinity,dEq:bal0,dPx:0,years:new Map()};
+  b.mark=(eq,t)=>{if(eq>b.peak)b.peak=eq;const d=1-eq/b.peak;if(d>b.mdd){b.mdd=d;b.mddAt=t;}if(eq<b.dMin)b.dMin=eq;
+    const y=b.yr(t);if(eq<y.min)y.min=eq;if(eq>y.peak)y.peak=eq;const yd=1-eq/y.peak;if(yd>y.mdd)y.mdd=yd;
+    if(b.ruinAt<0&&eq<=b.floor)b.ruinAt=t;if(eq<=0&&!b.dead){b.dead=true;b.wipeAt=t;}};
+  b.yr=t=>{const Y=new Date(t*60000).getUTCFullYear();let y=b.years.get(Y);if(!y){y={y:Y,start:b.dEq,end:b.dEq,min:Infinity,peak:b.dEq,mdd:0,n:0,w:0};b.years.set(Y,y);}return y;};
+  b.day=(t,eq,px)=>{const d=Math.floor(t/DAY);if(d!==b.curDay){if(b.curDay>=0)b.days.push([b.curDay*DAY,b.dEq,Math.min(b.dMin,b.dEq),b.dPx]);b.curDay=d;b.dMin=Infinity;}b.dEq=eq;b.dPx=px;b.yr(t).end=eq;};
+  b.finish=()=>{if(b.curDay>=0)b.days.push([b.curDay*DAY,b.dEq,Math.min(b.dMin,b.dEq),b.dPx]);
+    const D=b.days,mx=1200;if(D.length>mx){const g=Math.ceil(D.length/mx),o=[];for(let i=0;i<D.length;i+=g){const s=D.slice(i,i+g);o.push([s[0][0],s[s.length-1][1],Math.min(...s.map(x=>x[2])),s[s.length-1][3]]);}b.days=o;}};
+  return b;}
+function bars(B){let days=0,last=-1;for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d!==last){days++;last=d;}}return days;}
+function avgRange(B){let s=0,k=0,last=-1,hi=-Infinity,lo=Infinity;for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d!==last){if(last>=0){s+=hi-lo;k++;}last=d;hi=-Infinity;lo=Infinity;}if(B.h[i]>hi)hi=B.h[i];if(B.l[i]<lo)lo=B.l[i];}if(last>=0){s+=hi-lo;k++;}return k?s/k:0;}
+
+/* ---------- grid / martingale / no hard stop ---------- */
+function runGrid(B,P){
+  const M=P.maxN,pv=P.pv,lots=[];for(let k=0;k<M;k++)lots.push(P.lot0*Math.pow(P.mult,k));
+  const bk=Book(P.bal0,P.ruin);
+  let bal=P.bal0,open=false,s=1,n=0,Lt=0,S=0,A=0,y0=0,yLast=0,lf=1,cyc=0,cStart=0,cMae=0,cCost=0;
+  const st={cycles:0,wins:0,sumW:0,sumL:0,worst:0,worstAt:0,maeMax:0,maeAt:0,stops:0,longest:0,longestAt:0,reach:new Array(M).fill(0),worstList:[]};
+  const fl=y=>open?Lt*(y-A)*pv:0;
+  function openCycle(price,t){s=P.dir==='sell'?-1:P.dir==='alt'?(cyc%2?-1:1):1;lf=P.scale?Math.max(bal,0)/P.bal0:1;y0=s*price;n=0;Lt=0;S=0;A=0;cCost=0;cMae=0;cStart=t;cyc++;open=true;fill(y0);}
+  function fill(y){const lot=lots[n]*lf,cost=lot*P.cpl;Lt+=lot;S+=lot*y;A=S/Lt;yLast=y;n++;bal-=cost;cCost+=cost;}
+  function close(y,t,kind){const g=Lt*(y-A)*pv;bal+=g;open=false;const net=g-cCost,yr=bk.yr(t);
+    st.cycles++;yr.n++;st.reach[n-1]++;if(net>0){st.wins++;st.sumW+=net;yr.w++;}else st.sumL+=net;if(kind==='stop')st.stops++;
+    if(net<st.worst){st.worst=net;st.worstAt=t;}const dur=t-cStart;if(dur>st.longest){st.longest=dur;st.longestAt=cStart;}
+    if(cMae>0){const L=st.worstList;if(L.length<5||cMae>L[L.length-1].mae){L.push({start:cStart,end:t,mae:cMae,net,orders:n,side:s});L.sort((a,b)=>b.mae-a.mae);if(L.length>5)L.pop();}}
+    bk.mark(bal,t);}
+  function mark(y,t){const f=fl(y);if(-f>cMae)cMae=-f;if(-f>st.maeMax){st.maeMax=-f;st.maeAt=t;}bk.mark(bal+f,t);}
+  function move(p1,p2,gap,t){
+    let p=p1;
+    for(let guard=0;guard<100000;guard++){
+      if(bk.dead)return;if(!open)openCycle(p,t);
+      const y=s*p,yE=s*p2,lv=n<M?y0-n*P.step:-Infinity,sp=(n===M&&P.sl>0)?yLast-P.sl:-Infinity;
+      if(yE<y||(yE===y&&Math.max(lv,sp)>=yE&&gap)){const ev=Math.max(lv,sp);
+        if(ev<yE){mark(yE,t);return;}
+        const at=gap?yE:ev;mark(at,t);if(bk.dead)return;
+        if(sp>=lv){close(at,t,'stop');p=s===1?at:-at;if(gap)p=p2;continue;}
+        fill(at);p=s===1?at:-at;continue;}
+      if(yE>y){const T=A+P.tp;if(yE<T){mark(yE,t);return;}const at=gap?yE:T;const ps=s;close(at,t,'tp');p=ps===1?at:-at;if(gap)p=p2;continue;}
+      return;}}
+  for(let i=0;i<B.n;i++){
+    const t=B.t[i],o=B.o[i],h=B.h[i],l=B.l[i],c=B.c[i];
+    if(i===0)openCycle(o,t);else move(B.c[i-1],o,true,t);
+    if(c>=o){move(o,l,false,t);move(l,h,false,t);move(h,c,false,t);}else{move(o,h,false,t);move(h,l,false,t);move(l,c,false,t);}
+    bk.day(t,bk.dead?0:bal+fl(s*c),c-B.adj[i]);if(bk.dead){break;}}
+  const lastC=B.n?B.c[B.n-1]:0,floatEnd=bk.dead?0:fl(s*lastC),final=bk.dead?0:bal+floatEnd;
+  if(open&&cMae>0){const L=st.worstList;L.push({start:cStart,end:bk.dead?bk.wipeAt:B.t[B.n-1],mae:cMae,net:null,state:bk.dead?'wiped':'open',orders:n,side:s});L.sort((a,b)=>b.mae-a.mae);if(L.length>5)L.pop();}
+  bk.finish();
+  return{kind:'grid',final,floatEnd,openOrders:open&&!bk.dead?n:0,book:pack(bk),st};}
+
+/* ---------- fixed stop with random entries ---------- */
+function runFixed(B,P){
+  const SL=P.sl,TP=P.sl*P.rr,cR=P.costR,rnd=mulberry32(P.seed||7),days=bars(B),q=Math.min(0.5,P.tpd*days/Math.max(1,B.n));
+  const bk=Book(P.bal0,P.ruin);let eq=P.bal0,inT=false,s=1,e=0,stopY=0,tgtY=0,rm=0,ls=0,ent=0;
+  const st={trades:0,wins:0,sumR:0,worstR:0,worstAt:0,gaps:0,R:[]};
+  const fixedBase=P.bal0;
+  function enter(px,t){s=rnd()<0.5?1:-1;e=s*px;stopY=e-SL;tgtY=e+TP;const rk=P.dAfter&&ls>=P.dAfter?P.risk*(1-P.dCut):P.risk;rm=(P.fixed?fixedBase:eq)*rk;inT=true;ent=t;}
+  function exit(y,t){const R=(y-e)/SL-cR;eq+=rm*R;inT=false;st.trades++;st.sumR+=R;if(R>0){st.wins++;ls=0;}else ls++;if(R<st.worstR){st.worstR=R;st.worstAt=t;}if(R<-1-cR-1e-9)st.gaps++;
+    const yr=bk.yr(t);yr.n++;if(R>0)yr.w++;if(st.R.length<20000)st.R.push(R);if(eq<0)eq=0;bk.mark(eq,t);}
+  function move(p1,p2,gap,t){if(!inT||bk.dead)return;const yE=s*p2;
+    if(yE<=stopY){exit(gap?yE:stopY,t);return;}if(yE>=tgtY){exit(gap?yE:tgtY,t);return;}bk.mark(eq+rm*(yE-e)/SL,t);}
+  for(let i=0;i<B.n;i++){
+    const t=B.t[i],o=B.o[i],h=B.h[i],l=B.l[i],c=B.c[i];
+    if(i>0)move(B.c[i-1],o,true,t);
+    if(!inT&&!bk.dead&&rnd()<q)enter(o,t);
+    if(c>=o){move(o,l,false,t);move(l,h,false,t);move(h,c,false,t);}else{move(o,h,false,t);move(h,l,false,t);move(l,c,false,t);}
+    const f=inT?rm*(s*c-e)/SL:0;bk.day(t,eq+f,c-B.adj[i]);if(bk.dead)break;}
+  bk.finish();
+  /* independent random entries across the whole range: the no-skill baseline for this stop and target */
+  const K=Math.min(4000,Math.max(200,Math.floor(B.n/20))),rs=mulberry32((P.seed||7)+101),smp=[],dur=[];let hit=0,gapL=0;
+  for(let k=0;k<K;k++){const i0=Math.floor(rs()*(B.n-1)),sd=rs()<0.5?1:-1,en=sd*B.o[i0],sY=en-SL,tY=en+TP,lim=B.t[i0]+30*DAY;let R=null,tEnd=0;
+    for(let i=i0;i<B.n&&B.t[i]<=lim;i++){const pts=i===i0?[]:[B.o[i]];const o=B.o[i],h=B.h[i],l=B.l[i],c=B.c[i];if(c>=o)pts.push(l,h,c);else pts.push(h,l,c);
+      for(let j=0;j<pts.length;j++){const y=sd*pts[j],g=(i>i0&&j===0);if(y<=sY){R=((g?y:sY)-en)/SL;break;}if(y>=tY){R=((g?y:tY)-en)/SL;break;}}
+      if(R!==null){tEnd=B.t[i];break;}}
+    if(R===null)continue;R-=cR;smp.push(R);dur.push(tEnd-B.t[i0]);if(R>0)hit++;if(R<-1-cR-1e-9)gapL++;}
+  return{kind:'fixed',final:bk.dead?0:eq,book:pack(bk),st:{trades:st.trades,wins:st.wins,sumR:st.sumR,worstR:st.worstR,worstAt:st.worstAt,gaps:st.gaps},
+    sample:{n:smp.length,wins:hit,meanR:smp.reduce((a,x)=>a+x,0)/Math.max(1,smp.length),worstR:Math.min(0,...smp),gapLoss:gapL,medMin:dur.sort((a,b)=>a-b)[Math.floor(dur.length/2)]||0,q}};}
+function pack(b){return{days:b.days,mdd:b.mdd,mddAt:b.mddAt,ruinAt:b.ruinAt,wipeAt:b.wipeAt,dead:b.dead,peak:b.peak,years:[...b.years.values()].sort((a,c)=>a.y-c.y)};}
+
+const API={decode,join,runGrid,runFixed,avgRange,bars};
+if(typeof self!=='undefined'&&typeof window==='undefined'&&typeof importScripts==='function'){
+  self.onmessage=async ev=>{const m=ev.data;
+    try{const parts=[];let done=0;
+      const list=m.months,conc=6;let next=0;const res=new Array(list.length);
+      await Promise.all(Array.from({length:Math.min(conc,list.length)},async()=>{while(next<list.length){const i=next++;res[i]=await getMonth(m.base,list[i]);done++;self.postMessage({type:'progress',done,total:list.length});}}));
+      for(const r of res)parts.push(r);
+      self.postMessage({type:'progress',done:list.length,total:list.length,stage:'run'});
+      const B=join(parts,m.rolls),P=m.params;
+      const out=P.kind==='fixed'?runFixed(B,P):runGrid(B,P);
+      out.n=B.n;out.from=B.n?B.t[0]:0;out.to=B.n?B.t[B.n-1]:0;out.rolls=B.rolls||0;out.adr=avgRange(B);out.days=bars(B);
+      out.px0=B.n?B.o[0]:0;out.px1=B.n?B.c[B.n-1]:0;
+      self.postMessage({type:'done',out,id:m.id});
+    }catch(e){self.postMessage({type:'error',msg:String(e&&e.message||e),id:m.id});}};}
+if(typeof module!=='undefined')module.exports=API;
+</script>
 <script id="s-engine">
 const SFX=(function(){
 'use strict';
@@ -1774,6 +1904,78 @@ sc_cant:[["กลยุทธ์ที่ยังไม่รองรับ",[
 ["สิ่งที่แอปนี้ไม่ใช่",[["ไม่ใช่ตัวทำนายกำไรหรือสัญญาณเทรด","ไม่เคยบอกว่าควรเทรดอะไร เมื่อไร หรือควรเทรดหรือไม่ ผลที่ดีหมายถึง 'รอดได้ถ้าตัวเลขของคุณเป็นจริง' ไม่ใช่ 'ทำกำไร'"],["ไม่ได้ทดสอบตัวคุณภายใต้แรงกดดัน","ถือว่าทำตามกฎทุกข้อเป๊ะ ความกลัว การเทรดแก้แค้น การเลื่อน Stop loss แพลตฟอร์มล่ม และปัญหาของโบรกเกอร์ ไม่ได้อยู่ในแบบจำลอง"],["ไม่ใช่คำแนะนำทางการเงิน","จารย์เหนียว เป็นเครื่องมือเพื่อการศึกษา การเทรดผลิตภัณฑ์ที่มีเลเวอเรจมีความเสี่ยงสูงที่จะขาดทุน"]]]],
 sc_ok:"เข้าใจแล้ว",sc_again:"เปิดอ่านอีกได้ทุกเมื่อที่ช่องประเภทกลยุทธ์"
 });
+Object.assign(I18N.en,{
+bt_src:"COMEX gold futures, 1-minute, {a} to {b}",bt_src0:"COMEX gold futures, 1-minute",bt_idx:"Loading the list of available months…",
+bt_intro:"Replays your inputs on real gold prices, minute by minute, for the months you pick. 1 pip = $0.10, so a $1 move is 10 pips. The data stops at the last date shown and isn't live.",
+bt_uses_grid:"Uses every grid setting, the balance, spread, commission and value per pip. Daily range and market model aren't used: real prices replace them.",
+bt_uses_ns:"Uses the position size, take-profit, exit level, balance, spread, commission and value per pip. Daily range and market model aren't used: real prices replace them.",
+bt_uses_fixed:"Uses the SL distance, reward:risk, risk per trade, sizing, de-risk rule, trades per day, balance and costs. Your win rate isn't used: entries are random, so the market decides how often trades win. Compare the result with the win rate you claim.",
+bt_from:"From",bt_to:"To",bt_dir:"Direction",bt_dir_buy:"Buy",bt_dir_sell:"Sell",bt_dir_alt:"Alternate each cycle",bt_run:"Run backtest",bt_rerun:"Run again",
+bt_p12:"Last 12 months",bt_p5:"Last 5 years",bt_pall:"All data",bt_load:"Loading gold data: {done} of {total} months…",bt_running:"Running the backtest…",
+bt_file:"The backtest needs the published site (GitHub Pages or any web server). Browsers block data files when index.html is opened straight from disk.",
+bt_nodecomp:"This browser can't unpack the data files. Use a recent Chrome, Edge, Firefox or Safari.",
+bt_need_sl:"Enter an SL distance under Account and costs to run this backtest. For gold, 1 pip = $0.10.",
+bt_stale:"Your inputs or range changed since this run. Run it again to update the results.",bt_err:"Couldn't load the gold data: {msg}",bt_range_bad:"Pick a start month that comes before the end month.",
+bt_start:"start",bt_t_final:"Final balance",bt_t_dd:"Deepest fall",bt_t_cyc:"Cycles won",bt_t_out:"Outcome",bt_out_ok:"Survived the whole range",bt_out_ruin:"Fell {x}% or more",bt_out_wipe:"Wiped out",
+bt_t_wr:"Win rate on real gold",bt_t_wr_you:"yours: {x}",bt_t_exp:"Average result per trade",bt_t_be:"break-even win rate {x}",
+bt_v_wiped:"The account was wiped out on {date}, {days} days into the backtest.",
+bt_v_ruin:"The account survived but crossed the −{x}% ruin line on {rdate}; its deepest fall was {dd} ({date}).",
+bt_v_ok:"The account survived the whole range. Its deepest fall was {dd} ({date}).",
+bt_v_grid:"{cyc} cycles, {win} won. Final balance {fin} ({ret}).",
+bt_adr:"Gold moved {x} pips a day on average in this period; your grid spacing is {step} pips. The simulation sections above use your daily-range input ({y} pips), so set it to about {x} for gold.",
+bt_v_fixed:"Random entries with your stop and target won {wr} of trades on real gold (95% range {lo} to {hi}). Your stated win rate is {you}; break-even is {be}.",
+bt_fx_above_t:"Your win rate beats random entries",bt_fx_within_t:"Random entries match your win rate",bt_fx_below_t:"Your win rate is below random entries",
+bt_fx_above:"That only means something if your test is honest: enough trades, no hindsight, real costs. Check the confidence interval in Edge and confidence.",
+bt_fx_within:"Your stop and target alone produce this win rate with no skill at all, so your results so far can't be told apart from luck.",
+bt_fx_below:"Random entries with the same stop and target did better than your stated win rate. Check how you measured it, or whether your entries are working against you.",
+lg_bt_close:"Equity at the day's close",lg_bt_low:"Lowest equity during the day, with floating losses",lg_bt_px:"Gold, real futures price",lg_bt_worst:"Start of one of the 5 deepest cycles",
+bn_eq:"Account value through the backtest. The red band reaches down to each day's lowest point, including open losses, which is what a margin call sees. Dashed lines are the starting balance and the ruin line.",
+bn_stats:"Totals for the whole range. A cycle runs from the first order until all orders close.",
+bn_price:"Real gold futures prices over the range. Futures switch to a new contract every few months, which shows as a small jump here; the backtest removes those jumps so they don't count as real moves. Red dots mark where the 5 deepest cycles began.",
+bn_worst:"The 5 cycles whose floating loss went deepest, with how they ended.",gn_reach_bt:"The share of cycles that opened each order. The last bar shows how often the grid was completely full.",
+bn_years:"Results by calendar year. The deepest fall is measured within each year, including open losses.",
+bn_rand:"Thousands of trades opened at random times in random directions across the range, each with your stop and target. This is what the stop and target do on real gold with no skill.",
+bn_eqf:"One chronological run: random entries at roughly your trades per day, one trade at a time, sized with your risk rules. Another run with different random entries would look different; the sample on the left is the steadier guide.",
+bn_years_f:"Results of the chronological run by calendar year.",
+sc_bt_can:["Backtest on real gold","Replays your exact inputs on 16 years of 1-minute COMEX gold prices for any range of months: equity day by day, the deepest falls and when they happened, the worst grid cycles, and results by year. For fixed-stop strategies, it measures the win rate your stop and target produce with random entries, so you can compare it with yours."],
+sc_bt_cant:["Backtest on real gold",[["Gold only, and futures rather than spot","The data is COMEX gold futures. Broker XAUUSD spot prices differ slightly, trading hours and gaps aren't identical, and roll jumps between futures contracts are removed by estimate (30 of the 81 rolls fall across a weekend and are estimated from neighbouring rolls)."],["What happens inside each minute","Only open, high, low and close are known. The backtest assumes a rising minute went open → low → high → close and a falling one open → high → low → close. When a stop and a target sit inside the same minute, the real order may have been different."],["Fills and costs","Orders fill exactly at their level unless price gaps past it, in which case they fill at the gap price. There is no slippage beyond that, no swap, no lot rounding to 0.01 and no margin check. Spread is charged once per order."],["Not your actual entries","Fixed-stop backtests use random entries, because win rate and reward:risk don't describe when you enter. They test your stop, target and risk rules against real gold, not your entry skill."],["Fixed data","The data ends on the last date shown and isn't updated. One past path is one sample: a grid that survived these years could still fail on the next big move."]]]
+});
+Object.assign(I18N.th,{
+bt_src:"ฟิวเจอร์สทองคำ COMEX ราย 1 นาที {a} ถึง {b}",bt_src0:"ฟิวเจอร์สทองคำ COMEX ราย 1 นาที",bt_idx:"กำลังโหลดรายการเดือนที่มีข้อมูล…",
+bt_intro:"นำค่าที่คุณใส่มาเทรดซ้ำกับราคาทองจริงทีละนาที ในช่วงเดือนที่เลือก 1 pip = $0.10 ราคาขยับ $1 จึงเท่ากับ 10 pips ข้อมูลสิ้นสุดที่วันที่แสดงและไม่ใช่ข้อมูลสด",
+bt_uses_grid:"ใช้ค่ากริดทุกช่อง ยอดเงิน สเปรด คอมมิชชั่น และมูลค่าต่อ pip ไม่ใช้ช่วงราคาต่อวันและแบบจำลองตลาด เพราะใช้ราคาจริงแทน",
+bt_uses_ns:"ใช้ขนาดออเดอร์ ทำกำไร จุดยอมตัดขาดทุน ยอดเงิน สเปรด คอมมิชชั่น และมูลค่าต่อ pip ไม่ใช้ช่วงราคาต่อวันและแบบจำลองตลาด เพราะใช้ราคาจริงแทน",
+bt_uses_fixed:"ใช้ระยะ SL, Reward:risk, ความเสี่ยงต่อไม้, วิธีคิดขนาดไม้, กฎลดความเสี่ยง, จำนวนไม้ต่อวัน, ยอดเงิน และต้นทุน ไม่ใช้ Win rate ของคุณ: จุดเข้าเป็นแบบสุ่ม ตลาดจึงเป็นตัวกำหนดว่าชนะบ่อยแค่ไหน ให้เทียบผลกับ Win rate ที่คุณอ้าง",
+bt_from:"จาก",bt_to:"ถึง",bt_dir:"ทิศทาง",bt_dir_buy:"Buy",bt_dir_sell:"Sell",bt_dir_alt:"สลับทุกรอบ",bt_run:"รัน Backtest",bt_rerun:"รันอีกครั้ง",
+bt_p12:"12 เดือนล่าสุด",bt_p5:"5 ปีล่าสุด",bt_pall:"ข้อมูลทั้งหมด",bt_load:"กำลังโหลดข้อมูลทอง: {done} จาก {total} เดือน…",bt_running:"กำลังรัน Backtest…",
+bt_file:"Backtest ต้องเปิดผ่านเว็บที่เผยแพร่แล้ว (GitHub Pages หรือเว็บเซิร์ฟเวอร์) เบราว์เซอร์จะไม่ยอมโหลดไฟล์ข้อมูลเมื่อเปิด index.html จากเครื่องโดยตรง",
+bt_nodecomp:"เบราว์เซอร์นี้แตกไฟล์ข้อมูลไม่ได้ ให้ใช้ Chrome, Edge, Firefox หรือ Safari เวอร์ชันล่าสุด",
+bt_need_sl:"ใส่ระยะ SL ในช่องบัญชีและต้นทุนก่อนรัน Backtest นี้ สำหรับทอง 1 pip = $0.10",
+bt_stale:"ค่าที่ใส่หรือช่วงเวลาเปลี่ยนไปหลังจากรันครั้งนี้ ให้รันอีกครั้งเพื่ออัปเดตผล",bt_err:"โหลดข้อมูลทองไม่ได้: {msg}",bt_range_bad:"เลือกเดือนเริ่มต้นให้อยู่ก่อนเดือนสิ้นสุด",
+bt_start:"เริ่ม",bt_t_final:"ยอดเงินสุดท้าย",bt_t_dd:"ลดลงลึกที่สุด",bt_t_cyc:"รอบที่กำไร",bt_t_out:"ผลลัพธ์",bt_out_ok:"รอดตลอดช่วง",bt_out_ruin:"ลดลง {x}% ขึ้นไป",bt_out_wipe:"เสียพอร์ตทั้งหมด",
+bt_t_wr:"Win rate บนทองจริง",bt_t_wr_you:"ของคุณ: {x}",bt_t_exp:"ผลเฉลี่ยต่อไม้",bt_t_be:"Win rate จุดคุ้มทุน {x}",
+bt_v_wiped:"พอร์ตหมดในวันที่ {date} หลังเริ่ม Backtest {days} วัน",
+bt_v_ruin:"พอร์ตรอด แต่หลุดเส้นพอร์ตแตก −{x}% ในวันที่ {rdate} ลดลงลึกที่สุด {dd} ({date})",
+bt_v_ok:"พอร์ตรอดตลอดช่วง ลดลงลึกที่สุด {dd} ({date})",
+bt_v_grid:"{cyc} รอบ กำไร {win} รอบ ยอดเงินสุดท้าย {fin} ({ret})",
+bt_adr:"ช่วงนี้ทองวิ่งเฉลี่ยวันละ {x} pips ระยะห่างกริดของคุณคือ {step} pips ส่วนการจำลองด้านบนใช้ช่วงราคาต่อวันที่ใส่ ({y} pips) สำหรับทองให้ตั้งไว้ราว {x}",
+bt_v_fixed:"จุดเข้าแบบสุ่มด้วย Stop loss และเป้ากำไรของคุณ ชนะ {wr} ของไม้ทั้งหมดบนทองจริง (ช่วง 95%: {lo} ถึง {hi}) Win rate ที่คุณใส่คือ {you} จุดคุ้มทุนคือ {be}",
+bt_fx_above_t:"Win rate ของคุณสูงกว่าจุดเข้าแบบสุ่ม",bt_fx_within_t:"จุดเข้าแบบสุ่มได้ Win rate เท่ากับคุณ",bt_fx_below_t:"Win rate ของคุณต่ำกว่าจุดเข้าแบบสุ่ม",
+bt_fx_above:"จะมีความหมายก็ต่อเมื่อการทดสอบของคุณตรงไปตรงมา: จำนวนไม้พอ ไม่ใช้ข้อมูลย้อนหลังช่วย และคิดต้นทุนจริง ดูช่วงความเชื่อมั่นในส่วน Edge and confidence",
+bt_fx_within:"Stop loss และเป้ากำไรของคุณให้ Win rate นี้ได้เองโดยไม่ต้องมีฝีมือเลย ผลที่ผ่านมาจึงยังแยกไม่ออกจากโชค",
+bt_fx_below:"จุดเข้าแบบสุ่มที่ใช้ Stop loss และเป้ากำไรเดียวกันทำได้ดีกว่า Win rate ที่คุณใส่ ตรวจวิธีวัด หรือดูว่าจุดเข้าของคุณสวนทางกับตลาดหรือไม่",
+lg_bt_close:"มูลค่าพอร์ตตอนปิดวัน",lg_bt_low:"มูลค่าพอร์ตต่ำสุดระหว่างวัน รวมขาดทุนลอยตัว",lg_bt_px:"ราคาทอง ราคาฟิวเจอร์สจริง",lg_bt_worst:"จุดเริ่มของ 5 รอบที่ลึกที่สุด",
+bn_eq:"มูลค่าพอร์ตตลอด Backtest แถบแดงลงไปถึงจุดต่ำสุดของแต่ละวัน รวมขาดทุนลอยตัว ซึ่งเป็นค่าที่ Margin call ใช้ เส้นประคือยอดเงินเริ่มต้นและเส้นพอร์ตแตก",
+bn_stats:"ผลรวมทั้งช่วง หนึ่งรอบเริ่มจากออเดอร์แรกจนปิดออเดอร์ทั้งหมด",
+bn_price:"ราคาฟิวเจอร์สทองจริงตลอดช่วง ฟิวเจอร์สเปลี่ยนสัญญาใหม่ทุกไม่กี่เดือน จึงเห็นเป็นรอยกระโดดเล็กๆ ในกราฟ แต่ Backtest ตัดส่วนต่างนี้ออก จึงไม่นับเป็นการเคลื่อนไหวจริง จุดแดงคือจุดเริ่มของ 5 รอบที่ลึกที่สุด",
+bn_worst:"5 รอบที่ขาดทุนลอยตัวลึกที่สุด และผลตอนจบของแต่ละรอบ",gn_reach_bt:"สัดส่วนรอบที่เปิดออเดอร์แต่ละไม้ แท่งสุดท้ายคือความถี่ที่กริดเต็ม",
+bn_years:"ผลแยกตามปีปฏิทิน การลดลงลึกที่สุดวัดภายในแต่ละปี รวมขาดทุนลอยตัว",
+bn_rand:"เปิดไม้หลายพันไม้ ณ เวลาสุ่มและทิศทางสุ่มตลอดช่วง แต่ละไม้ใช้ Stop loss และเป้ากำไรของคุณ นี่คือผลของ Stop loss และเป้ากำไรบนทองจริงเมื่อไม่มีฝีมือ",
+bn_eqf:"รันตามลำดับเวลาหนึ่งครั้ง: เข้าแบบสุ่มประมาณจำนวนไม้ต่อวันของคุณ ทีละไม้ ขนาดตามกฎความเสี่ยงของคุณ ถ้าสุ่มใหม่ผลจะต่างไป ตัวอย่างทางซ้ายจึงเชื่อถือได้มากกว่า",
+bn_years_f:"ผลของการรันตามลำดับเวลา แยกตามปีปฏิทิน",
+sc_bt_can:["Backtest บนทองจริง","นำค่าที่คุณใส่มาเทรดซ้ำกับราคาทอง COMEX ราย 1 นาที 16 ปี ในช่วงเดือนใดก็ได้ แสดงมูลค่าพอร์ตรายวัน การลดลงลึกที่สุดและเกิดเมื่อไร รอบกริดที่แย่ที่สุด และผลรายปี สำหรับกลยุทธ์แบบ Stop loss ตายตัว จะวัด Win rate ที่ Stop loss และเป้ากำไรของคุณทำได้เมื่อเข้าแบบสุ่ม เพื่อเทียบกับของคุณ"],
+sc_bt_cant:["Backtest บนทองจริง",[["ทองคำเท่านั้น และเป็นฟิวเจอร์ส ไม่ใช่ Spot","ข้อมูลเป็นฟิวเจอร์สทองคำ COMEX ราคา XAUUSD Spot ของโบรกเกอร์ต่างกันเล็กน้อย เวลาเทรดและช่องว่างราคาไม่เหมือนกันทั้งหมด และส่วนต่างตรงรอยต่อสัญญาถูกตัดออกโดยการประมาณ (30 จาก 81 รอยต่อคร่อมวันหยุดสุดสัปดาห์ จึงประมาณจากรอยต่อใกล้เคียง)"],["สิ่งที่เกิดภายในแต่ละนาที","รู้แค่ราคาเปิด สูงสุด ต่ำสุด และปิด Backtest ถือว่านาทีที่ราคาขึ้นวิ่ง เปิด → ต่ำสุด → สูงสุด → ปิด และนาทีที่ราคาลงวิ่ง เปิด → สูงสุด → ต่ำสุด → ปิด ถ้า Stop loss และเป้ากำไรอยู่ในนาทีเดียวกัน ลำดับจริงอาจต่างออกไป"],["การจับคู่คำสั่งและต้นทุน","คำสั่งได้ราคาตรงระดับพอดี ยกเว้นราคากระโดดข้าม จึงได้ราคาหลังกระโดด ไม่มี Slippage นอกจากนั้น ไม่มี Swap ไม่ปัดล็อตเป็น 0.01 และไม่ตรวจมาร์จิ้น สเปรดคิดครั้งเดียวต่อออเดอร์"],["ไม่ใช่จุดเข้าจริงของคุณ","Backtest แบบ Stop loss ตายตัวใช้จุดเข้าแบบสุ่ม เพราะ Win rate และ Reward:risk ไม่ได้บอกว่าคุณเข้าเมื่อไร จึงทดสอบ Stop loss เป้ากำไร และกฎความเสี่ยงกับทองจริง ไม่ได้ทดสอบฝีมือการหาจุดเข้า"],["ข้อมูลตายตัว","ข้อมูลสิ้นสุดที่วันที่แสดงและไม่อัปเดต อดีตหนึ่งเส้นทางคือตัวอย่างเดียว กริดที่รอดในช่วงปีเหล่านี้อาจพังในการเคลื่อนไหวใหญ่ครั้งถัดไป"]]]
+});
 function t(k,v){
   let s=I18N[LANG]&&I18N[LANG][k];if(s===undefined)s=I18N.en[k];
   if(s===undefined){MISSING.push(k);return k;}
@@ -2393,7 +2595,109 @@ function gSurvival(g){
   <div class="s5">${card('Size table ('+H+' cycles)',tbl(['First order','P(ruin)','P(wiped out)'],swRows)+note('gn_sizetab'))}</div></div></section>`;}
 function drawGrid(){
   const g=D.gm;if(!g)return;EXPL=gExpl(g);
-  $('d-main').innerHTML=gSummary(g)+gExposure(g)+gOutcomes(g)+gSurvival(g);rowAlign();applyLayout();}
+  $('d-main').innerHTML=gSummary(g)+gExposure(g)+gOutcomes(g)+gSurvival(g)+btSection();rowAlign();applyLayout();}
+
+/* ---------- backtest on real gold (1-minute COMEX futures, loaded month by month in a worker) ---------- */
+const BT={idx:null,idxErr:null,from:null,to:null,dir:'buy',res:null,sig:null,kind:null,busy:false,prog:'',err:null,worker:null,id:0};
+const btBase=()=>new URL('data/gold/',location.href).href;
+const btFile=()=>location.protocol==='file:';
+const btCan=()=>typeof DecompressionStream!=='undefined'&&typeof Worker!=='undefined';
+const ymOf=min=>new Date(min*60000).toISOString().slice(0,7);
+const dfmt=min=>new Date(min*60000).toISOString().slice(0,10);
+function btIndex(){
+  if(BT.idx||BT.idxErr||btFile())return;
+  fetch(btBase()+'index.json').then(r=>{if(!r.ok)throw new Error('http '+r.status);return r.json();}).then(j=>{BT.idx=j;const ms=j.months.map(x=>x.m);BT.to=ms[ms.length-1];BT.from=ms[Math.max(0,ms.length-12)];btRedraw();})
+    .catch(e=>{BT.idxErr=String(e.message||e);btRedraw();});}
+function btSig(){return D.stype==='fixed'?'f'+sigOf(SIGF)+BT.from+BT.to:'g'+sigOf(SIGG)+BT.from+BT.to+BT.dir;}
+function btParams(){
+  if(D.stype==='fixed')return{kind:'fixed',sl:D.sl,rr:D.rr,costR:costR(),risk:D.risk/100,fixed:D.sizing==='fixed',dAfter:D.dAfter,dCut:D.dCut/100,bal0:D.bal,ruin:D.ruin/100,tpd:D.tpd,seed:7};
+  const G=gParams();return{kind:'grid',lot0:D.gLot,mult:G.mult,maxN:G.M,step:G.step,tp:D.gTp,sl:D.gSl,pv:G.pv,cpl:G.cpl,bal0:D.bal,scale:D.gAuto==='scale',ruin:D.ruin/100,dir:BT.dir};}
+function btRun(){
+  if(BT.busy||!BT.idx)return;if(D.stype==='fixed'&&!(D.sl>0))return;
+  const ms=BT.idx.months.map(x=>x.m).filter(m=>m>=BT.from&&m<=BT.to);if(!ms.length){BT.err=t('bt_range_bad');btRedraw();return;}
+  if(!BT.worker){BT.worker=new Worker(URL.createObjectURL(new Blob([$('s-btw').textContent],{type:'text/javascript'})));
+    BT.worker.onmessage=e=>{const m=e.data;if(m.id!==undefined&&m.id!==BT.id)return;
+      if(m.type==='progress'){BT.prog=m.stage==='run'?t('bt_running'):t('bt_load',{done:m.done,total:m.total});const el=$('bt-status');if(el)el.textContent=BT.prog;return;}
+      BT.busy=false;if(m.type==='error'){BT.err=t('bt_err',{msg:m.msg});}else{BT.res=m.out;BT.err=null;}btRedraw();};}
+  BT.busy=true;BT.err=null;BT.res=null;BT.prog=t('bt_load',{done:0,total:ms.length});BT.sig=btSig();BT.kind=D.stype;BT.id++;
+  BT.worker.postMessage({id:BT.id,base:btBase(),months:ms,rolls:BT.idx.rolls,params:btParams()});btRedraw();}
+function btRedraw(){const el=$('bt-sec');if(!el)return;const tpl=document.createElement('template');tpl.innerHTML=btSection();el.replaceWith(tpl.content.firstElementChild);rowAlign();}
+function btControls(){
+  const ms=BT.idx?BT.idx.months.map(x=>x.m):[],a=ms[0],b=ms[ms.length-1],g=D.stype!=='fixed';
+  const sel=(id,v,opts)=>`<select class="txt" data-bt="${id}">${opts.map(o=>`<option value="${o[0]}"${o[0]===v?' selected':''}>${esc(o[1])}</option>`).join('')}</select>`;
+  const pre=[['12',t('bt_p12')],['60',t('bt_p5')],['all',t('bt_pall')]];
+  return`<div class="btctl">
+    <label><span>${esc(t('bt_from'))}</span><input type="month" class="txt" data-bt="from" min="${a}" max="${b}" value="${BT.from}"></label>
+    <label><span>${esc(t('bt_to'))}</span><input type="month" class="txt" data-bt="to" min="${a}" max="${b}" value="${BT.to}"></label>
+    ${g?`<label><span>${esc(t('bt_dir'))}</span>${sel('dir',BT.dir,[['buy',t('bt_dir_buy')],['sell',t('bt_dir_sell')],['alt',t('bt_dir_alt')]])}</label>`:''}
+    <div class="btpre">${pre.map(p=>`<button type="button" class="btn alt" data-bt-pre="${p[0]}">${esc(p[1])}</button>`).join('')}</div>
+    <button type="button" class="btn" data-bt-run="1"${BT.busy?' disabled':''}>${esc(t(BT.res&&BT.sig!==btSig()?'bt_rerun':'bt_run'))}</button>
+    <span class="small muted" id="bt-status" aria-live="polite">${BT.busy?esc(BT.prog):''}</span></div>`;}
+function btSection(){
+  const g=D.stype!=='fixed',I=BT.idx;let body='';
+  const head=`<h2>Backtest on real gold<small>${esc(I?t('bt_src',{a:dfmt(I.from),b:dfmt(I.to)}):t('bt_src0'))}</small></h2>`;
+  if(btFile())body=`<div class="card"><p class="warnnote" style="margin:0">${esc(t('bt_file'))}</p></div>`;
+  else if(!btCan())body=`<div class="card"><p class="warnnote" style="margin:0">${esc(t('bt_nodecomp'))}</p></div>`;
+  else if(BT.idxErr)body=`<div class="card"><p class="errnote" style="margin:0">${esc(t('bt_err',{msg:BT.idxErr}))}</p></div>`;
+  else if(!I){btIndex();body=`<div class="card"><p class="small muted" style="margin:0">${esc(t('bt_idx'))}</p></div>`;}
+  else{
+    const need=D.stype==='fixed'&&!(D.sl>0);
+    body=`<div class="card"><p class="small" style="margin:0 0 .4rem">${esc(t('bt_intro'))}</p><p class="small muted" style="margin:0 0 .8rem">${esc(t(D.stype==='fixed'?'bt_uses_fixed':D.stype==='grid'?'bt_uses_grid':'bt_uses_ns'))}</p>
+      ${need?`<p class="warnnote" style="margin:0">${esc(t('bt_need_sl'))}</p>`:btControls()}
+      ${BT.err?`<p class="errnote" style="margin:.7rem 0 0">${esc(BT.err)}</p>`:''}
+      ${BT.res&&BT.kind===D.stype&&BT.sig!==btSig()&&!BT.busy?`<p class="warnnote" style="margin:.7rem 0 0">${esc(t('bt_stale'))}</p>`:''}</div>`;
+    if(BT.res&&BT.kind===D.stype)body+=BT.res.kind==='fixed'?btFixed(BT.res):btGrid(BT.res);}
+  return`<section class="dsec" data-step="0" id="bt-sec">${head}${body}</section>`;}
+const xDate=v=>{const d=new Date(v*60000);return d.toISOString().slice(0,7);};
+function btEquity(r){
+  const d=r.book.days,b0=D.bal,cl=d.map(x=>[x[0],x[1]]),lo=d.map(x=>[x[0],Math.max(0,x[2])]),ymax=Math.max(b0*1.1,...cl.map(x=>x[1]))*1.05;
+  const vl=[];if(r.book.wipeAt>0)vl.push({x:r.book.wipeAt,color:'var(--bad)'});
+  return CH.plot({w:860,h:260,m:{l:62,r:14},series:[{pts:lo,color:'var(--bad)',w:1,op:0.8},{pts:cl,color:'var(--accent)',w:2}],areas:[{upper:cl,lower:lo,color:'var(--bad)',op:0.12}],
+    hlines:[{y:b0,color:'var(--muted)',label:t('bt_start')},{y:b0*(1-D.ruin/100),color:'var(--warn)',label:t('d_ruin_line',{x:D.ruin})}],vlines:vl,xlo:d[0][0],xhi:d[d.length-1][0],ylo:0,yhi:ymax,xfmt:xDate,yfmt:v=>cmpNum(v),ylabel:'equity',label:'Equity on real gold'});}
+function btYears(r){return tbl(['Year','Start','End','Return','Deepest fall',r.kind==='fixed'?'Trades (won)':'Cycles (won)'],r.book.years.map(y=>[String(y.y),money(y.start),money(y.end),y.start>0?sgn((y.end/y.start-1)*100,1)+'%':'–','−'+pc(Math.min(1,y.mdd)),y.n+' ('+y.w+')']));}
+function btOutcome(r){const b=r.book;return b.wipeAt>0?['bad',t('bt_out_wipe'),dfmt(b.wipeAt)]:b.ruinAt>0?['bad',t('bt_out_ruin',{x:D.ruin}),dfmt(b.ruinAt)]:['ok',t('bt_out_ok'),''];}
+function btVerdict(r){const b=r.book,days=Math.round((b.wipeAt-r.from)/1440),dd='−'+pc(Math.min(1,b.mdd));
+  return b.wipeAt>0?t('bt_v_wiped',{date:dfmt(b.wipeAt),days}):b.ruinAt>0?t('bt_v_ruin',{dd,date:dfmt(b.mddAt),x:D.ruin,rdate:dfmt(b.ruinAt)}):t('bt_v_ok',{dd,date:dfmt(b.mddAt)});}
+function btGrid(r){
+  const st=r.st,b=r.book,o=btOutcome(r),ret=D.bal>0?sgn((r.final/D.bal-1)*100,1)+'%':'–';
+  const tiles=[['',t('bt_t_final'),money(r.final),ret],['bad',t('bt_t_dd'),'−'+pc(Math.min(1,b.mdd)),dfmt(b.mddAt)],['',t('bt_t_cyc'),st.cycles?pc(st.wins/st.cycles):'–',st.cycles.toLocaleString('en-US')+' cycles'],[o[0],t('bt_t_out'),o[1],o[2]]];
+  const rows=[['Range',dfmt(r.from)+' → '+dfmt(r.to)],['1-minute bars',r.n.toLocaleString('en-US')],['Contract rolls removed',String(r.rolls)],['Gold average daily range',Math.round(r.adr).toLocaleString('en-US')+' pips'],
+    ['Cycles completed (won)',st.cycles.toLocaleString('en-US')+' ('+st.wins.toLocaleString('en-US')+')'],['Average win / loss',(st.wins?money(st.sumW/st.wins):'–')+' / '+(st.cycles-st.wins?money(st.sumL/(st.cycles-st.wins)):'–')],
+    ['Worst closed cycle',st.worst<0?money(st.worst)+' ('+dfmt(st.worstAt)+')':'–'],['Deepest floating loss',money(-st.maeMax)+' ('+dfmt(st.maeAt)+')'],['Cycles ending at the final stop',String(st.stops)],
+    ['Longest cycle',(st.longest/1440).toFixed(1)+' days (from '+dfmt(st.longestAt)+')'],['Open at the end',r.openOrders?r.openOrders+' orders, floating '+money(r.floatEnd):'none']];
+  const d=b.days,px=d.map(x=>[x[0],x[3]/10]),wl=st.worstList||[];
+  const pc2=CH.plot({w:520,h:240,series:[{pts:px,color:'var(--c1)',w:1.6}],dots:wl.map(w=>{const k=d.findIndex(x=>x[0]>=Math.floor(w.start/1440)*1440);return{x:w.start,y:(k>=0?d[k][3]:d[d.length-1][3])/10,r:4,color:'var(--bad)',op:1};}),xlo:d[0][0],xhi:d[d.length-1][0],xfmt:xDate,yfmt:v=>'$'+cmpNum(v),ylabel:'gold',label:'Gold price over the backtest'});
+  const wt=wl.length?tbl(['#','Started','Ended','Side','Orders','Deepest float','Result'],wl.map((w,i)=>[String(i+1),dfmt(w.start),w.state?'–':dfmt(w.end),w.side>0?'buy':'sell',String(w.orders),money(-w.mae),w.state==='wiped'?'<b>wiped out</b>':w.state==='open'?'still open':money(w.net)])):`<p class="small muted">–</p>`;
+  const reach=G=>st.reach.map((x,i)=>({label:String(i+1),value:st.cycles?x/st.cycles*100:0,color:i===st.reach.length-1?'var(--bad)':'var(--c2)'}));
+  return`<div class="card"><div class="dverdict"><span class="light" data-v="${o[0]==='ok'?'ok':'bad'}" aria-hidden="true">${ICON[o[0]==='ok'?'ok':'bad']}</span><div><h2>${esc(o[0]==='ok'?t('bt_out_ok'):o[1])}</h2><p class="small" style="margin:0">${esc(btVerdict(r)+' '+t('bt_v_grid',{cyc:st.cycles.toLocaleString('en-US'),win:st.wins.toLocaleString('en-US'),fin:money(r.final),ret}))}</p></div></div>
+    <div class="gtile">${tiles.map(x=>`<div class="${x[0]}"><span>${esc(x[1])}</span><b>${esc(x[2])}</b>${x[3]?`<span>${esc(x[3])}</span>`:''}</div>`).join('')}</div>
+    ${D.stype==='grid'&&r.adr>0?`<p class="small muted" style="margin:.7rem 0 0">${esc(t('bt_adr',{x:Math.round(r.adr).toLocaleString('en-US'),y:D.gVol,step:D.gStep}))}</p>`:''}</div>
+  <div class="dgrid"><div class="s12">${card('Equity on real gold',ch(btEquity(r))+lg([['var(--accent)',t('lg_bt_close')],['var(--bad)',t('lg_bt_low')]])+note('bn_eq'))}</div>
+  <div class="s5">${card('Backtest statistics',kv(rows)+note('bn_stats'))}</div>
+  <div class="s7">${card('Gold price',ch(pc2)+lg([['var(--c1)',t('lg_bt_px')],['var(--bad)',t('lg_bt_worst')]])+note('bn_price'))}</div>
+  <div class="s7">${card('Deepest cycles',wt+note('bn_worst'))}</div>
+  <div class="s5">${card('Orders reached',D.stype==='grid'?ch(CH.bars({w:420,h:200,items:reach(),ymax:100,yfmt:v=>v+'%',valFmt:v=>v<1?(v<0.1?'<.1':v.toFixed(1)):Math.round(v)+'',xlabel:'order number',ylabel:'cycles reaching it',label:'Orders reached in the backtest'}))+note('gn_reach_bt'):kv([['Stops hit',String(st.stops)]])+note('gn_reach_bt'))}</div>
+  <div class="s12">${card('By year',btYears(r)+note('bn_years'))}</div></div>`;}
+function btFixed(r){
+  const st=r.st,sm=r.sample,b=r.book,o=btOutcome(r),wr=sm.n?sm.wins/sm.n:0,ci=SFX.wilson(wr,sm.n),you=D.wr/100,c=costR(),be=(1+c)/(D.rr+1),ret=D.bal>0?sgn((r.final/D.bal-1)*100,1)+'%':'–';
+  const cmp=you>ci[1]?'bt_fx_above':you>=ci[0]?'bt_fx_within':'bt_fx_below';
+  const tiles=[['',t('bt_t_wr'),pc(wr),t('bt_t_wr_you',{x:pc(you,0)})],['',t('bt_t_exp'),rfmt(sm.meanR,3),t('bt_t_be',{x:pc(be)})],['',t('bt_t_final'),money(r.final),ret],[o[0],t('bt_t_out'),o[1],o[2]||'−'+pc(Math.min(1,b.mdd))]];
+  const rows=[['Range',dfmt(r.from)+' → '+dfmt(r.to)],['1-minute bars',r.n.toLocaleString('en-US')],['Contract rolls removed',String(r.rolls)],['Gold average daily range',Math.round(r.adr).toLocaleString('en-US')+' pips'],
+    ['Stop / target',D.sl+' / '+(+(D.sl*D.rr).toFixed(1))+' pips'],['Random entries sampled',sm.n.toLocaleString('en-US')],['Win rate [95% CI]',`<b>${pc(wr)}</b> [${pc(ci[0])}–${pc(ci[1])}]`],['Your stated win rate',pc(you,1)],['Break-even win rate (with costs)',pc(be)],
+    ['Average result per trade',rfmt(sm.meanR,3)],['Worst loss',rfmt(sm.worstR,2)],['Losses beyond the stop (gaps)',sm.gapLoss+' of '+sm.n],['Median time in a trade',sm.medMin<120?Math.round(sm.medMin)+' min':(sm.medMin/60).toFixed(1)+' h']];
+  const runRows=[['Trades taken (won)',st.trades.toLocaleString('en-US')+' ('+st.wins.toLocaleString('en-US')+')'],['Final balance',money(r.final)+' ('+ret+')'],['Deepest fall','−'+pc(Math.min(1,b.mdd))+' ('+dfmt(b.mddAt)+')'],['Worst single trade',rfmt(st.worstR,2)+(st.worstAt?' ('+dfmt(st.worstAt)+')':'')],['Gap losses beyond the stop',String(st.gaps)]];
+  return`<div class="card"><div class="dverdict"><span class="light" data-v="${cmp==='bt_fx_above'?'warn':'bad'}" aria-hidden="true">${ICON[cmp==='bt_fx_above'?'warn':'bad']}</span><div><h2>${esc(t(cmp+'_t'))}</h2><p class="small" style="margin:0">${esc(t('bt_v_fixed',{wr:pc(wr),lo:pc(ci[0]),hi:pc(ci[1]),you:pc(you,0),be:pc(be)})+' '+t(cmp))}</p></div></div>
+    <div class="gtile">${tiles.map(x=>`<div class="${x[0]}"><span>${esc(x[1])}</span><b>${esc(x[2])}</b>${x[3]?`<span>${esc(x[3])}</span>`:''}</div>`).join('')}</div></div>
+  <div class="dgrid"><div class="s5">${card('Random-entry check',kv(rows)+note('bn_rand'))}</div>
+  <div class="s7">${card('Equity: one random-entry run',ch(btEquity(r))+lg([['var(--accent)',t('lg_bt_close')],['var(--bad)',t('lg_bt_low')]])+kv(runRows)+note('bn_eqf'))}</div>
+  <div class="s12">${card('By year',btYears(r)+note('bn_years_f'))}</div></div>`;}
+function btEvents(){
+  const main=$('d-main');
+  main.addEventListener('click',e=>{const r=e.target.closest('[data-bt-run]');if(r){btRun();return;}
+    const p=e.target.closest('[data-bt-pre]');if(p&&BT.idx){const ms=BT.idx.months.map(x=>x.m),k=p.dataset.btPre;BT.to=ms[ms.length-1];BT.from=k==='all'?ms[0]:ms[Math.max(0,ms.length-(+k))];btRedraw();}});
+  main.addEventListener('change',e=>{const el=e.target.closest('[data-bt]');if(!el)return;const k=el.dataset.bt,ms=BT.idx?BT.idx.months.map(x=>x.m):[];
+    if(k==='dir')BT.dir=el.value;else if(el.value){let v=el.value;if(ms.length){if(v<ms[0])v=ms[0];if(v>ms[ms.length-1])v=ms[ms.length-1];}BT[k]=v;if(BT.from>BT.to){if(k==='from')BT.to=BT.from;else BT.from=BT.to;}}
+    btRedraw();});}
 
 /* ---------- drawing ---------- */
 function verdictLine(r){
@@ -2791,7 +3095,7 @@ function draw(){
   const m=D.model,r=D.res,main=$('d-main');if(!m)return;
   EXPL=Object.assign({},buildModelExpl(m),r?buildHistExpl(r):{});
   const hist=r?(secSummary(r)+secEdge(r)+secSurvival(r)+secBehavior(r)+secCosts(r)):`<section class="dsec" data-step="7">${mHead(6)}<div class="card empty">${esc(D.histMsg())}</div></section>`;
-  main.innerHTML=mSummary(m)+mEdge(m)+mSurvival(m)+mSizing(m)+mStreaks(m)+mCosts(m)+hist;wiInit();rowAlign();applyLayout();}
+  main.innerHTML=mSummary(m)+mEdge(m)+mSurvival(m)+mSizing(m)+mStreaks(m)+mCosts(m)+hist+btSection();wiInit();rowAlign();applyLayout();}
 function applyLayout(){
   const secs=Array.from($('d-main').querySelectorAll('.dsec'));
   secs.forEach(s=>{const step=+s.dataset.step,vis=D.layout==='full'||D.stype!=='fixed'||step<=D.reached;s.hidden=!vis;const nb=s.querySelector('.nextbar');if(nb)nb.hidden=!(D.layout==='guided'&&step===D.reached);});}
@@ -2844,6 +3148,7 @@ function init(){
     if(h){unsetHidden=true;renderUnset();return;}
     if(g){const el=$(g.dataset.unsetGo);el.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(()=>el.focus({preventScroll:true}),250);}});
   $('d-apply').addEventListener('click',()=>{autoFill();statusLine();analyze();window.scrollTo(0,0);});
+  btEvents();
   $('d-main').addEventListener('input',e=>{const inp=e.target.closest('.wi input[type=range]');if(!inp)return;const box=inp.closest('.wi'),r=wiRange(inp.dataset.k);
     inp.nextElementSibling.textContent=r.f(inp.dataset.k==='n'||inp.dataset.k==='hor'?Math.round(+inp.value):+inp.value);wiLive(box);clearTimeout(wiTimer);wiTimer=setTimeout(()=>wiApply(box),350);});
   $('d-main').addEventListener('change',e=>{const inp=e.target.closest('.wi input[type=range]');if(!inp)return;clearTimeout(wiTimer);const box=inp.closest('.wi');requestAnimationFrame(()=>wiApply(box));});
@@ -3029,8 +3334,8 @@ function renderScope(){
   const li=(a,ic,cls)=>`<ul class="sclist ${cls}">${a.map(x=>`<li><i aria-hidden="true">${ic}</i><span><b>${esc(x[0])}.</b> ${esc(x[1])}</span></li>`).join('')}</ul>`;
   $('scope-body').innerHTML=`<h2 id="scope-title">${esc(t('sc_title'))}</h2><p>${esc(t('sc_intro'))}</p>`+
     `<h3>${esc(t('sc_type_h'))}</h3>${li(tl('sc_types'),'›','typ')}`+
-    `<h3 class="can">${esc(t('sc_can_h'))}</h3>${li(tl('sc_can'),'✓','can')}`+
-    `<h3 class="cant">${esc(t('sc_cant_h'))}</h3>`+tl('sc_cant').map(g=>`<h4>${esc(g[0])}</h4>${li(g[1],'✕','cant')}`).join('');}
+    `<h3 class="can">${esc(t('sc_can_h'))}</h3>${li(tl('sc_can').concat([tl('sc_bt_can')]),'✓','can')}`+
+    `<h3 class="cant">${esc(t('sc_cant_h'))}</h3>`+(()=>{const a=tl('sc_cant').slice();a.splice(a.length-1,0,tl('sc_bt_cant'));return a;})().map(g=>`<h4>${esc(g[0])}</h4>${li(g[1],'✕','cant')}`).join('');}
 function openScope(after){scopeBack=document.activeElement;scopeAfter=after||null;renderScope();const sc=$('scope');sc.hidden=false;sc.scrollTop=0;document.body.classList.add('locked');$('scope-ok').focus({preventScroll:true});}
 function closeScope(){const sc=$('scope');if(sc.hidden)return;sc.hidden=true;if($('gate').hidden)document.body.classList.remove('locked');
   if(scopeBack&&scopeBack.focus&&document.contains(scopeBack))scopeBack.focus({preventScroll:true});const f=scopeAfter;scopeAfter=null;if(f)f();}
