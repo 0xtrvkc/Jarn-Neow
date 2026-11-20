@@ -234,8 +234,162 @@ const cmp=v=>{const a=Math.abs(v);return a>=1e6?(+(v/1e6).toPrecision(3))+'M':a>
 
 /* ---------- inputs ---------- */
 const opt=(v,cur,label)=>`<option value="${v}"${String(v)===String(cur)?' selected':''}>${esc(label)}</option>`;
-const sel=(id,key,cur,opts)=>`<div class="formrow"><label for="${id}">${esc(t(key))}</label><select id="${id}" class="txt" data-lk="${id}">${opts.map(o=>opt(o[0],cur,t(o[1]))).join('')}</select></div>`;
-const fld=(id,key,val,min,max,step)=>`<div class="formrow"><label for="${id}">${esc(t(key))}</label><input id="${id}" class="txt${bad[id]?' bad':''}" type="number" inputmode="decimal" min="${min}" max="${max}" step="${step}" value="${val}" data-lk="${id}" data-min="${min}" data-max="${max}" aria-invalid="${!!bad[id]}"></div><p class="ferr" id="le-${id}"${bad[id]?'':' hidden'}>${esc(bad[id]||'')}</p>`;
+const tk=id=>`lab:f:${id.replace(/^lb-/,'')}`;
+const sel=(id,key,cur,opts)=>`<div class="formrow" data-tip="${tk(id)}"><label for="${id}">${esc(t(key))}</label><select id="${id}" class="txt" data-lk="${id}">${opts.map(o=>opt(o[0],cur,t(o[1]))).join('')}</select></div>`;
+const fld=(id,key,val,min,max,step)=>`<div class="formrow" data-tip="${tk(id)}"><label for="${id}">${esc(t(key))}</label><input id="${id}" class="txt${bad[id]?' bad':''}" type="number" inputmode="decimal" min="${min}" max="${max}" step="${step}" value="${val}" data-lk="${id}" data-min="${min}" data-max="${max}" aria-invalid="${!!bad[id]}"></div><p class="ferr" id="le-${id}"${bad[id]?'':' hidden'}>${esc(bad[id]||'')}</p>`;
+/* ---------- explanations shown on hover or focus ---------- */
+const LT={en:{
+ use:"How it's used.",ops:"Crosses above means at or below on the previous candle and above on this one. Is above means above on this candle, whatever happened before.",
+ f:{tf:["The candle size the rule reads. A signal is checked each time one of these candles closes.","Shorter candles give more trades and more noise; longer ones give fewer, slower signals. Stops and targets are still checked every minute.","1 hour: a signal can only appear on the hour."],
+  dir:["Whether the test takes buys, sells or both.","Gold rose strongly over most of these years, so a buy-only rule can look good from the trend alone. Compare it with gold's own move in the results.","Buy only: sell signals are ignored completely."],
+  preset:["Loads a ready-made rule into the conditions below.","A quick starting point. It replaces the current buy and sell conditions, and you can edit them afterwards.","RSI leaves 30 / 70: buy when RSI(14) crosses above 30."],
+  rmode:["How sell signals are made.","Mirror flips every buy condition, so rallies and drops are treated the same way. Its own conditions lets you write a different rule for sells.","Buy when RSI crosses above 30; the mirror sells when RSI crosses below 70."],
+  stop:["How far from the entry the stop loss sits.","A fixed distance stays the same in calm and wild markets; an ATR multiple widens when gold gets volatile. With no stop, a trade ends only at the target, an opposite signal or the time limit.","ATR multiple 2 with ATR at 80 pips: the stop is 160 pips away."],
+  stopV_pips:["Stop distance from the entry in pips (1 pip = $0.10).","When you risk a % of the balance, this also sets the lot size: a wider stop means fewer lots.","100 pips = a $10 move in gold."],
+  stopV_atr:["Stop distance as a multiple of ATR, measured on the signal candle.","It adapts to volatility: wider when gold is busy, tighter when it's quiet.","2 × ATR(14)."],
+  tgt:["Where the take-profit sits, if anywhere.","A multiple of the stop (R) keeps reward and risk in a fixed ratio. With none, trades end at the stop, an opposite signal or the time limit.","R multiple 2 with a 100-pip stop: the target is 200 pips away."],
+  tgtV_pips:["Target distance from the entry in pips.","Fills exactly at the target, never better.","200 pips = a $20 move in gold."],
+  tgtV_atr:["Target distance as a multiple of ATR on the signal candle.","Wider targets in busy markets, tighter in quiet ones.","4 × ATR(14)."],
+  tgtV_r:["Target distance as a multiple of the stop distance.","2 means a winning trade makes about twice what a losing one loses, before costs.","Stop 100 pips, R 2: target 200 pips."],
+  opp:["What happens to an open trade when the opposite signal appears.","Reverse closes it and opens the other way at the next minute's open. Ignore leaves it to its stop, target or time limit.","A buy is open and a sell signal appears: Reverse closes the buy and opens a sell."],
+  maxBars:["Closes a trade after this many candles of the chosen timeframe, unless something closed it earlier.","Useful for rules that should work quickly. 0 turns it off.","24 on 1-hour candles: closes after about a day."],
+  atrN:["How many candles ATR averages over, for ATR-based stops and targets.","Shorter reacts faster to a change in volatility; longer is steadier.","14 is the usual setting."],
+  bal:["The account at the start of the backtest.","Money results and trade sizes follow from it. The forward test carries on from the backtest's final balance.","10,000."],
+  size:["How the lot size of each trade is chosen.","Risking a % keeps every stopped-out loss the same share of the account, and compounds. Fixed lots keep the size constant.","1% of 10,000 with a 100-pip stop: 0.10 lots."],
+  risk:["Share of the current balance lost if the stop is hit, before costs.","Sets the lot size together with the stop distance, rounded down to 0.01 lots.","1%."],
+  lots:["The same size for every trade.","Money results scale directly with it.","0.10 lots: $1 per pip."],
+  spread:["The gap between the buy and sell price, in pips, charged once per trade.","Short timeframes trade often, so the spread weighs more there.","3 pips = $0.30, a typical gold spread."],
+  comm:["Broker commission per 1.0 lot, opening and closing together.","Charged on every trade by its lot size.","$7 per lot."],
+  btLen:["How many months the backtest covers.","This is the period you tune on. Longer covers more kinds of market.","12 months."],
+  fwLen:["How many months the forward test covers, straight after the backtest.","It has to be at least a quarter of the backtest, so a short lucky stretch can't pass for proof.","6 months after a 12-month backtest."],
+  start:["The month the backtest begins.","Only starts where both periods fit in the data are listed. For an honest test, pick forward months you haven't looked at.","Jun 2025: backtest Jun 2025 to May 2026, forward test from Jun 2026."]},
+ ind:{price:["The candle's close, open, high or low.","Compare price with an average or a band, for example Close crosses above EMA(50)."],
+  sma:["Average of the last N closes, each counted equally.","Price above it suggests an uptrend; two SMAs crossing is a classic trend signal."],
+  ema:["Average of the closes that counts recent candles more, so it turns sooner than an SMA.","Common as a trend filter (EMA 200) and for crosses (EMA 20 and 50)."],
+  wma:["Average with weights rising in a straight line, so the newest close counts most.","Between an SMA and an EMA in speed."],
+  dema:["Double EMA: removes part of an EMA's delay.","Faster crosses, but more false signals."],
+  tema:["Triple EMA: removes even more delay.","Very quick; works best with a trend filter."],
+  trima:["An average of an average: weights peak in the middle of the window, so it's very smooth.","Slow; good for the main direction."],
+  kama:["Kaufman's adaptive average: quick when price trends cleanly, almost flat when it chops.","Fewer false crosses in sideways markets than a plain EMA."],
+  hma:["Hull moving average: smooth and quick, built from weighted averages.","Turns early; used for crosses with price."],
+  linreg:["End point of the straight line that best fits the last N closes.","Works like an average with little delay."],
+  sar:["Parabolic SAR: points that trail price and close in faster as a trend runs, then flip side when price crosses them.","Close crossing above SAR is a trend-change entry; it's also used as a trailing stop."],
+  bb:["A middle SMA with bands a set number of standard deviations above and below.","Close back above the lower band for reversals; close above the upper band for breakouts."],
+  don:["Highest high and lowest low of the previous N candles. The current candle isn't included.","Close crossing above the upper line is a classic breakout entry."],
+  kc:["An EMA with bands a multiple of ATR above and below.","Like Bollinger Bands but steadier; used for breakouts and pullbacks."],
+  rsi:["Relative Strength Index, 0 to 100: average gains against average losses (Wilder smoothing).","Below 30 is called oversold and above 70 overbought; crossing back out is a reversal signal."],
+  stoch:["Where the close sits in the recent high-low range, 0 to 100. %D is a smoothed %K.","%K crossing %D below 20 or above 80."],
+  srsi:["Stochastic worked out on RSI instead of price, 0 to 100. Very fast.","Same levels as Stochastic; many signals, so it's best with a filter."],
+  macd:["Line: the 12 EMA minus the 26 EMA. Signal: a 9 EMA of the line. Histogram: the gap between them.","The line crossing its signal, or crossing 0."],
+  ppo:["MACD as a percentage of the slow EMA.","Comparable across years even though gold's price level changed a lot."],
+  cci:["How far the typical price is from its average, in units of average deviation.","Above +100 is strong, below −100 weak; crossing back is a reversal signal."],
+  willr:["Williams %R, −100 to 0: the close measured against the recent high.","Below −80 is oversold, above −20 overbought."],
+  cmo:["Chande momentum oscillator, −100 to +100: up moves against down moves.","Above +50 is strong, below −50 weak."],
+  roc:["Percentage change from N candles ago.","Crossing 0 marks momentum turning."],
+  mom:["Price change from N candles ago, in pips.","Crossing 0 marks momentum turning."],
+  trix:["The one-candle percentage change of a triple-smoothed EMA.","Crossing 0; the smoothing filters out small swings."],
+  ultosc:["Ultimate oscillator, 0 to 100: buying pressure over three windows, combined.","Below 30 is oversold, above 70 overbought."],
+  bop:["Balance of power, −1 to +1: the close against the open, relative to the candle's range.","Positive means buyers controlled the candle."],
+  dmi:["ADX measures how strong a trend is (0 to 100) but not its direction. +DI and −DI measure upward and downward movement.","+DI crossing above −DI while ADX is above 25 is a trend entry."],
+  aroon:["Aroon up and down, 0 to 100: how recently the N-candle high and low were made.","Up crossing above down signals a new uptrend."],
+  aroonosc:["Aroon up minus Aroon down, −100 to +100.","Above 0 leans up, below 0 leans down."],
+  atr:["Average true range: the average candle range including gaps, in pips.","As a filter, for example only trade when ATR is above a level."],
+  natr:["ATR as a percentage of price.","Compares volatility fairly across years."],
+  stddev:["Standard deviation of the closes over N candles, in pips.","Rising values mean price is getting more volatile."],
+  slope:["Slope of the best-fit line through the last N closes, in pips per candle.","Above 0 means price is rising on balance."],
+  p_engulf:["A candle whose body completely covers the previous body, in the opposite colour.","Bullish after a down candle, bearish after an up candle."],
+  p_harami:["A small body inside the previous long body.","A pause: bullish after a down candle, bearish after an up candle."],
+  p_hammer:["Small body at the top, long lower shadow, at or near the previous low.","Buyers pushed back from lower prices; bullish."],
+  p_star:["Shooting star: small body at the bottom, long upper shadow, opening above the previous candle.","Sellers pushed back from higher prices; bearish."],
+  p_morning:["Three candles: a long down candle, a small one below it, then an up candle closing well into the first.","Bullish reversal."],
+  p_evening:["Three candles: a long up candle, a small one above it, then a down candle closing well into the first.","Bearish reversal."],
+  p_soldiers:["Three rising up candles, each opening inside the last body and closing near its high.","Strong buying."],
+  p_crows:["Three falling down candles after an up candle, each closing near its low.","Strong selling."],
+  p_piercing:["An up candle that opens below the previous low and closes above the middle of the previous down body.","Bullish reversal."],
+  p_dark:["A down candle that opens above the previous high and closes below the middle of the previous up body.","Bearish reversal."],
+  p_doji:["Open and close almost equal.","Indecision; it has no direction by itself."]}},
+th:{
+ use:"วิธีใช้",ops:"ตัดขึ้นเหนือ หมายถึงแท่งก่อนหน้าอยู่ต่ำกว่าหรือเท่ากัน และแท่งนี้อยู่เหนือ ส่วนอยู่เหนือ หมายถึงแท่งนี้อยู่เหนือ ไม่ว่าก่อนหน้าจะเป็นอย่างไร",
+ f:{tf:["ขนาดแท่งเทียนที่กฎใช้อ่าน สัญญาณจะถูกตรวจทุกครั้งที่แท่งแบบนี้ปิด","แท่งสั้นได้ไม้เยอะและสัญญาณหลอกเยอะ แท่งยาวได้สัญญาณน้อยและช้ากว่า Stop และเป้ากำไรยังตรวจทุกนาทีเหมือนเดิม","1 ชั่วโมง: สัญญาณเกิดได้เฉพาะตอนต้นชั่วโมง"],
+  dir:["ให้การทดสอบเปิดไม้ซื้อ ขาย หรือทั้งสองฝั่ง","ทองขึ้นแรงเกือบตลอดช่วงปีเหล่านี้ กฎที่ซื้ออย่างเดียวจึงอาจดูดีเพราะเทรนด์ล้วนๆ ให้เทียบกับการขยับของราคาทองในผลลัพธ์","ซื้ออย่างเดียว: สัญญาณขายถูกละไว้ทั้งหมด"],
+  preset:["โหลดกฎสำเร็จรูปลงในเงื่อนไขด้านล่าง","เป็นจุดเริ่มต้นที่รวดเร็ว จะแทนที่เงื่อนไขซื้อและขายเดิม แล้วแก้ต่อได้","RSI ออกจาก 30 / 70: ซื้อเมื่อ RSI(14) ตัดขึ้นเหนือ 30"],
+  rmode:["วิธีสร้างสัญญาณขาย","กลับด้านจะพลิกทุกเงื่อนไขของฝั่งซื้อ ขาขึ้นและขาลงจึงถูกปฏิบัติเหมือนกัน ตั้งเงื่อนไขเองใช้เมื่ออยากให้ฝั่งขายมีกฎต่างออกไป","ซื้อเมื่อ RSI ตัดขึ้นเหนือ 30 แบบกลับด้านจะขายเมื่อ RSI ตัดลงใต้ 70"],
+  stop:["ระยะของ Stop loss จากจุดเข้า","ระยะคงที่เท่าเดิมทั้งตลาดเงียบและตลาดแรง ส่วนแบบเท่าของ ATR จะกว้างขึ้นเมื่อทองผันผวน ถ้าไม่ตั้ง Stop ไม้จะปิดเฉพาะที่เป้ากำไร สัญญาณตรงข้าม หรือครบเวลา","ATR 2 เท่า ขณะ ATR เท่ากับ 80 pips: Stop อยู่ห่าง 160 pips"],
+  stopV_pips:["ระยะ Stop จากจุดเข้าเป็น pips (1 pip = $0.10)","ถ้าเสี่ยงเป็น % ของทุน ค่านี้กำหนดขนาดล็อตด้วย Stop กว้างขึ้นล็อตก็เล็กลง","100 pips = ราคาทองขยับ $10"],
+  stopV_atr:["ระยะ Stop เป็นจำนวนเท่าของ ATR วัดที่แท่งสัญญาณ","ปรับตามความผันผวน กว้างเมื่อทองวิ่งแรง แคบเมื่อทองเงียบ","2 × ATR(14)"],
+  tgt:["ตำแหน่งเป้ากำไร (ถ้ามี)","แบบเท่าของ Stop (R) รักษาอัตราส่วนกำไรต่อความเสี่ยงให้คงที่ ถ้าไม่ตั้ง ไม้จะปิดที่ Stop สัญญาณตรงข้าม หรือครบเวลา","R 2 เท่ากับ Stop 100 pips: เป้าอยู่ห่าง 200 pips"],
+  tgtV_pips:["ระยะเป้ากำไรจากจุดเข้าเป็น pips","ได้ราคาตรงเป้าพอดี ไม่เคยดีกว่า","200 pips = ราคาทองขยับ $20"],
+  tgtV_atr:["ระยะเป้ากำไรเป็นจำนวนเท่าของ ATR ที่แท่งสัญญาณ","เป้ากว้างเมื่อตลาดแรง แคบเมื่อตลาดเงียบ","4 × ATR(14)"],
+  tgtV_r:["ระยะเป้ากำไรเป็นจำนวนเท่าของระยะ Stop","2 หมายถึงไม้ที่ชนะได้ประมาณสองเท่าของไม้ที่แพ้ ก่อนหักต้นทุน","Stop 100 pips และ R 2: เป้า 200 pips"],
+  opp:["สิ่งที่เกิดกับไม้ที่เปิดอยู่เมื่อเกิดสัญญาณตรงข้าม","กลับฝั่งจะปิดไม้แล้วเปิดฝั่งตรงข้ามที่ราคาเปิดของนาทีถัดไป ไม่สนใจจะปล่อยให้ไม้ปิดเองที่ Stop เป้ากำไร หรือครบเวลา","มีไม้ซื้อเปิดอยู่แล้วเกิดสัญญาณขาย: กลับฝั่งจะปิดไม้ซื้อและเปิดไม้ขาย"],
+  maxBars:["ปิดไม้เมื่อครบจำนวนแท่งของไทม์เฟรมที่เลือก ถ้ายังไม่มีอะไรปิดก่อน","เหมาะกับกฎที่ควรได้ผลเร็ว ใส่ 0 เพื่อปิดการทำงาน","24 บนแท่ง 1 ชั่วโมง: ปิดเมื่อผ่านไปราวหนึ่งวัน"],
+  atrN:["จำนวนแท่งที่ ATR ใช้หาค่าเฉลี่ย สำหรับ Stop และเป้ากำไรแบบ ATR","สั้นจะตอบสนองต่อความผันผวนที่เปลี่ยนเร็วกว่า ยาวจะนิ่งกว่า","ค่าปกติคือ 14"],
+  bal:["ทุนตอนเริ่ม Backtest","ผลเป็นเงินและขนาดไม้คำนวณจากค่านี้ Forward test ใช้ทุนต่อจากตอนจบ Backtest","10,000"],
+  size:["วิธีเลือกขนาดล็อตของแต่ละไม้","เสี่ยงเป็น % ทำให้ทุกไม้ที่โดน Stop เสียเป็นสัดส่วนเท่ากันของทุน และทบต้น ล็อตคงที่ใช้ขนาดเดิมทุกไม้","1% ของ 10,000 กับ Stop 100 pips: 0.10 ล็อต"],
+  risk:["สัดส่วนของทุนปัจจุบันที่เสียถ้าโดน Stop ก่อนหักต้นทุน","กำหนดขนาดล็อตร่วมกับระยะ Stop ปัดลงเป็น 0.01 ล็อต","1%"],
+  lots:["ขนาดเท่ากันทุกไม้","ผลเป็นเงินเปลี่ยนตามค่านี้โดยตรง","0.10 ล็อต: $1 ต่อ pip"],
+  spread:["ส่วนต่างราคาซื้อและขายเป็น pips คิดครั้งเดียวต่อไม้","ไทม์เฟรมสั้นเทรดบ่อย สเปรดจึงมีผลมากกว่า","3 pips = $0.30 สเปรดทองที่พบบ่อย"],
+  comm:["คอมมิชชั่นของโบรกเกอร์ต่อ 1.0 ล็อต รวมเปิดและปิด","คิดทุกไม้ตามขนาดล็อต","$7 ต่อล็อต"],
+  btLen:["จำนวนเดือนของ Backtest","ช่วงนี้คือช่วงที่คุณจูนค่า ยิ่งยาวยิ่งครอบคลุมสภาพตลาดหลายแบบ","12 เดือน"],
+  fwLen:["จำนวนเดือนของ Forward test ที่ต่อจาก Backtest ทันที","ต้องยาวอย่างน้อยหนึ่งในสี่ของ Backtest เพื่อไม่ให้ช่วงโชคดีสั้นๆ กลายเป็นหลักฐาน","6 เดือน ต่อจาก Backtest 12 เดือน"],
+  start:["เดือนที่ Backtest เริ่ม","แสดงเฉพาะวันเริ่มที่ทั้งสองช่วงอยู่ในข้อมูล ถ้าอยากได้การทดสอบที่ซื่อตรง ให้เลือกเดือน Forward ที่ยังไม่เคยดู","มิ.ย. 2025: Backtest มิ.ย. 2025 ถึง พ.ค. 2026 และ Forward test ตั้งแต่ มิ.ย. 2026"]},
+ ind:{price:["ราคาปิด เปิด สูงสุด หรือต่ำสุดของแท่ง","ใช้เทียบราคากับเส้นค่าเฉลี่ยหรือกรอบ เช่น ราคาปิดตัดขึ้นเหนือ EMA(50)"],
+  sma:["ค่าเฉลี่ยของราคาปิด N แท่งล่าสุด ทุกแท่งมีน้ำหนักเท่ากัน","ราคาอยู่เหนือเส้นบ่งบอกขาขึ้น SMA สองเส้นตัดกันเป็นสัญญาณเทรนด์แบบคลาสสิก"],
+  ema:["ค่าเฉลี่ยที่ให้น้ำหนักแท่งล่าสุดมากกว่า จึงหักหัวเร็วกว่า SMA","นิยมใช้กรองเทรนด์ (EMA 200) และใช้ตัดกัน (EMA 20 กับ 50)"],
+  wma:["ค่าเฉลี่ยที่น้ำหนักเพิ่มขึ้นเป็นเส้นตรง แท่งล่าสุดมีน้ำหนักมากที่สุด","ความเร็วอยู่ระหว่าง SMA กับ EMA"],
+  dema:["Double EMA: ลดความหน่วงของ EMA ลงส่วนหนึ่ง","ตัดกันเร็วขึ้น แต่สัญญาณหลอกก็มากขึ้น"],
+  tema:["Triple EMA: ลดความหน่วงได้มากกว่าอีก","เร็วมาก ใช้คู่กับตัวกรองเทรนด์จะดีที่สุด"],
+  trima:["ค่าเฉลี่ยของค่าเฉลี่ย น้ำหนักสูงสุดอยู่กลางช่วง จึงเรียบมาก","ช้า เหมาะใช้ดูทิศทางหลัก"],
+  kama:["ค่าเฉลี่ยปรับตัวของ Kaufman เร็วเมื่อราคาวิ่งเป็นเทรนด์ชัด เกือบนิ่งเมื่อราคาสวิงไปมา","ตัดกันหลอกในตลาดไซด์เวย์น้อยกว่า EMA ธรรมดา"],
+  hma:["Hull moving average: เรียบและเร็ว สร้างจากค่าเฉลี่ยถ่วงน้ำหนัก","หักหัวเร็ว ใช้ตัดกับราคา"],
+  linreg:["จุดปลายของเส้นตรงที่เข้ากับราคาปิด N แท่งล่าสุดได้ดีที่สุด","ทำงานเหมือนค่าเฉลี่ยที่หน่วงน้อย"],
+  sar:["Parabolic SAR: จุดที่ตามหลังราคาและไล่เข้ามาเร็วขึ้นเมื่อเทรนด์วิ่งต่อ แล้วสลับฝั่งเมื่อราคาตัดผ่าน","ราคาปิดตัดขึ้นเหนือ SAR ใช้เป็นจุดเข้าเมื่อเทรนด์เปลี่ยน และใช้เป็น Trailing stop ได้"],
+  bb:["เส้นกลาง SMA กับกรอบบนและล่างห่างออกไปตามจำนวนส่วนเบี่ยงเบนมาตรฐาน","ปิดกลับเหนือกรอบล่างใช้เล่นกลับตัว ปิดเหนือกรอบบนใช้เล่น Breakout"],
+  don:["จุดสูงสุดและต่ำสุดของ N แท่งก่อนหน้า ไม่รวมแท่งปัจจุบัน","ราคาปิดตัดขึ้นเหนือเส้นบนเป็นจุดเข้า Breakout แบบคลาสสิก"],
+  kc:["EMA กับกรอบบนและล่างห่างออกไปเป็นจำนวนเท่าของ ATR","คล้าย Bollinger Bands แต่นิ่งกว่า ใช้เล่น Breakout และย่อตัว"],
+  rsi:["Relative Strength Index 0 ถึง 100: เทียบกำไรเฉลี่ยกับขาดทุนเฉลี่ย (Wilder smoothing)","ต่ำกว่า 30 เรียกว่า Oversold สูงกว่า 70 เรียกว่า Overbought การตัดกลับออกมาเป็นสัญญาณกลับตัว"],
+  stoch:["ตำแหน่งของราคาปิดในกรอบสูงต่ำล่าสุด 0 ถึง 100 ส่วน %D คือ %K ที่ทำให้เรียบ","%K ตัด %D ใต้ 20 หรือเหนือ 80"],
+  srsi:["Stochastic ที่คำนวณจาก RSI แทนราคา 0 ถึง 100 เร็วมาก","ใช้ระดับเดียวกับ Stochastic สัญญาณเยอะ จึงควรมีตัวกรอง"],
+  macd:["เส้น: EMA 12 ลบ EMA 26 เส้น Signal: EMA 9 ของเส้น ฮิสโตแกรม: ระยะห่างระหว่างสองเส้น","เส้นตัดเส้น Signal หรือเส้นตัด 0"],
+  ppo:["MACD ในรูปเปอร์เซ็นต์ของ EMA เส้นช้า","เทียบข้ามปีได้แม้ระดับราคาทองเปลี่ยนไปมาก"],
+  cci:["ราคาเฉลี่ยของแท่งห่างจากค่าเฉลี่ยแค่ไหน วัดเป็นหน่วยของส่วนเบี่ยงเบนเฉลี่ย","เหนือ +100 แข็งแรง ใต้ −100 อ่อนแอ การตัดกลับเป็นสัญญาณกลับตัว"],
+  willr:["Williams %R −100 ถึง 0: ราคาปิดเทียบกับจุดสูงสุดล่าสุด","ใต้ −80 คือ Oversold เหนือ −20 คือ Overbought"],
+  cmo:["Chande momentum oscillator −100 ถึง +100: แรงขึ้นเทียบกับแรงลง","เหนือ +50 แข็งแรง ใต้ −50 อ่อนแอ"],
+  roc:["เปอร์เซ็นต์การเปลี่ยนแปลงจาก N แท่งก่อน","ตัด 0 บ่งบอกว่าโมเมนตัมเปลี่ยนทิศ"],
+  mom:["ราคาเปลี่ยนไปเท่าไรจาก N แท่งก่อน เป็น pips","ตัด 0 บ่งบอกว่าโมเมนตัมเปลี่ยนทิศ"],
+  trix:["เปอร์เซ็นต์การเปลี่ยนแปลงต่อแท่งของ EMA ที่ทำให้เรียบสามชั้น","ใช้การตัด 0 การทำให้เรียบช่วยกรองการแกว่งเล็กๆ"],
+  ultosc:["Ultimate oscillator 0 ถึง 100: แรงซื้อจากสามช่วงเวลารวมกัน","ใต้ 30 คือ Oversold เหนือ 70 คือ Overbought"],
+  bop:["Balance of power −1 ถึง +1: ราคาปิดเทียบราคาเปิด หารด้วยช่วงของแท่ง","ค่าบวกหมายถึงฝั่งซื้อคุมแท่งนั้น"],
+  dmi:["ADX วัดความแรงของเทรนด์ (0 ถึง 100) แต่ไม่บอกทิศ ส่วน +DI และ −DI วัดแรงขึ้นและแรงลง","+DI ตัดขึ้นเหนือ −DI ขณะ ADX เหนือ 25 เป็นจุดเข้าตามเทรนด์"],
+  aroon:["Aroon up และ down 0 ถึง 100: จุดสูงสุดและต่ำสุดของ N แท่งเกิดขึ้นเมื่อไม่นานแค่ไหน","Up ตัดขึ้นเหนือ down บ่งบอกขาขึ้นใหม่"],
+  aroonosc:["Aroon up ลบ Aroon down −100 ถึง +100","เหนือ 0 เอียงขึ้น ใต้ 0 เอียงลง"],
+  atr:["Average true range: ช่วงเฉลี่ยของแท่งรวมช่องว่างราคา เป็น pips","ใช้เป็นตัวกรอง เช่น เทรดเฉพาะตอน ATR สูงกว่าระดับหนึ่ง"],
+  natr:["ATR ในรูปเปอร์เซ็นต์ของราคา","เทียบความผันผวนข้ามปีได้อย่างยุติธรรม"],
+  stddev:["ส่วนเบี่ยงเบนมาตรฐานของราคาปิด N แท่ง เป็น pips","ค่าสูงขึ้นแปลว่าราคาผันผวนมากขึ้น"],
+  slope:["ความชันของเส้นตรงที่เข้ากับราคาปิด N แท่งล่าสุด เป็น pips ต่อแท่ง","มากกว่า 0 แปลว่าโดยรวมราคากำลังขึ้น"],
+  p_engulf:["แท่งที่ตัวแท่งกลืนตัวแท่งก่อนหน้าทั้งหมด และสีตรงข้ามกัน","ขาขึ้นเมื่อเกิดหลังแท่งลง ขาลงเมื่อเกิดหลังแท่งขึ้น"],
+  p_harami:["ตัวแท่งเล็กอยู่ภายในตัวแท่งยาวก่อนหน้า","จังหวะพัก ขาขึ้นหลังแท่งลง ขาลงหลังแท่งขึ้น"],
+  p_hammer:["ตัวแท่งเล็กอยู่ด้านบน ไส้ล่างยาว เกิดที่หรือใกล้จุดต่ำของแท่งก่อน","ฝั่งซื้อดันราคากลับจากระดับต่ำ เป็นสัญญาณขาขึ้น"],
+  p_star:["Shooting star: ตัวแท่งเล็กอยู่ด้านล่าง ไส้บนยาว เปิดเหนือแท่งก่อนหน้า","ฝั่งขายดันราคากลับจากระดับสูง เป็นสัญญาณขาลง"],
+  p_morning:["สามแท่ง: แท่งลงยาว แท่งเล็กอยู่ต่ำกว่า แล้วแท่งขึ้นปิดลึกเข้าไปในแท่งแรก","สัญญาณกลับตัวขาขึ้น"],
+  p_evening:["สามแท่ง: แท่งขึ้นยาว แท่งเล็กอยู่สูงกว่า แล้วแท่งลงปิดลึกเข้าไปในแท่งแรก","สัญญาณกลับตัวขาลง"],
+  p_soldiers:["แท่งขึ้นสามแท่งเรียงสูงขึ้น แต่ละแท่งเปิดในตัวแท่งก่อนหน้าและปิดใกล้จุดสูงสุด","แรงซื้อแข็งแรง"],
+  p_crows:["แท่งลงสามแท่งเรียงต่ำลงหลังแท่งขึ้น แต่ละแท่งปิดใกล้จุดต่ำสุด","แรงขายแข็งแรง"],
+  p_piercing:["แท่งขึ้นที่เปิดต่ำกว่าจุดต่ำก่อนหน้า และปิดเหนือกึ่งกลางของแท่งลงก่อนหน้า","สัญญาณกลับตัวขาขึ้น"],
+  p_dark:["แท่งลงที่เปิดสูงกว่าจุดสูงก่อนหน้า และปิดใต้กึ่งกลางของแท่งขึ้นก่อนหน้า","สัญญาณกลับตัวขาลง"],
+  p_doji:["ราคาเปิดกับปิดแทบเท่ากัน","ตลาดลังเล ไม่มีทิศทางในตัวเอง"]}}};
+const ltx=()=>LT[LANG]||LT.en;
+/* the explanation for one row: a setting, or the indicators in a condition */
+function tip(row){
+  const k=row.dataset.tip.slice(4),L=ltx();
+  if(k==='cond'){const box=row,side=box.dataset.side,c=C.rule[side]&&C.rule[side][+box.dataset.k];if(!c)return'';
+    const block=x=>{const r=IR.byId[x.id],d=L.ind[x.id]||LT.en.ind[x.id];return`<p class="tth">${esc(r.full||r.name)}</p><p>${esc(d[0])}</p><p><b>${esc(L.use)}</b> ${esc(d[1])}</p>`;};
+    let h=block(c.a);if(c.b&&c.b.id&&c.b.id!==c.a.id&&c.b.id!=='price')h+=block(c.b);
+    if(IR.byId[c.a.id].kind!=='pat')h+=`<p class="tex">${esc(L.ops)}</p>`;return h;}
+  let key=k.replace(/^f:/,'');if(key==='stopV')key='stopV_'+C.stop;if(key==='tgtV')key='tgtV_'+C.tgt;
+  const d=L.f[key]||LT.en.f[key];if(!d)return'';const lab=row.querySelector('label,span');
+  return`<p class="tth">${esc(lab?lab.textContent.trim():'')}</p><p>${esc(d[0])}</p><p><b>${esc(t('tip_why'))}</b> ${esc(d[1])}</p><p class="tex"><b>${esc(t('tip_ex'))}</b> ${esc(d[2])}</p>`;}
+
 /* ---------- the rule builder ---------- */
 const PL=k=>(LANG==='th'&&tl('PL')[k])||k;
 const GROUPS=['price','avg','band','osc','trend','vol','pat'];
@@ -261,7 +415,7 @@ function xParams(side,k,w,x,hide){const r=IR.byId[x.id],id=f=>`lc-${side}-${k}-$
   return h;}
 function condHTML(side,k,c){
   const r=IR.byId[c.a.id],id=f=>`lc-${side}-${k}-${f}`;
-  let h=`<div class="cond" data-side="${side}" data-k="${k}"><div class="crow"><select id="${id('a-id')}" class="txt" data-c="a.id" aria-label="${esc(t('r_buy'))} ${k+1}">${indOpts(c.a.id,true)}</select>`+
+  let h=`<div class="cond" data-tip="lab:cond" data-side="${side}" data-k="${k}"><div class="crow"><select id="${id('a-id')}" class="txt" data-c="a.id" aria-label="${esc(t('r_buy'))} ${k+1}">${indOpts(c.a.id,true)}</select>`+
     `<button type="button" class="cdel" data-cdel="1" aria-label="${esc(t('r_del'))}" title="${esc(t('r_del'))}">×</button></div>`+xParams(side,k,'a',c.a);
   const ops=r.kind==='pat'?r.dirs:['xa','xb','gt','lt'];
   h+=`<select id="${id('op')}" class="txt" data-c="op">${ops.map(o=>opt(o,c.op,t('op_'+o))).join('')}</select>`;
@@ -274,7 +428,7 @@ function entryCard(){const R=C.rule,sellC=IR.sellOf(R),list=(side,cs)=>cs.map((c
     (cs.length<4?`<button type="button" class="btn alt cadd" data-cadd="${side}">+ ${esc(t('r_add'))}</button>`:`<p class="small muted" style="margin:.3rem 0">${esc(t('r_max'))}</p>`);
   const sum=cs=>cs.length?cs.map(cText).join(t('r_and')):'–';
   return`<div class="card"><h3>${esc(t('lp_entry'))}</h3>`+
-    `<div class="formrow"><label for="lb-preset">${esc(t('l_preset'))}</label><select id="lb-preset" class="txt">${opt('','',t('pre_pick'))}${Object.keys(PRESETS).map(k=>opt(k,'',t('pre_'+k))).join('')}</select></div>`+
+    `<div class="formrow" data-tip="lab:f:preset"><label for="lb-preset">${esc(t('l_preset'))}</label><select id="lb-preset" class="txt">${opt('','',t('pre_pick'))}${Object.keys(PRESETS).map(k=>opt(k,'',t('pre_'+k))).join('')}</select></div>`+
     `<p class="rlab">${esc(t('r_buy'))}</p>`+list('buy',R.buy)+
     sel('lb-rmode','r_mode',R.mode,[['mirror','r_mirror'],['own','r_own']])+(R.mode==='own'?`<p class="rlab">${esc(t('r_sell'))}</p>`+list('sell',R.sell):'')+
     `<div class="rsum small"><p>${esc(t('r_sum_buy',{x:sum(R.buy)}))}</p><p>${esc(t('r_sum_sell',{x:sum(sellC)}))}</p></div><p class="small muted" style="margin:0">${esc(t('r_hint'))}</p></div>`;}
@@ -345,9 +499,9 @@ function periods(){
   const starts=[];for(let i=hi;i>=lo;i--)starts.push([ms[i],lmon(ms[i])]);
   const btOk=R.bt&&R.bt.sig===sig&&R.bt.wsig===wsig,ss=seenState(),blocked=R.busy||Object.keys(bad).length>0||(C.size==='risk'&&C.stop==='none');
   return avail(w)+`<div class="btctl">
-    <label><span>${esc(t('l_btlen'))}</span><select class="txt" data-lp="btLen">${BTL.map(v=>opt(v,C.btLen,mo(v))).join('')}</select></label>
-    <label><span>${esc(t('l_fwlen'))}</span><select class="txt" data-lp="fwLen">${fwOpts(C.btLen).map(v=>opt(v,C.fwLen,mo(v))).join('')}</select></label>
-    <label><span>${esc(t('l_start'))}</span><select class="txt" data-lp="start">${starts.map(s=>opt(s[0],C.start,s[1])).join('')}</select></label></div>
+    <label data-tip="lab:f:btLen"><span>${esc(t('l_btlen'))}</span><select class="txt" data-lp="btLen">${BTL.map(v=>opt(v,C.btLen,mo(v))).join('')}</select></label>
+    <label data-tip="lab:f:fwLen"><span>${esc(t('l_fwlen'))}</span><select class="txt" data-lp="fwLen">${fwOpts(C.btLen).map(v=>opt(v,C.fwLen,mo(v))).join('')}</select></label>
+    <label data-tip="lab:f:start"><span>${esc(t('l_start'))}</span><select class="txt" data-lp="start">${starts.map(s=>opt(s[0],C.start,s[1])).join('')}</select></label></div>
     <p class="small muted" style="margin:.6rem 0 0">${esc(t('per_rule')+' '+t('per_warm',{n:warmMonths()}))}</p>
     <div class="labrun"><button type="button" class="btn${btOk?' alt':''}" data-lrun="bt"${blocked?' disabled':''}>${esc(t(R.bt&&R.bt.wsig===wsig?'rerun_bt':'run_bt'))}</button>
     <button type="button" class="btn${btOk?'':' alt'}" data-lrun="fw"${blocked||!btOk?' disabled':''}>${esc(t('run_fw'))}</button>
@@ -461,5 +615,5 @@ function init(root){
   m.addEventListener('click',e=>{const r=e.target.closest('[data-lrun]');if(r){go(r.dataset.lrun);return;}
     if(e.target.closest('[data-lcsv]')){const fwOn=R.view==='fw'&&R.fw&&R.fw.wsig===wsigOf();csv(fwOn?R.fw:R.bt);}});}
 function refresh(){if(!R.root)return;drawAside();drawMain();}
-return{init,refresh};
+return{init,refresh,tip};
 })();

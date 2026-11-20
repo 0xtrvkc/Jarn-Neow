@@ -246,6 +246,8 @@ html[data-mode=desk] select,html[data-mode=desk] .txt{border-radius:2px;backgrou
 .tip .tex{background:var(--soft);border-left:3px solid var(--accent);padding:.45rem .6rem;margin:0}.tip .tex b{color:var(--accent)}
 .formrow[data-tip]{cursor:help;margin-left:-.4rem;margin-right:-.4rem;padding:.15rem .4rem}
 .formrow[data-tip]>label,.formrow[data-tip]>span:first-child{cursor:help}
+.cond[data-tip]{cursor:help}.cond.tipon{box-shadow:inset 2px 0 0 var(--accent)}
+.btctl label[data-tip]{cursor:help}.btctl label[data-tip]>span::after{content:"?";display:inline-grid;place-items:center;width:1rem;height:1rem;margin-left:.35rem;border:1px solid var(--muted);border-radius:50%;font:600 .62rem/1 var(--mono);color:var(--muted);vertical-align:.12em}
 .formrow[data-tip]>label::after,.formrow[data-tip]>span:first-child::after{content:"?";display:inline-grid;place-items:center;width:1rem;height:1rem;margin-left:.35rem;border:1px solid var(--muted);border-radius:50%;font:600 .62rem/1 var(--mono);color:var(--muted);vertical-align:.12em}
 .formrow.tipon{background:var(--soft);box-shadow:inset 2px 0 0 var(--accent)}
 .formrow.tipon>label::after,.formrow.tipon>span:first-child::after{border-color:var(--accent);color:var(--accent)}
@@ -2819,7 +2821,7 @@ function loadDesk(){
     sc.onerror=()=>{deskLoading=null;if(main)main.innerHTML=`<div class="errnote">${esc(t('desk_load_err'))}</div>`;fail(new Error('expert.js'));};document.head.appendChild(sc);});
   return deskLoading;}
 /* ----- the gold playground (an Expert tab) lives in lab.js and lab-worker.js, loaded the first time the tab opens ----- */
-const LAB_V='360d6ff7';
+const LAB_V='a6fb217a';
 const labReady=()=>typeof LAB!=='undefined';
 let labLoading=null;
 function loadLab(){
@@ -2964,22 +2966,26 @@ PLAY.init();ILL.init();
   Object.keys(map).forEach(id=>{const el=$(id);if(!el)return;const row=el.closest('.formrow');row.dataset.tip=map[id];el.setAttribute('aria-describedby','tip');rows.push(row);});
   const sr=document.querySelector('#p-sim [data-i18n=d_sims]');if(sr){const row=sr.closest('.formrow');row.dataset.tip='sims';row.tabIndex=0;rows.push(row);}
   function fill(row){const k=row.dataset.tip,lab=row.querySelector('label,span');
+    /* the gold playground builds its own explanations (its rows are redrawn as settings change) */
+    if(k.indexOf('lab:')===0){tip.innerHTML=typeof LAB!=='undefined'?LAB.tip(row):'';return;}
     tip.innerHTML=`<p class="tth">${esc(lab?lab.textContent.trim():'')}</p><p>${esc(t('tip_'+k+'_w'))}</p><p><b>${esc(t('tip_why'))}</b> ${esc(t('tip_'+k+'_y'))}</p><p class="tex"><b>${esc(t('tip_ex'))}</b> ${esc(t('tip_'+k+'_e'))}</p>`;}
   function place(row){
-    const r=row.getBoundingClientRect(),aside=row.closest('.d-aside').getBoundingClientRect(),vw=window.innerWidth,vh=window.innerHeight;
-    tip.hidden=false;const wide=vw>=1024;
+    const r=row.getBoundingClientRect(),as=row.closest('.d-aside'),aside=as?as.getBoundingClientRect():null,vw=window.innerWidth,vh=window.innerHeight;
+    tip.hidden=false;const wide=vw>=1024&&!!aside;
     if(wide){tip.style.width='360px';const h=tip.offsetHeight;tip.style.left=Math.min(aside.right+12,vw-372)+'px';tip.style.top=Math.max(8,Math.min(r.top-10,vh-h-8))+'px';}
     else{tip.style.width=Math.min(vw-24,r.width+16)+'px';const h=tip.offsetHeight;tip.style.left=Math.max(12,r.left-8)+'px';tip.style.top=(r.bottom+h+8<vh?r.bottom+6:Math.max(8,r.top-h-6))+'px';}}
-  function show(row){if(document.documentElement.dataset.mode!=='desk')return;cur=row;rows.forEach(x=>x.classList.toggle('tipon',x===row));fill(row);place(row);}
-  function hide(row){if(row&&row!==cur)return;cur=null;tip.hidden=true;rows.forEach(x=>x.classList.remove('tipon'));}
-  rows.forEach(row=>{
-    row.addEventListener('mouseenter',()=>show(row));
-    row.addEventListener('mouseleave',()=>{const a=document.activeElement;if(a&&row.contains(a))return;hide(row);});
-    row.addEventListener('focusin',()=>show(row));
-    row.addEventListener('focusout',()=>{setTimeout(()=>{const a=document.activeElement;if(!(a&&row.contains(a))&&!row.matches(':hover'))hide(row);},0);});});
+  function show(row){if(document.documentElement.dataset.mode!=='desk')return;if(cur&&cur!==row)cur.classList.remove('tipon');cur=row;row.classList.add('tipon');fill(row);place(row);}
+  function hide(row){if(row&&row!==cur)return;if(cur)cur.classList.remove('tipon');cur=null;tip.hidden=true;}
+  /* delegated, so rows drawn later (the playground) get explanations too */
+  const rowOf=n=>n&&n.closest?n.closest('#desk [data-tip]'):null;
+  document.addEventListener('mouseover',e=>{const row=rowOf(e.target);if(row&&row!==cur)show(row);});
+  document.addEventListener('mouseout',e=>{const row=rowOf(e.target);if(!row||row!==cur||row.contains(e.relatedTarget))return;const a=document.activeElement;if(a&&row.contains(a))return;hide(row);});
+  document.addEventListener('focusin',e=>{const row=rowOf(e.target);if(row)show(row);else if(cur)hide(cur);});
+  document.addEventListener('focusout',e=>{const row=rowOf(e.target);if(!row)return;setTimeout(()=>{if(!row.isConnected){if(cur===row)hide(row);return;}const a=document.activeElement;if(!(a&&row.contains(a))&&!row.matches(':hover'))hide(row);},0);});
+  /* a row redrawn under the pointer is replaced; drop the old one */
+  new MutationObserver(()=>{if(cur&&!cur.isConnected)hide(cur);}).observe(document.getElementById('desk'),{childList:true,subtree:true});
   const re=()=>{if(cur)place(cur);};
-  window.addEventListener('scroll',re,{passive:true});window.addEventListener('resize',re);
-  document.querySelectorAll('.d-aside').forEach(a=>a.addEventListener('scroll',re,{passive:true}));
+  window.addEventListener('scroll',re,{passive:true,capture:true});window.addEventListener('resize',re);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')hide(cur);});
   window.__sfxTip={refresh:()=>{if(cur){fill(cur);place(cur);}},hide:()=>hide(cur)};
 })();
