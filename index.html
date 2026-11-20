@@ -573,6 +573,8 @@ html[data-mode=desk] .gtop{justify-content:flex-end}
 .fspr{display:none}
 html[data-mode=play] .fspr{display:flex;gap:.6rem;margin-bottom:.4rem;opacity:.95}
 
+.spr.swap{animation:spr 1.44s steps(16) infinite,swapin .45s cubic-bezier(.2,1.5,.4,1)}
+@keyframes swapin{from{transform:scale(.3) rotate(-12deg);opacity:0}}
 /* the roast screen */
 .gate-box.intro>:not(.gtop):not(#gate-intro){display:none!important}
 .gate-box.intro .gtop>.spr{display:none!important}
@@ -986,6 +988,17 @@ const DECO=(function(){
   const g=mix(ghosts);o.ghosts=g;o.roastGhost=g[5];
   document.querySelectorAll('[data-slot]').forEach(e=>{e.dataset.s=o[e.dataset.slot];});
   return o;})();
+/* while you look at the page, two charms on screen trade places every 2.5 s (paused in Expert, behind popups and in background tabs) */
+(function(){
+  const SEL={fan:'#fan-card .hh .spr',why:'#why .hh .spr',fix:'#fix .hh .spr',deeper:'#deeper .hh .spr'},el=k=>document.querySelector(SEL[k]||'[data-slot="'+k+'"]');
+  const slots=['altarL','altarC','altarR','inputs','fan','why','fix','deeper','nudge','foot1','foot2','foot3'];
+  const seen=e=>{if(!e||e.offsetParent===null)return false;const r=e.getBoundingClientRect();return r.bottom>0&&r.top<innerHeight;};
+  const put=(k,n)=>{DECO[k]=n;const e=el(k);if(e){e.dataset.s=n;e.classList.remove('swap');void e.offsetWidth;e.classList.add('swap');}};
+  setInterval(()=>{
+    if(document.hidden||document.documentElement.dataset.mode!=='play'||document.body.classList.contains('locked'))return;
+    const vis=slots.filter(k=>seen(el(k)));if(!vis.length)return;
+    const a=vis[Math.floor(Math.random()*vis.length)],rest=slots.filter(k=>k!==a),b=rest[Math.floor(Math.random()*rest.length)];
+    const na=DECO[a],nb=DECO[b];put(a,nb);put(b,na);},2500);})();
 /* min/max over arrays of any length: Math.min(...arr) fails past ~100k items */
 const amin=function(){let m=Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]<m)m=a[i];}else if(a<m)m=a;}return m;},amax=function(){let m=-Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]>m)m=a[i];}else if(a>m)m=a;}return m;};
 const SFX=(function(){
