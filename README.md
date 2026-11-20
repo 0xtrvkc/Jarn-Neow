@@ -4,7 +4,7 @@
 
 Jarn Neow is a free risk-management tool for forex traders. It doesn't look for profits. It asks a different question: *if your numbers are true, how likely is your account to survive, how deep can the falls get, and what position size keeps the risk acceptable?*
 
-Everything runs in your browser from a single HTML file. There is no account, no server and no tracking.
+Everything runs in your browser from one HTML page plus one script for Expert mode. There is no account, no server and no tracking.
 
 > Jarn Neow is an educational tool, not financial advice. Results come from simulations built on the numbers you provide, and past results do not guarantee future results. Trading leveraged products carries a high risk of loss.
 
@@ -13,7 +13,7 @@ Everything runs in your browser from a single HTML file. There is no account, no
 ## Use it
 
 - **Online:** **[0xtrvkc.github.io/Jarn-Neow](https://0xtrvkc.github.io/Jarn-Neow/)**
-- **Offline:** after one visit to the online version, the app keeps working without a connection, including any gold months you already backtested. You can also download `index.html` and open it from disk: everything works except the gold backtest, and system fonts replace the app's fonts.
+- **Offline:** after one visit to the online version, the app keeps working without a connection, including any gold months you already backtested. You can also download `index.html` and `expert.js` into the same folder and open the page from disk: everything works except the gold backtest, and system fonts replace the app's fonts. With `index.html` alone, Beginner mode works and Expert mode says it can't load.
 
 The interface is in **English and Thai (ไทย)**. Switch with the EN / ไทย buttons at the top.
 
@@ -25,15 +25,15 @@ The interface is in **English and Thai (ไทย)**. Switch with the EN / ไ�
 
 Built for phones and first-time users, with a Thai spirit-night look: Jarn Neow the shaman, ghosts and charms as animated pixel sprites.
 
-- A cheeky opening screen when the site loads ("So you know how to trade? Then why does the margin call keep calling you?"), then a 7-step start-up check on every visit: two quick questions about testing, and a short quiz on common trading illusions (high win rate, "10% a day", lucky streaks, one great month, risk per trade).
+- A cheeky opening screen when the site loads ("So you know how to trade? Then why does the margin call keep calling you?"), then a 7-step start-up check on your first visit (it's remembered after that; the footer link runs it again): two quick questions about testing, and a short quiz on common trading illusions (high win rate, "10% a day", lucky streaks, one great month, risk per trade).
 - Four inputs: **win rate**, **reward : risk**, **risk per trade** and **number of trades tested**.
-- A plain-language verdict, an equity fan of possible futures, and a step-by-step plan to fix what's wrong.
-- The animations follow your numbers: the shaman cheers, frowns, thinks or sobs with the verdict, a charm or a ghost pops up when the verdict changes, and on wide screens more ghosts gather in the margins the riskier it gets. The decorations keep changing: the 12 charms shuffle on every visit, two charms on screen swap places every 2.5 seconds, and the ghosts are picked at random, while the shaman's moods and the risk signs always mean the same thing. Expert mode has no animations. With reduced motion turned on in your device settings, the sprites stay still.
+- A plain-language verdict ("+13 for every 100 you risk"), an equity fan of possible futures, and a step-by-step plan to fix what's wrong. Until all four numbers are yours, the result is labelled as an example.
+- The animations follow your numbers: the shaman cheers, frowns, thinks or sobs with the verdict, a charm or a ghost pops up when the verdict changes, and on wide screens more ghosts gather in the margins the riskier it gets. The decorations keep changing: the 12 charms shuffle on every visit, two charms on screen swap places every 2.5 seconds, and the ghosts are picked at random, while the shaman's moods and the risk signs always mean the same thing. Expert mode has no animations. An **Animations** switch in the header (and in the start-up popup) freezes every sprite and stops the swaps; the choice is remembered. With reduced motion turned on in your device settings, animations start switched off.
 - A shareable link that carries your numbers, and a downloadable report (see below).
 
 ### Expert
 
-Built for desktop: a dense "quant desk" with detailed statistics, charts, what-if sliders on every chart, and an explanation under every card. Choose a **Full dashboard** or a **Step by step** layout. Expert opens with a full **"what it can and can't do"** briefing, which you can reopen at any time from the Strategy type panel. A **Full report** bar above the results downloads everything as one Markdown file.
+Built for desktop: a dense "quant desk" with detailed statistics, charts, what-if sliders on every chart, and an explanation under every card. Choose a **Full dashboard** or a **Step by step** layout. Phones start in Step by step. The full dashboard has a **Jump to** menu of its sections, and inputs still on example or default values are listed as buttons that take you to each field. Expert opens with a full **"what it can and can't do"** briefing, which you can reopen at any time from the Strategy type panel. A **Full report** bar above the results downloads everything as one Markdown file.
 
 ---
 
@@ -184,7 +184,8 @@ The code is released under the [MIT License](LICENSE). The gold data in `data/go
 ## Project structure
 
 ```
-index.html                   the whole app: HTML, CSS and JavaScript in one file
+index.html                   the app: HTML, CSS and the JavaScript for Beginner mode, the start-up check and the shared engine
+expert.js                    Expert mode and the gold-backtest worker, loaded the first time Expert opens
 sw.js                        service worker: offline use and instant return visits
 fonts/                       the app's fonts (SIL Open Font License; licences included)
 sprites/                     animated pixel sprites for Beginner mode (16 frames each, 90 ms per frame)
@@ -198,7 +199,7 @@ LICENSE                      MIT licence for the code
 data/gold/README.md          where the gold data comes from and its terms
 ```
 
-The app itself has no build step and no dependencies. Edit `index.html` and refresh.
+The app itself has no build step and no dependencies. Edit `index.html` or `expert.js` and refresh. After changing `expert.js`, update `EXPERT_V` in `index.html` (any new value, for example the first 8 characters of the file's SHA-1) so browsers fetch the new copy.
 
 To rebuild or extend the gold data (needs Python with `pyarrow` and `numpy`):
 

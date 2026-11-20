@@ -1,13 +1,13 @@
 /* Jarn Neow service worker: makes return visits instant and lets the app work offline.
-   - the page and index.json: network first, so a new version shows up straight away; the saved copy is used offline
+   - the page, expert.js and index.json: network first, so a new version shows up straight away; the saved copy is used offline
    - gold month files, fonts, sprites and icons: from the device once downloaded (they never change), network otherwise
    Nothing here sends data anywhere; it only keeps copies of this site's own files in the browser. */
-const VERSION = 'jn-v3';
+const VERSION = 'jn-v4';
 const PAGE = 'jn-page-' + VERSION;
 const FILES = 'jn-files-' + VERSION;
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(PAGE).then(c => c.addAll(['./', 'index.html', 'icon.svg?v=2'])).catch(() => {}).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(PAGE).then(c => c.addAll(['./', 'index.html', 'expert.js', 'icon.svg?v=2'])).catch(() => {}).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -39,7 +39,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  if (own && (req.mode === 'navigate' || /\/(index\.html|data\/gold\/index\.json)$/.test(url.pathname) || url.pathname.endsWith('/'))) {
+  if (own && (req.mode === 'navigate' || /\/(index\.html|expert\.js|data\/gold\/index\.json)$/.test(url.pathname) || url.pathname.endsWith('/'))) {
     e.respondWith(fetch(req).then(res => {
       if (res.ok) { const copy = res.clone(); caches.open(PAGE).then(c => c.put(req, copy)); }
       return res;
