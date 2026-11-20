@@ -55,12 +55,14 @@ function fixedFill(){
   D.filled=f;revalidate();}
 function gridFill(){
   const tr=curTrades();D.filled=null;if(tr.length<5)return;const f=gridFit(tr);if(!f)return;D.fit=f;const F={},g=D.stype==='grid';
+  /* gold files often count $0.01 as a pip; the app's gold pip is $0.10 (the gold test's unit) */
+  f.goldConv=/XAU|GOLD/i.test(D.symbol)&&f.pipSz>0&&f.pipSz<0.05;if(f.goldConv){const k=f.pipSz/0.1;['step','tp'].forEach(x=>{if(isFinite(f[x]))f[x]=Math.max(1,Math.round(f[x]*k));});f.gLo*=k;f.gHi*=k;f.pvK=1/k;}
   const set=(id,key,v,lo,hi)=>{if(!isFinite(v))return;v=SFX.clamp(v,lo,hi);D[key]=v;$(id).value=v;dtouch[key]=1;F[key]=v;};
-  if(g){set('g-lot','gLot',f.lot0,0.01,100);set('g-step','gStep',f.step,1,10000);setGrow(f.grow);F.gGrow=f.grow;
-    if(f.grow==='add')set('g-add','gAdd',f.gAdd,0.01,100);else set('g-mult','gMult',f.gMult,1,5);set('g-max','gMax',f.maxN,1,30);}
+  if(g){set('g-lot','gLot',f.lot0,0.01,100);if(f.maxN>=2&&isFinite(f.step)){set('g-step','gStep',f.step,1,10000);setGrow(f.grow);F.gGrow=f.grow;
+    if(f.grow==='add')set('g-add','gAdd',f.gAdd,0.01,100);else set('g-mult','gMult',f.gMult,1,5);set('g-max','gMax',f.maxN,1,30);}}
   else set('g-lot','gLot',Math.max(0.01,r2(mdn(tr.map(x=>x.lots).filter(x=>x>0)))),0.01,100);
   set('g-tp','gTp',f.tp,1,10000);set('d-comm','comm',f.comm,0,1e9);
-  const v=SFX.toR(tr,1,true).vpp;if(isFinite(v)&&v>0)set('d-pv','pv',+v.toPrecision(4),0,1e9);
+  const v=SFX.toR(tr,1,true).vpp*(f.pvK||1);if(isFinite(v)&&v>0)set('d-pv','pv',+v.toPrecision(4),0,1e9);
   const bal=D.parsed.balance;if(isFinite(bal)&&bal>0)set('d-bal','bal',Math.round(bal*100)/100,1,1e12);
   D.filled=F;revalidate();}
 function curTrades(){return D.parsed?D.parsed.trades.filter(x=>x.symbol===D.symbol):[];}
@@ -120,7 +122,7 @@ function statusLine(){
   if(fx){if(F)h+=`<div class="warnnote" style="margin:.5rem 0">${esc(t('file_applied',{sl:F.sl,n:F.n,wr:F.wr===undefined?'–':F.wr,rr:F.rr===undefined?'–':F.rr,risk:F.risk===undefined?'–':F.risk,tpd:F.tpd===undefined?'–':F.tpd,bal:F.bal===undefined?'–':F.bal}))}</div>`;}
   else if(F&&f){const r=f.real,o={sym:D.symbol,c:nf(r.cycles),n:nf(tr.length),from:dd(r.from),to:dd(r.to),lot:F.gLot,lo:f.firstLo,hi:f.firstHi,step:F.gStep,glo:pip(f.gLo),ghi:pip(f.gHi),max:F.gMax,tp:F.gTp===undefined?'–':F.gTp,comm:F.comm,pv:F.pv===undefined?'–':F.pv,bal:F.bal===undefined?'–':money(F.bal),
       grow:F.gGrow==='add'?t('grow_add',{x:F.gAdd}):t('grow_mult',{x:F.gMult})};
-    h+=`<div class="warnnote" style="margin:.5rem 0">${esc(t(D.stype==='grid'?'file_applied_g':'file_applied_ns',o))}</div>`;}
+    h+=`<div class="warnnote" style="margin:.5rem 0">${esc(t(D.stype==='grid'?(f.maxN>=2&&isFinite(F.gStep)?'file_applied_g':'file_applied_g1'):'file_applied_ns',o)+(f.goldConv?' '+t('file_gold_unit'):''))}</div>`;}
   else if(!fx)h+=`<div class="warnnote" style="margin:.5rem 0">${esc(t('file_nofit'))}</div>`;
   $('file-status').innerHTML=h;}
 function hint(){
@@ -288,8 +290,10 @@ function computeGrid(){
   const reach=[];for(let k=1;k<=G.M;k++)reach.push(Array.from(pool.lev).filter(x=>x>=k).length/N);
   const ks=[0.1,0.2,0.3,0.5,0.75,1,1.5,2,3],sweep=ks.map(k=>{const r=k===1?sim:SFX.gridPaths(pool,Object.assign({sims:800,seed:43,k},po));return{k,lot:D.gLot*k,ruin:r.ruinProb,wipe:r.wipeProb};});
   let safe=null;sweep.forEach(x=>{if(x.ruin<=0.05&&(safe===null||x.lot>safe))safe=x.lot;});
+  /* how much the result leans on the daily range guess: same rules at 1.5x the range */
+  const hiPool=SFX.gridPool(Object.assign(mk(1),{sigD:sigD*1.5})),sens={v2:Math.round(D.gVol*1.5),ruin:SFX.gridPaths(hiPool,Object.assign({sims:2000,seed:41},po)).ruinProb};
   const ruinP=sim.ruinProb,neg=E+2*se<0;let v;if(ruinP>=0.30)v='bad';else if(ruinP>0.05||neg||pWipe1>0.001)v='warn';else v='ok';
-  D.gm={G,lad,pool,sim,N,E,se,avgW,avgL,worst,win:w.length/N,pWipe1,pRuin1,days,dMean,kinds,reach,sweep,safe,v,neg,sumW:sum(w),sumL:sum(l)};}
+  D.gm={sens,G,lad,pool,sim,N,E,se,avgW,avgL,worst,win:w.length/N,pWipe1,pRuin1,days,dMean,kinds,reach,sweep,safe,v,neg,sumW:sum(w),sumL:sum(l)};}
 function gHead(name,i){return`<h2>${esc(name)}<small>${esc(t(D.stype==='grid'?'st_grid':'st_nostop'))}</small></h2>`;}
 function gExpl(g){
   const X={},H=D.hor,F=simFacts(g.sim),lad=g.lad,ratio=g.avgW>0?Math.abs(g.avgL)/g.avgW:0;
@@ -311,10 +315,11 @@ function gSummary(g){
     ['Cycle length median / p95',(SFX.quantile(g.days,0.5)).toFixed(1)+' / '+(SFX.quantile(g.days,0.95)).toFixed(1)+' days'],['One cycle wipes out the start balance',pc(g.pWipe1,2)],['Horizon',H+' cycles ≈ '+cmpNum(Math.ceil(H*g.dMean))+' trading days']];
   const fan=CH.fan(sim,{w:520,h:280,floorLabel:t('d_ruin_line',{x:D.ruin}),xlabel:t('gx_next',{H}),medColor:'var(--accent)',label:'Monte Carlo equity fan'});
   const notes=[t('g_model_'+D.gMkt)];if(!g.G.pvSet)notes.push(t('g_pv_assumed'));
+  const sensP=`<p class="small" style="margin:.8rem 0 0">${esc(t('g_sens',{v:D.gVol,v2:g.sens.v2,dd:D.ruin,H,a:pc(sim.ruinProb),b:pc(g.sens.ruin)}))}</p>`;
   return`<section class="dsec" data-step="1">${gHead('Summary')}
   <div class="card"><div class="dverdict"><span class="light" data-v="${g.v}" aria-hidden="true">${ICON[g.v]}</span><div><h2>${esc(t('gv_'+g.v))}</h2><p class="small" style="margin:0">${esc(line)}</p></div></div>
   <div class="gtile">${tiles.map(x=>`<div class="${x[0]}"><span>${esc(x[1])}</span><b>${esc(x[2])}</b></div>`).join('')}</div>
-  ${notes.map(n=>`<p class="warnnote small" style="margin:.8rem 0 0">${esc(n)}</p>`).join('')}</div>
+  ${sensP}${notes.map(n=>`<p class="warnnote small" style="margin:.8rem 0 0">${esc(n)}</p>`).join('')}</div>
   <div class="dgrid"><div class="s5">${card('Cycle statistics',kv(rows)+note('gn_stats'))}</div>
   <div class="s7">${card('Monte Carlo: '+sim.fin.length.toLocaleString('en-US')+' paths, '+H+' cycles',ch(fan)+note('gn_fan'))}</div></div></section>`;}
 function gExposure(g){
@@ -1191,6 +1196,10 @@ function init(){
   $('g-auto').addEventListener('change',e=>{D.gAuto=e.target.value;analyze();});
   $('g-mkt').addEventListener('change',e=>{D.gMkt=e.target.value;analyze();});
   $('g-grow').addEventListener('change',e=>{setGrow(e.target.value);analyze();});
+  const vc=()=>{const a=parseFloat($('vc-atr').value),k=+$('vc-kind').value,o=$('vc-out'),b=$('vc-use');if(!(a>0)){o.textContent='';b.hidden=true;return;}
+    const p=Math.round(a*k*10)/10,v=p>=10?Math.round(p):p;o.textContent=t('vc_out',{p:v.toLocaleString('en-US')});b.textContent=t('vc_use',{p:v.toLocaleString('en-US')});b.dataset.v=v;b.hidden=!(v>=1&&v<=10000);};
+  $('vc-atr').addEventListener('input',vc);$('vc-kind').addEventListener('change',vc);
+  $('vc-use').addEventListener('click',()=>{const el=$('g-vol');el.value=$('vc-use').dataset.v;el.dispatchEvent(new Event('input',{bubbles:true}));el.focus();});
   document.querySelectorAll('.stypes button').forEach(b=>b.addEventListener('click',()=>setType(b.dataset.st)));
   $('p-type').querySelector('.stypes').addEventListener('keydown',e=>{const bs=[...document.querySelectorAll('.stypes button')],i=bs.findIndex(b=>b.dataset.st===D.stype);
     if(['ArrowDown','ArrowRight','ArrowUp','ArrowLeft'].includes(e.key)){e.preventDefault();const j=(i+(e.key==='ArrowDown'||e.key==='ArrowRight'?1:bs.length-1))%bs.length;setType(bs[j].dataset.st);bs[j].focus();}});

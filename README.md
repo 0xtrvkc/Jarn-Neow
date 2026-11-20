@@ -66,6 +66,8 @@ Pick the type that matches how you really trade. An EA isn't a type by itself; w
 
 Inputs: first order size, distance between orders, how lots grow (a multiplier, or a fixed number of lots added per order), maximum orders, take-profit from the average price, an optional stop after the last order, the pair's average daily range, fixed or balance-scaled lots, and the market model (*random walk* or *fat tails + trends*).
 
+**Finding the daily range.** "How to find this" under the field explains reading ATR(14) from a daily chart in MT4, MT5 or TradingView, with a converter from the ATR price value to pips (most pairs, JPY pairs, gold at $0.10 or $0.01 per pip) and a link to Investing.com's Forex Volatility Calculator. The summary also shows how much the result depends on this guess: the chance of ruin at 1.5× the daily range next to the current one. Gold imported from a Myfxbook file is converted from $0.01 pips to the app's $0.10 pips.
+
 ---
 
 ## Test on real gold (Expert)
