@@ -67,16 +67,16 @@ Inputs: first order size, distance between orders, lot multiplier, maximum order
 
 ---
 
-## Backtest on real gold (Expert)
+## Test on real gold (Expert)
 
-Every Expert strategy type ends with a **Backtest on real gold** section. It replays your exact inputs on real **COMEX gold futures, 1-minute bars, 7 June 2010 to 13 November 2026** (5.7 million bars) for any range of months you pick. The data is historical and doesn't update.
+Every Expert strategy type ends with a **Test on real gold** section. It replays your inputs on real **COMEX gold futures, 1-minute bars, 7 June 2010 to 13 November 2026** (5.7 million bars) for any range of months you pick. The data is historical and doesn't update.
 
 - **1 pip = $0.10**, so a $1 move in gold is 10 pips.
-- **Grid / martingale and no hard stop** use every grid setting, balance, spread, commission and value per pip, plus a direction (buy, sell or alternate each cycle). You get:
+- **Grid / martingale and no hard stop: a true backtest.** These strategies are fully described by their settings, so the test replays your exact rules. They use every grid setting, balance, spread, commission and value per pip, plus a direction (buy, sell or alternate each cycle). You get:
   - equity day by day, including the lowest point each day with open losses;
   - the date the account fell to the ruin line or was wiped out;
   - the 5 deepest cycles, how many orders each cycle reached, and results by year.
-- **Fixed stop** uses your SL, reward:risk, risk rules, trades per day and costs with **random entries**. It measures the win rate your stop and target produce on real gold with no skill, and compares it with the win rate you claim. You also get one chronological run and results by year.
+- **Fixed stop: not a backtest of your entries.** Win rate and reward:risk don't say when you enter, so the test uses your SL, reward:risk, risk rules, trades per day and costs with **random entries**. It measures the **no-skill win rate** your stop and target produce on real gold, and compares it with the win rate you claim. You also get one chronological run and results by year. To test your entry signals themselves, use a strategy tester such as TradingView or MT5 and bring the results here.
 - **Deeper analysis**, only what real prices can show, so none of it repeats the simulation sections above:
   - **Start-date luck:** the same rules rerun from up to 36 different start months, each for the same length. It shows how many starts survived, how many were wiped out, and the best and worst start.
   - **Simulation vs real gold:** what the simulation predicted next to what gold actually did, plus a one-click button to use gold's real daily range in the simulation.
