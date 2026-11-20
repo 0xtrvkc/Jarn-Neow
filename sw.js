@@ -1,8 +1,8 @@
 /* Jarn Neow service worker: makes return visits instant and lets the app work offline.
    - the page and index.json: network first, so a new version shows up straight away; the saved copy is used offline
-   - gold month files, fonts and icons: from the device once downloaded (they never change), network otherwise
+   - gold month files, fonts, sprites and icons: from the device once downloaded (they never change), network otherwise
    Nothing here sends data anywhere; it only keeps copies of this site's own files in the browser. */
-const VERSION = 'jn-v1';
+const VERSION = 'jn-v2';
 const PAGE = 'jn-page-' + VERSION;
 const FILES = 'jn-files-' + VERSION;
 
@@ -18,7 +18,7 @@ self.addEventListener('activate', e => {
 
 const isFixed = url =>
   (/\/data\/gold\/\d{4}-\d{2}\.bin$/.test(url.pathname)) ||
-  (url.origin === self.location.origin && /\/(fonts\/.+\.woff2|icon\.svg|icon-180\.png|og\.png)$/.test(url.pathname));
+  (url.origin === self.location.origin && /\/(fonts\/.+\.woff2|sprites\/[a-z_]+\.png|icon\.svg|icon-180\.png|og\.png)$/.test(url.pathname));
 
 self.addEventListener('fetch', e => {
   const req = e.request;

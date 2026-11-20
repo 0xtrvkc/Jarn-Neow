@@ -23,11 +23,12 @@ The interface is in **English and Thai (ไทย)**. Switch with the EN / ไ�
 
 ### Beginner
 
-Built for phones and first-time users.
+Built for phones and first-time users, with a Thai spirit-night look: Jarn Neow the shaman, ghosts and charms as animated pixel sprites.
 
 - A 7-step start-up check on every visit: two quick questions about testing, and a short quiz on common trading illusions (high win rate, "10% a day", lucky streaks, one great month, risk per trade).
 - Four inputs: **win rate**, **reward : risk**, **risk per trade** and **number of trades tested**.
 - A plain-language verdict, an equity fan of possible futures, and a step-by-step plan to fix what's wrong.
+- The animations follow your numbers: the shaman cheers, frowns, thinks or sobs with the verdict, a charm or a ghost pops up when the verdict changes, and on wide screens more ghosts gather in the margins the riskier it gets. Expert mode has no animations. With reduced motion turned on in your device settings, the sprites stay still.
 - A shareable link that carries your numbers, and a downloadable report (see below).
 
 ### Expert
@@ -186,6 +187,7 @@ The code is released under the [MIT License](LICENSE). The gold data in `data/go
 index.html                   the whole app: HTML, CSS and JavaScript in one file
 sw.js                        service worker: offline use and instant return visits
 fonts/                       the app's fonts (SIL Open Font License; licences included)
+sprites/                     animated pixel sprites for Beginner mode (16 frames each, 90 ms per frame)
 icon.svg, icon-180.png       site icons
 og.png                       link-preview image (1200 × 630)
 data/gold/index.json         available months, bar counts and the contract-roll table

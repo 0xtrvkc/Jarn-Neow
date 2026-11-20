@@ -10,7 +10,7 @@
 <link rel="canonical" href="https://0xtrvkc.github.io/Jarn-Neow/">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
-<meta name="theme-color" content="#bde7ff" id="theme-color">
+<meta name="theme-color" content="#1c0a2e" id="theme-color">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Jarn Neow">
 <meta property="og:title" content="Jarn Neow – Will your forex strategy survive?">
@@ -73,11 +73,13 @@ html.js-wait body{visibility:hidden;animation:jsw 0s 3s forwards}@keyframes jsw{
   --maxw:1180px;
 }
 html[data-mode=play]{
-  --bg:#bde7ff; --ink:#23194f; --card:#ffffff; --line:#23194f; --muted:#5d5594;
-  --p1:#7c5cff; --p2:#ff6fb5; --p3:#ffd23f; --p4:#2ed3b7; --p5:#3fa7ff;
-  --bw:3px; --radius:22px; --shadow:0 5px 0 #23194f; --accent:#7050f5; --accent-ink:#fff;
+  /* Thai spirit-night theme, colours taken from the sprite palettes: plum night, talisman-paper cards, violet, pink, gold and lime */
+  --bg:#1c0a2e; --ink:#2a0a45; --card:#fff8ec; --line:#2a0a45; --muted:#6a4a85;
+  --p1:#9b2fe0; --p2:#f05aa6; --p3:#ffcb2f; --p4:#adef4a; --p5:#f05aa6;
+  --bw:3px; --radius:22px; --shadow:0 6px 0 #b529ef; --accent:#8c21c5; --accent-ink:#fff;
   --font:'Fredoka','Mali',system-ui,sans-serif; --mono:'Fredoka','Mali',system-ui,sans-serif;
-  --c1:#7c5cff; --c2:#ff6fb5; --c3:#2ed3b7; --c4:#ffb400; --grid:rgba(35,25,79,.16); --soft:#f1ecff; --track:#e4dcff;
+  --c1:#8c21c5; --c2:#e8459a; --c3:#4f9a12; --c4:#e09a00; --grid:rgba(42,10,69,.16); --soft:#f4e8ff; --track:#e6d0ff;
+  --onbg:#fff4c9; --onbg2:#d9c4f0;
 }
 html[data-mode=desk]{
   --bg:#0a0f15; --ink:#d3dce8; --card:#101821; --line:#233142; --muted:#8b9aac;
@@ -90,7 +92,7 @@ html[data-mode=desk]{
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--font);min-height:100vh}
-html[data-mode=play] body{background-image:radial-gradient(circle at 22px 22px,rgba(255,255,255,.6) 3px,transparent 4px);background-size:48px 48px}
+html[data-mode=play] body{background-color:var(--bg);background-image:radial-gradient(circle at 18px 26px,rgba(255,244,201,.55) 1.2px,transparent 2px),radial-gradient(circle at 70px 90px,rgba(217,196,240,.4) 1px,transparent 1.6px),radial-gradient(circle at 120px 40px,rgba(173,239,74,.35) 1px,transparent 1.6px),radial-gradient(ellipse 80% 50% at 50% 115%,rgba(181,41,239,.38),transparent 70%),radial-gradient(ellipse 60% 40% at 0% 0%,rgba(240,90,166,.18),transparent 70%);background-size:140px 140px,190px 190px,230px 230px,100% 100vh,100% 100vh;background-repeat:repeat,repeat,repeat,no-repeat,no-repeat;background-attachment:scroll,scroll,scroll,fixed,fixed}
 html[data-mode=desk] body{font-size:14.5px}
 button,input,select{font:inherit;color:inherit}
 h1,h2,h3,h4{line-height:1.15;margin:0 0 .45em}
@@ -153,7 +155,7 @@ html[data-mode=desk] .chart text{font-family:var(--mono);font-size:10px}
 .legend{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font-size:.82em;color:var(--muted);margin-top:.35rem}
 .legend i{display:inline-block;width:.8em;height:.8em;border-radius:50%;margin-right:.3em;vertical-align:-.08em}
 html[data-mode=desk] .legend i{border-radius:0}
-.badge{display:inline-block;padding:.12rem .6rem;border-radius:999px;border:2px solid var(--line);background:var(--p3,#ffb000);font-weight:700;font-size:.82em;color:#23194f}
+.badge{display:inline-block;padding:.12rem .6rem;border-radius:999px;border:2px solid var(--line);background:var(--p3,#ffb000);font-weight:700;font-size:.82em;color:#2a0a45}
 html[data-mode=desk] .badge{border-radius:2px;border-width:1px;background:transparent;color:var(--accent);border-color:var(--accent);font-family:var(--mono);font-weight:500}
 .light{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;font-size:2.3rem;font-weight:700;border:var(--bw) solid var(--line);flex:none;color:#fff;background:var(--none);transition:background .25s}
 html[data-mode=desk] .light{border-radius:2px;width:56px;height:56px;font-size:1.7rem}
@@ -173,7 +175,7 @@ details>div{padding-top:.5rem}
 .field{margin-bottom:1.15rem}
 .frow{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem}
 .frow label{font-weight:600;flex:1}
-.help{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);background:var(--p3,transparent);font-weight:700;cursor:pointer;line-height:1;padding:0;color:#23194f}
+.help{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);background:var(--p3,transparent);font-weight:700;cursor:pointer;line-height:1;padding:0;color:#2a0a45}
 html[data-mode=desk] .help{border-radius:2px;border-width:1px;background:transparent;color:var(--muted)}
 .helptxt{font-size:.88em;color:var(--muted);background:var(--soft);border-radius:12px;padding:.5rem .7rem;margin:.4rem 0 0}
 .numwrap{display:inline-flex;align-items:center;gap:.2rem;border:var(--bw) solid var(--line);border-radius:14px;padding:.1rem .55rem;background:var(--card)}
@@ -255,7 +257,7 @@ html[data-mode=play] .unsetnote .btn{padding:.35rem .9rem}
 .bp[data-l=must]{border-left-color:var(--bad)}.bp[data-l=should]{border-left-color:var(--warn)}
 .bpn{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:var(--card);border:2px solid var(--line);font-weight:700}
 .bph{display:flex;flex-wrap:wrap;gap:.25rem .5rem;align-items:center;margin-bottom:.15rem}.bph b{font-size:1.04rem;line-height:1.3}
-.bpl{font-size:.72rem;font-weight:700;padding:.08rem .5rem;border-radius:99px;border:2px solid var(--line);background:var(--p4);color:#23194f;white-space:nowrap}
+.bpl{font-size:.72rem;font-weight:700;padding:.08rem .5rem;border-radius:99px;border:2px solid var(--line);background:var(--p4);color:#2a0a45;white-space:nowrap}
 .bpl[data-l=must]{background:#d23439;color:#fff}.bpl[data-l=should]{background:var(--warn);color:#2b1c00}
 .bp p{margin:0 0 .3rem;font-size:.95em;line-height:1.45}
 .bres{display:inline-flex;flex-wrap:wrap;gap:.2rem .5rem;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:.25rem .6rem;font-weight:600;font-size:.88em!important;margin:.15rem 0 .35rem!important}
@@ -296,7 +298,7 @@ html[data-mode=play] .unsetnote .btn{padding:.35rem .9rem}
 .q4{display:grid;grid-template-columns:1.3rem 1.6rem minmax(0,1fr);gap:.35rem .4rem;margin-top:.7rem;align-items:stretch}
 .qbox{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;border:3px solid var(--line);border-radius:18px;overflow:hidden;background:var(--line);gap:3px}
 html[data-mode=desk] .qbox{border-radius:2px;border-width:1px;gap:1px}
-.qc{display:flex;flex-direction:column;gap:.25rem;padding:.9rem 1rem;min-height:7.5rem;color:#23194f;outline-offset:-4px}
+.qc{display:flex;flex-direction:column;gap:.25rem;padding:.9rem 1rem;min-height:7.5rem;color:#2a0a45;outline-offset:-4px}
 .qc b{font-size:1.15rem}.qc span{font-size:.92em}
 .qc.ok{background:#d6f5e4}.qc.meh{background:#fff1cc}.qc.bad{background:#ffdcdc}
 .qc.none{background:repeating-linear-gradient(45deg,#f3f0fb,#f3f0fb 9px,#ffffff 9px,#ffffff 18px);color:#5d5594}
@@ -325,7 +327,7 @@ html[data-mode=desk] .fc2{--fcl:var(--muted)}
 .fc{display:flex;flex-direction:column;align-items:stretch;gap:0;margin-top:.8rem}
 .fcn{align-self:center;max-width:22rem;text-align:center;border:2px solid var(--line);border-radius:14px;padding:.55rem .8rem;background:var(--card);font-weight:600;line-height:1.3}
 .fcn.start{background:var(--p1);color:#fff;border-radius:999px;padding:.6rem 1.2rem}
-.fcn.fq{background:var(--p3);color:#23194f;border-radius:20px}
+.fcn.fq{background:var(--p3);color:#2a0a45;border-radius:20px}
 .fcn.ghost{background:transparent;border-style:dashed;color:var(--muted)}
 .fcn.end{border-width:3px}.fcn.end.bad{background:#ffdcdc}.fcn.end.warn{background:#fff1cc}.fcn.end.ok{background:#d6f5e4}.fcn.end.meh{background:var(--soft)}
 .fca{align-self:center;width:3px;height:22px;background:var(--line);position:relative;margin-bottom:6px}
@@ -340,7 +342,7 @@ html[data-mode=desk] .fc2{--fcl:var(--muted)}
 #inputs .field{border-radius:16px;margin-left:-.5rem;margin-right:-.5rem;padding:.35rem .5rem;transition:background .12s}
 #inputs .field.kon{background:var(--soft);box-shadow:inset 0 0 0 2px var(--p5)}
 #inputs .frow label{cursor:help}
-.itip{position:fixed;z-index:120;background:#23194f;color:#fff;border-radius:14px;padding:.7rem .9rem;font-size:.92rem;line-height:1.5;box-shadow:0 8px 24px rgba(20,12,50,.35);pointer-events:none}
+.itip{position:fixed;z-index:120;background:#2a0a45;color:#fff;border-radius:14px;padding:.7rem .9rem;font-size:.92rem;line-height:1.5;box-shadow:0 8px 24px rgba(18,4,32,.35);pointer-events:none}
 @media (max-width:760px){.ilrules,.ilpair,.ilcalc-f,.ilres{grid-template-columns:1fr}.ilcrow{grid-template-columns:6.5rem minmax(0,1fr) 7.5rem;gap:.4rem;font-size:.9em}
  .fcbr{grid-template-columns:1fr;border-top:0;padding-top:0;gap:.6rem}.fcb{border-left:3px solid var(--line);padding-left:.7rem}.fcl{align-self:flex-start}
  .ilqgrid{grid-template-columns:auto minmax(0,1fr) minmax(0,1fr)}.ilq{padding:.55rem;min-height:0}.ilq b{font-size:1rem}.ilqa{max-width:4.5rem}}
@@ -402,7 +404,7 @@ html[data-mode=desk] #d-main .dgrid .card>.wi{align-self:stretch}
 .actn{display:inline-grid;place-items:center;min-width:1.9em;height:1.9em;padding:0 .4em;border-radius:99px;background:var(--p1);color:#fff;font-weight:700;border:2px solid var(--line);flex:none}
 .oc{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:.35rem .8rem;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:.6rem .8rem;margin:.6rem 0 .8rem;font-size:.95em}
 .oc .ocl{color:var(--muted)}.oc .num{font-weight:600}
-.finalrow{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;font-size:1.1rem;background:var(--p3);color:#23194f;border:2px solid var(--line);border-radius:14px;padding:.6rem .9rem;margin-top:.4rem}
+.finalrow{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;font-size:1.1rem;background:var(--p3);color:#2a0a45;border:2px solid var(--line);border-radius:14px;padding:.6rem .9rem;margin-top:.4rem}
 .gate-msg[data-k=bt],.gate-msg[data-k=ft]{border-color:var(--warn);background:#fff6df;color:#4a3300}
 .gate-msg[data-k=ok]{border-color:var(--ok);background:#e6f8ee;color:#0f4a2a}
 html[data-mode=desk] .gate-msg[data-k=bt],html[data-mode=desk] .gate-msg[data-k=ft]{background:#1f1807;color:#e3c27a}
@@ -412,7 +414,7 @@ html[data-mode=desk] .gate-msg[data-k=ok]{background:#0c1f15;color:#a8e6c3}
 .compare h4{margin:0 0 .2rem;font-size:.95rem}
 .fixbtns{display:flex;flex-wrap:wrap;gap:.6rem;margin:.6rem 0}
 .nudge{display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--p3);}
-.nudge p{margin:0;flex:1;min-width:14em;color:#23194f;font-weight:600}
+.nudge p{margin:0;flex:1;min-width:14em;color:#2a0a45;font-weight:600}
 .warnnote{background:#fff3d6;border:2px solid var(--line);border-radius:14px;padding:.5rem .8rem;color:#4a3300;font-size:.92em}
 .bt-lead{margin:0 0 .5rem;font-weight:600;line-height:1.45}
 html[data-mode=desk] .warnnote{background:#1f1807;color:#e3c27a;border:1px solid #5a4410;border-radius:2px}
@@ -484,7 +486,7 @@ html[data-st=nostop] .g-only,html:not([data-st=nostop]) .ns-only{display:none!im
 .btavail svg{display:block;width:100%;height:auto;margin-top:.35rem}.btavail .all{fill:var(--grid)}.btavail .sel{fill:var(--accent)}.btavail .tk{stroke:var(--muted);stroke-width:1}
 .btavail text{fill:var(--muted);font-family:var(--mono);font-size:13px}.btav-s{margin:.1rem 0 0;font-weight:600;color:var(--accent);font-size:.9rem}
 /* ============ gate ============ */
-.gate{position:fixed;inset:0;z-index:100;background:rgba(20,12,50,.72);display:grid;place-items:start center;padding:2rem 1rem;overflow:auto}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(18,4,32,.72);display:grid;place-items:start center;padding:2rem 1rem;overflow:auto}
 html[data-mode=desk] .gate{background:rgba(2,5,9,.86)}
 .gate-box{background:var(--card);border:var(--bw) solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);max-width:520px;width:100%;padding:1.4rem}
 .gate-box h2{font-size:1.5rem}
@@ -517,6 +519,58 @@ html[data-mode=desk] .gate-msg{background:#1c0d0f;color:#ffc3c5;border-width:1px
 footer{max-width:var(--maxw);margin:0 auto;padding:0 1rem 2.5rem;color:var(--muted);font-size:.85em}
 html[data-mode=desk] footer{max-width:1600px}
 
+/* ============ spirit theme (beginner only; Expert has no sprites and no animation) ============ */
+.spr{--w:56px;--h:56px;--n:16;--s:1;display:inline-block;flex:none;width:calc(var(--w)*var(--s));height:calc(var(--h)*var(--s));background-repeat:no-repeat;background-position:0 0;background-size:calc(var(--w)*var(--s)*var(--n)) 100%;image-rendering:pixelated;animation:spr calc(var(--n)*90ms) steps(var(--n)) infinite;vertical-align:middle}
+@keyframes spr{to{background-position:calc(var(--w)*var(--s)*var(--n)*-1) 0}}
+html[data-mode=desk] .spr,html[data-mode=desk] .haunt,html[data-mode=desk] .boo{display:none!important}
+.spr[data-s=logo_jarn_neow_en]{--w:112px;background-image:url(sprites/logo_jarn_neow_en.png)}
+.spr[data-s=logo_jarn_neow_th]{--w:112px;--h:48px;background-image:url(sprites/logo_jarn_neow_th.png)}
+.spr[data-s=shaman_happy]{background-image:url(sprites/shaman_happy.png)}.spr[data-s=shaman_thinking]{background-image:url(sprites/shaman_thinking.png)}.spr[data-s=shaman_angry]{background-image:url(sprites/shaman_angry.png)}.spr[data-s=shaman_sobbing]{background-image:url(sprites/shaman_sobbing.png)}.spr[data-s=ghost_krasue]{background-image:url(sprites/ghost_krasue.png)}.spr[data-s=ghost_phi_pop]{background-image:url(sprites/ghost_phi_pop.png)}.spr[data-s=ghost_mae_nak]{background-image:url(sprites/ghost_mae_nak.png)}.spr[data-s=ghost_shadow]{background-image:url(sprites/ghost_shadow.png)}.spr[data-s=ghost_child]{background-image:url(sprites/ghost_child.png)}.spr[data-s=ghost_skull]{background-image:url(sprites/ghost_skull.png)}.spr[data-s=spirit_flame]{background-image:url(sprites/spirit_flame.png)}.spr[data-s=spirit_eye]{background-image:url(sprites/spirit_eye.png)}.spr[data-s=spirit_hand]{background-image:url(sprites/spirit_hand.png)}.spr[data-s=spirit_house]{background-image:url(sprites/spirit_house.png)}.spr[data-s=amulet_cursed]{background-image:url(sprites/amulet_cursed.png)}.spr[data-s=talisman_floating]{background-image:url(sprites/talisman_floating.png)}.spr[data-s=prayer_beads]{background-image:url(sprites/prayer_beads.png)}.spr[data-s=ritual_candle]{background-image:url(sprites/ritual_candle.png)}.spr[data-s=ritual_cauldron]{background-image:url(sprites/ritual_cauldron.png)}.spr[data-s=ritual_incense]{background-image:url(sprites/ritual_incense.png)}.spr[data-s=voodoo_doll]{background-image:url(sprites/voodoo_doll.png)}.spr[data-s=cursed_mask]{background-image:url(sprites/cursed_mask.png)}.spr[data-s=slime_monster]{background-image:url(sprites/slime_monster.png)}.spr[data-s=risk_calculating]{background-image:url(sprites/risk_calculating.png)}.spr[data-s=risk_warning]{background-image:url(sprites/risk_warning.png)}.spr[data-s=risk_safe]{background-image:url(sprites/risk_safe.png)}.spr[data-s=risk_danger]{background-image:url(sprites/risk_danger.png)}.spr[data-s=risk_loading]{background-image:url(sprites/risk_loading.png)}
+/* header: the animated logo replaces the tiles and the brand text */
+.brand .spr{display:none}
+html[data-mode=play] .brand .logo,html[data-mode=play] .brand>span[data-i18n]{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+html[data-mode=play][data-lang=en] .brand .spr[data-s$=_en],html[data-mode=play][data-lang=th] .brand .spr[data-s$=_th]{display:inline-block}
+html[data-mode=play] .brand{min-height:56px}
+/* text that sits straight on the night background */
+html[data-mode=play] .hero h1{color:var(--onbg);text-shadow:3px 3px 0 #8c21c5}
+html[data-mode=play] .hero p{color:var(--onbg2)}
+html[data-mode=play] footer{color:var(--onbg2)}
+html[data-mode=play] .seg{box-shadow:0 3px 0 #b529ef}
+/* hero altar */
+.hero{display:flex;align-items:center;gap:1rem 2rem;justify-content:space-between}
+.hero>div:first-child{min-width:0}
+.altar{display:none}
+html[data-mode=play] .altar{display:flex;align-items:flex-end;gap:.2rem;flex:none;padding-bottom:.3rem;background:radial-gradient(ellipse 60% 22% at 50% 92%,rgba(255,203,47,.35),transparent 75%)}
+@media (max-width:640px){html[data-mode=play] .altar .spr{--s:1!important}.hero{align-items:flex-start}html[data-mode=play] .altar{padding-top:.4rem}}
+@media (max-width:400px){html[data-mode=play] .altar .spr:not([data-s=spirit_house]){display:none}}
+/* section headings get a little spirit */
+.hh{display:flex;align-items:center;gap:.55rem}
+html[data-mode=play] .hh .spr{margin:-.5rem 0 -.4rem -.3rem}
+/* verdict: the shaman reacts to your numbers */
+#verdict-card{position:relative;overflow:hidden}
+.vrow .vsh{margin:-.6rem 0 -.5rem -.4rem}
+.vhead{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;min-width:0}
+.vhead .spr{margin:-.4rem 0 -.4rem -.3rem}
+.boo{position:absolute;right:.6rem;bottom:0;pointer-events:none;z-index:2;animation:boo 2.6s ease-out forwards}
+.boo .spr{display:block}
+@keyframes boo{0%{transform:translateY(110%) scale(.7);opacity:0}18%{transform:translateY(-6%) scale(1.06);opacity:1}30%{transform:translateY(0) scale(1)}75%{opacity:1;transform:translateY(-14%)}100%{opacity:0;transform:translateY(-40%)}}
+.boo[data-k=ok]{animation-name:bless}
+@keyframes bless{0%{transform:scale(.2) rotate(-25deg);opacity:0}20%{transform:scale(1.15) rotate(6deg);opacity:1}32%{transform:scale(1) rotate(0)}78%{opacity:1}100%{opacity:0;transform:translateY(-30%)}}
+/* ambient spirits in the wide-screen margins: friendly flames when safe, more ghosts the riskier it gets */
+.haunt{position:fixed;inset:0;pointer-events:none;z-index:0;display:none}
+@media (min-width:1420px){html[data-mode=play] .haunt{display:block}}
+.haunt>span{position:absolute;opacity:0;transition:opacity .8s;animation:bob 6s ease-in-out infinite}
+.haunt>span.on{opacity:.9}
+.haunt>span:nth-child(1){left:2.5vw;top:22vh}.haunt>span:nth-child(2){right:2.5vw;top:34vh;animation-delay:-2s}.haunt>span:nth-child(3){left:3.5vw;top:64vh;animation-delay:-4s}.haunt>span:nth-child(4){right:3.5vw;top:72vh;animation-delay:-1s}
+@keyframes bob{50%{transform:translateY(-14px)}}
+html[data-mode=play] main,html[data-mode=play] footer,html[data-mode=play] .top{position:relative;z-index:1}
+/* gate popup */
+.gtop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.6rem;gap:.6rem}
+html[data-mode=desk] .gtop{justify-content:flex-end}
+.qv .spr{margin:-.5rem 0 -.5rem -.2rem}
+.fspr{display:none}
+html[data-mode=play] .fspr{display:flex;gap:.6rem;margin-bottom:.4rem;opacity:.95}
+
 /* ============ responsive ============ */
 @media (max-width:899px){
   .play-grid{grid-template-columns:1fr}
@@ -540,7 +594,7 @@ html[data-mode=desk] footer{max-width:1600px}
 <body class="locked">
 
 <header class="top">
-  <div class="brand"><span class="logo" aria-hidden="true"><i></i><i></i><i></i></span><span data-i18n="brand">Jarn Neow</span></div>
+  <div class="brand"><span class="logo" aria-hidden="true"><i></i><i></i><i></i></span><span data-i18n="brand">Jarn Neow</span><span class="spr" data-s="logo_jarn_neow_en" aria-hidden="true"></span><span class="spr" data-s="logo_jarn_neow_th" aria-hidden="true"></span></div>
   <div class="controls">
     <div class="seg langseg" id="seg-lang" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="th" aria-pressed="false">ไทย</button></div>
     <div class="seg" id="seg-mode" role="group" aria-label="Mode"><button type="button" data-mode="play" aria-pressed="true" data-i18n="mode_play"></button><button type="button" data-mode="desk" aria-pressed="false" data-i18n="mode_desk"></button></div>
@@ -552,7 +606,7 @@ html[data-mode=desk] footer{max-width:1600px}
 <!-- gate: backtest + forward test -->
 <div id="gate" class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
   <div class="gate-box">
-    <div style="display:flex;justify-content:flex-end;margin-bottom:.6rem"><div class="seg langseg" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="th" aria-pressed="false">ไทย</button></div></div>
+    <div class="gtop"><span class="spr" data-s="shaman_thinking" style="--s:2" aria-hidden="true"></span><div class="seg langseg" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="th" aria-pressed="false">ไทย</button></div></div>
     <div class="gprog" id="gate-prog" aria-hidden="true"></div><p class="gkick" id="gate-step"></p>
     <div id="gate-s0">
     <h2 id="gate-title" data-i18n="gate_title"></h2>
@@ -573,15 +627,16 @@ html[data-mode=desk] footer{max-width:1600px}
 <!-- ===================== PLAYGROUND (beginner) ===================== -->
 <section id="play" aria-label="Beginner mode">
   <div class="hero">
-    <h1 data-i18n="play_h1"></h1>
-    <p data-i18n="play_sub"></p>
+    <div><h1 data-i18n="play_h1"></h1>
+    <p data-i18n="play_sub"></p></div>
+    <div class="altar" aria-hidden="true"><span class="spr" data-s="ritual_candle" style="--s:2" aria-hidden="true"></span><span class="spr" data-s="spirit_house" style="--s:3" aria-hidden="true"></span><span class="spr" data-s="ritual_incense" style="--s:2" aria-hidden="true"></span></div>
   </div>
   <p class="warnnote testflag" hidden style="margin-bottom:1rem"></p>
   <div id="vbar" class="vbar" aria-live="polite"><span class="light" data-v="none">…</span><b></b></div>
   <div class="play-grid">
     <div class="col-in">
       <div class="card" id="inputs">
-        <h2 data-i18n="inputs_title"></h2>
+        <h2 class="hh"><span class="spr" data-s="ritual_cauldron" aria-hidden="true"></span><span data-i18n="inputs_title"></span></h2>
         <p id="example-badge" class="small"><span class="badge" data-i18n="example_badge"></span></p>
 
         <div class="field" data-f="wr">
@@ -612,7 +667,7 @@ html[data-mode=desk] footer{max-width:1600px}
     <div class="col-out">
       <div class="errnote inerr" id="play-err" role="alert" hidden></div>
       <div class="warnnote unsetnote" id="play-unset" role="status" hidden></div>
-      <div class="card" id="verdict-card" aria-live="polite"></div>
+      <div class="card" id="verdict-card"><div id="v-body" aria-live="polite"></div></div>
       <div class="card" id="fan-card"></div>
     </div>
   </div>
@@ -621,7 +676,7 @@ html[data-mode=desk] footer{max-width:1600px}
   <div class="card" id="fix"></div>
   <div class="card" id="deeper"></div>
   <div class="card nudge">
-    <p data-i18n="nudge_desk"></p>
+    <span class="spr" data-s="spirit_hand" aria-hidden="true"></span><p data-i18n="nudge_desk"></p>
     <button type="button" class="btn alt" id="goto-desk" data-i18n="nudge_desk_btn"></button>
   </div>
 </section>
@@ -700,6 +755,7 @@ html[data-mode=desk] footer{max-width:1600px}
 </main>
 
 <footer>
+  <div class="fspr" aria-hidden="true"><span class="spr" data-s="prayer_beads" aria-hidden="true"></span><span class="spr" data-s="voodoo_doll" aria-hidden="true"></span><span class="spr" data-s="amulet_cursed" aria-hidden="true"></span></div>
   <p data-i18n="disclaimer"></p>
   <p><button type="button" class="link" id="regate" data-i18n="regate"></button></p>
 </footer>
@@ -708,6 +764,7 @@ html[data-mode=desk] footer{max-width:1600px}
   <div class="gate-box wide scope-box"><div id="scope-body"></div>
     <div class="gnav"><span class="small muted" data-i18n="sc_again"></span><button type="button" class="btn" id="scope-ok" data-i18n="sc_ok"></button></div></div>
 </div>
+<div class="haunt" id="haunt" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 <div id="tip" class="tip" role="tooltip" hidden></div>
 <div id="itip" class="itip" role="tooltip" hidden></div>
 <div id="ktip" class="itip ktip" role="tooltip" hidden></div>
@@ -887,6 +944,8 @@ if(typeof self!=='undefined'&&typeof window==='undefined'&&typeof importScripts=
 if(typeof module!=='undefined')module.exports=API;
 </script>
 <script id="s-engine">
+/* an animated pixel sprite (beginner mode only; CSS hides them in Expert). n = file in sprites/, sc = whole-number scale */
+function SPR(n,sc,c){return'<span class="spr'+(c?' '+c:'')+'" data-s="'+n+'"'+(sc&&sc!==1?' style="--s:'+sc+'"':'')+' aria-hidden="true"></span>';}
 /* min/max over arrays of any length: Math.min(...arr) fails past ~100k items */
 const amin=function(){let m=Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]<m)m=a[i];}else if(a<m)m=a;}return m;},amax=function(){let m=-Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]>m)m=a[i];}else if(a>m)m=a;}return m;};
 const SFX=(function(){
@@ -2379,6 +2438,19 @@ const PLAY=(function(){
 'use strict';
 const DEF={wr:45,rr:1.5,risk:5,n:40};
 const ICON={ok:'✓',warn:'!',bad:'✕',none:'…'};
+/* spirits: the shaman's mood, the risk sign, a visitor when the verdict changes, and the ghosts in the margins all follow the verdict */
+const MOOD={ok:'shaman_happy',warn:'shaman_angry',bad:'shaman_sobbing',none:'shaman_thinking'},RISKS={ok:'risk_safe',warn:'risk_warning',bad:'risk_danger',none:'risk_loading'};
+const HAUNT={ok:['spirit_flame','','','spirit_flame'],warn:['ghost_shadow','spirit_eye','',''],bad:['ghost_krasue','ghost_mae_nak','ghost_skull','ghost_phi_pop'],none:['','ghost_child','','']};
+const GHOSTS=['ghost_krasue','ghost_phi_pop','ghost_mae_nak','ghost_child','ghost_skull','ghost_shadow'];
+let lastSp=null,spN=0;
+function spirits(a){
+  const k=a.v+(a.v==='bad'&&a.E<=0?'0':''),h=$('haunt'),L=HAUNT[a.v]||[];
+  if(h)h.querySelectorAll(':scope>span').forEach((w,i)=>{const n=L[i];if(n){if(w.dataset.n!==n){w.dataset.n=n;w.innerHTML=SPR(n,2);}w.classList.add('on');}else w.classList.remove('on');});
+  if(lastSp!==null&&k!==lastSp&&a.v!=='none'&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+    const n=a.v==='ok'?(spN%2?'amulet_cursed':'spirit_flame'):a.v==='warn'?'spirit_eye':(a.E<=0?'slime_monster':GHOSTS[spN%GHOSTS.length]);spN++;
+    const card=$('verdict-card'),old=card.querySelector('.boo');if(old)old.remove();
+    const b=document.createElement('div');b.className='boo';b.dataset.k=a.v;b.setAttribute('aria-hidden','true');b.innerHTML=SPR(n,2);b.addEventListener('animationend',e=>{if(e.target===b)b.remove();});card.appendChild(b);}
+  lastSp=k;}
 const FIELDS={wr:{min:5,max:100,step:0.1},rr:{min:0.2,max:100,step:0.01},risk:{min:0.1,max:100,step:0.01},n:{min:5,max:1000,step:1}};
 const errs={},touched={};
 let st=Object.assign({},DEF),example=true,A=null,before=null,timer=null,fixCache={key:'',val:null};
@@ -2419,8 +2491,8 @@ function sentence(a){
   if(a.E<=0)return t('vs_noedge',o);if(a.ruinP>=0.30)return t('vs_risk_bad',o);if(a.ruinP>0.05)return t('vs_risk_warn',o);
   if(a.p>=1)return t('why_perfect');if(a.Elo<=0||a.n<30)return t('vs_sample',o);return t('vs_ok',o);}
 function renderVerdict(){
-  const a=A,card=$('verdict-card'),lo=pct0(a.survLo),hi=pct0(a.survHi),wide=a.survHi-a.survLo>0.04;
-  card.innerHTML=`<div class="vrow"><span class="light" data-v="${a.v}" aria-hidden="true">${ICON[a.v]}</span><h2>${esc(t('v_'+a.v))}</h2></div>
+  const a=A,card=$('v-body'),lo=pct0(a.survLo),hi=pct0(a.survHi),wide=a.survHi-a.survLo>0.04;
+  card.innerHTML=`<div class="vrow">${SPR(a.v==='warn'&&a.ruinP<=0.05?'shaman_thinking':MOOD[a.v],2,'vsh')}<div class="vhead">${SPR(RISKS[a.v])}<h2>${esc(t('v_'+a.v))}</h2></div></div>
   <p class="vtext">${esc(sentence(a))}</p>
   <div class="tiles">
     <div class="tile"><b class="num">${rfmt(a.E)}</b><span>${esc(t('tile_exp'))}</span></div>
@@ -2429,10 +2501,10 @@ function renderVerdict(){
   </div>
   ${wide?`<p class="small muted" style="margin:.7rem 0 0">${esc(t('range_note',{n:a.n,lo,hi}))}</p>`:''}`;
   const vb=$('vbar');vb.querySelector('.light').dataset.v=a.v;vb.querySelector('.light').textContent=ICON[a.v];
-  vb.querySelector('b').textContent=t('v_'+a.v)+' · '+t('vbar_blow',{x:blowFmt(a.ruinP)});}
+  vb.querySelector('b').textContent=t('v_'+a.v)+' · '+t('vbar_blow',{x:blowFmt(a.ruinP)});spirits(a);}
 function fanSvg(sim,o){return CH.fan(sim,Object.assign({floorLabel:t('fan_floor'),xlabel:t('fan_x',{H:A.H}),label:t('fan_alt'),medColor:'var(--ink)'},o||{}));}
 function legend(){return`<div class="legend"><span><i style="background:var(--c1);opacity:.5"></i>${esc(t('lg_future'))}</span><span><i style="background:var(--bad)"></i>${esc(t('lg_blown'))}</span><span><i style="background:var(--ink)"></i>${esc(t('lg_typical'))}</span></div>`;}
-function renderFan(){$('fan-card').innerHTML=`<h2>${esc(t('fan_title',{H:A.H}))}</h2><div class="chart">${fanSvg(A.sim)}</div>${legend()}<p class="small muted" style="margin:.6rem 0 0">${esc(t('fan_note'))}</p>`;}
+function renderFan(){$('fan-card').innerHTML=`<h2 class="hh">${SPR('spirit_eye')}<span>${esc(t('fan_title',{H:A.H}))}</span></h2><div class="chart">${fanSvg(A.sim)}</div>${legend()}<p class="small muted" style="margin:.6rem 0 0">${esc(t('fan_note'))}</p>`;}
 function findingText(id){
   const a=A,o={E:rfmt(a.E),Eabs:Math.abs(a.E).toFixed(2),wr:a.st.wr,be:pct0(a.be),rr:a.b,risk:a.st.risk,n:a.n,K:(a.K*100).toFixed(1),hK:(a.K*50).toFixed(1),Z:(a.Z*100).toFixed(1),Elo:rfmt(a.Elo),Ehi:rfmt(a.Ehi)};
   let body=t('f_'+id+'_p',o);if(id==='sample')body+=' '+(a.E>0?(a.nNeeded?t('f_sample_need',{x:a.nNeeded}):t('f_sample_many')):'');
@@ -2453,7 +2525,7 @@ function finding(id){
   return'';}
 function renderWhy(){
   const el=$('why'),list=A.findings;
-  el.innerHTML=`<h2>🔍 ${esc(t('why_title'))}</h2>`+(A.p>=1?`<p class="warnnote">${esc(t('why_perfect'))}</p>`:'')+(list.length?list.map(finding).join(''):(A.p>=1?'':`<p>${esc(t('why_none'))}</p>`));}
+  el.innerHTML=`<h2 class="hh">${SPR('voodoo_doll')}<span>${esc(t('why_title'))}</span></h2>`+(A.p>=1?`<p class="warnnote">${esc(t('why_perfect'))}</p>`:'')+(list.length?list.map(finding).join(''):(A.p>=1?'':`<p>${esc(t('why_none'))}</p>`));}
 const ml=v=>`<span class="ml" data-v="${v}" aria-hidden="true">${ICON[v]}</span>`;
 function mergeSt(chg){return Object.assign({},st,chg);}
 function plan(){
@@ -2507,7 +2579,7 @@ function stepHtml(x,i){
   if(x.changes)btn=`<button type="button" class="btn" data-fix="${x.id}">${esc(t('pl_try'))}</button>`;
   return`<li class="bp" data-l="${x.lvl}"><span class="bpn">${i+1}</span><div><div class="bph"><span class="bpl" data-l="${x.lvl}">${esc(lab)}</span><b>${esc(title)}</b></div><p>${esc(body)}</p>${chip(x)}${btn?`<div class="bpb">${btn}</div>`:''}</div></li>`;}
 function renderFix(){
-  const el=$('fix'),P=plan();let h=`<h2>🛠️ ${esc(t('fix_title'))}</h2>`;
+  const el=$('fix'),P=plan();let h=`<h2 class="hh">${SPR('talisman_floating')}<span>${esc(t('fix_title'))}</span></h2>`;
   h+=`<p class="small">${esc(P.fixes?t('pl3_intro',{n:P.acts.length}):t('pl3_intro_ok',{n:P.acts.length}))}</p><ol class="bplan">`+P.acts.map(stepHtml).join('')+`</ol>`;
   if(P.fin)h+=`<div class="finalrow"><span>${esc(t(P.alt?'pl3_final_alt':'pl_final'))}</span>${ml(P.fin.v)}<b>${esc(t('v_'+P.fin.v))}</b></div>`;
   else h+=`<div class="finalrow"><span>${esc(t('pl3_now'))}</span>${ml(A.v)}<b>${esc(t('v_'+A.v))}</b></div>`;
@@ -2524,7 +2596,7 @@ function renderDeeper(){
   const items=ks.map(k=>({label:String(k),value:a.pStreak(k)*100,color:k===hi||k===hi+1?'var(--c2)':'var(--c1)'}));
   const bar=CH.bars({items,valFmt:v=>v<1?'<1':Math.round(v)+'',yfmt:v=>v+'%',xlabel:t('dp_streak_x'),label:t('dp_streak_t'),h:210,ymax:Math.max(10,Math.min(100,amax(items.map(i=>i.value))*1.18))});
   const kel=a.p>=1?t('why_perfect'):a.K>0?t('dp_kelly',{K:(a.K*100).toFixed(1),hK:(a.K*50).toFixed(1),qK:(a.K*25).toFixed(1),Z:(a.Z*100).toFixed(1),risk:a.st.risk}):t('dp_kelly0');
-  el.innerHTML=`<h2>🧩 ${esc(t('deeper_title'))}</h2>
+  el.innerHTML=`<h2 class="hh">${SPR('cursed_mask')}<span>${esc(t('deeper_title'))}</h2>
   <details><summary>${esc(t('dp_streak_t'))}</summary><div><p>${esc(a.p>=1?t('why_perfect'):t('dp_streak_p',{k:a.streakK,H:a.H,wr:a.st.wr,q:Math.round(q*100),k2:a.streakK+2,p2:blowFmt(a.pStreak(a.streakK+2))}))}</p><div class="chart">${bar}</div></div></details>
   <details><summary>${esc(t('dp_conf_t'))}</summary><div><p>${esc(t('dp_conf_p',{n:a.n,lo:pct0(wl[0]),hi:pct0(wl[1]),Elo:rfmt(a.Elo),Ehi:rfmt(a.Ehi)}))}</p></div></details>
   <details><summary>${esc(t('dp_kelly_t'))}</summary><div><p>${esc(kel)}</p></div></details>
@@ -3921,7 +3993,7 @@ const RIGHT='b';
 function quizHtml(i){
   const a=ans[i];let h=`<p class="gkick">${esc(t('gq_h',{i,n:NQ}))}</p><h2 id="gate-qt">${esc(t('gq'+i))}</h2><div class="qopts" role="group">`+
     ['a','b'].map(o=>`<button type="button" class="qopt" data-qa="${o}" aria-pressed="${a===o}"${a?` data-r="${o===RIGHT?'y':'n'}"`:''}>${esc(t('gq'+i+'_'+o))}</button>`).join('')+`</div>`;
-  if(a)h+=`<div class="qfb" data-ok="${a===RIGHT}"><p class="qv">${ml(a===RIGHT?'ok':'bad')} <b>${esc(t(a===RIGHT?'gq'+i+'_r':'gq'+i+'_w'))}</b></p>${VIS[i]()}<p class="small muted" style="margin-top:.7rem">${esc(t('il_hover'))}</p></div>`;
+  if(a)h+=`<div class="qfb" data-ok="${a===RIGHT}"><p class="qv">${ml(a===RIGHT?'ok':'bad')}${SPR(a===RIGHT?'shaman_happy':'shaman_angry')}<b>${esc(t(a===RIGHT?'gq'+i+'_r':'gq'+i+'_w'))}</b></p>${VIS[i]()}<p class="small muted" style="margin-top:.7rem">${esc(t('il_hover'))}</p></div>`;
   return h;}
 function summaryHtml(gk){
   const done=[1,2,3,4,5].filter(i=>ans[i]),score=done.filter(i=>ans[i]===RIGHT).length,lvl=gk==='ok'?'ok':gk==='nn'?'bad':'warn';
@@ -4092,7 +4164,7 @@ let mode=h.m==='desk'?'desk':'play';store.del('sfx_mode');
 if(h.m){try{const q=new URLSearchParams(location.hash.slice(1));q.delete('m');const rest=q.toString();history.replaceState(null,'',location.href.split('#')[0]+(rest?'#'+rest:''));}catch(e){}}
 root.dataset.mode=mode;
 /* phone browser bar follows the theme */
-{const tc=$('theme-color'),sync=()=>{if(tc)tc.content=root.dataset.mode==='desk'?'#0a0f15':'#bde7ff';};new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-mode']});sync();}
+{const tc=$('theme-color'),sync=()=>{if(tc)tc.content=root.dataset.mode==='desk'?'#0a0f15':'#1c0a2e';};new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-mode']});sync();}
 toDesk();
 document.querySelectorAll('#seg-mode button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
 setLang(lang,false);
