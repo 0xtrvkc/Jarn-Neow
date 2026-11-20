@@ -327,8 +327,20 @@ html[data-mode=desk] .fc2{--fcl:var(--muted)}
 .fcsvg{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:0}
 .fcp path{fill:none;stroke:var(--fcl);stroke-width:2.5;stroke-linejoin:round}.fcah{fill:var(--fcl)}
 .fclab rect{fill:var(--fcl)}.fclab text{fill:var(--card);font:700 11px var(--font)}
-.fcswipe{display:none;margin:.3rem 0 0}
-@media (max-width:700px){.fcswipe{display:block}}
+.fct{display:none;margin-top:.8rem;--fcl:var(--line)}
+html[data-mode=desk] .fct{--fcl:var(--muted)}
+.fct .fcn{display:block;width:fit-content;max-width:100%;text-align:left;margin:0;align-self:auto}
+.fct .fcn.start{text-align:center}
+.fct-dn{width:2.5px;height:18px;background:var(--fcl);margin:0 0 9px 1.1rem;position:relative}
+.fct-dn::after{content:"";position:absolute;left:-4.75px;bottom:-8px;border:6px solid transparent;border-top:8px solid var(--fcl);border-bottom:0}
+.fct-br{list-style:none;margin:.35rem 0 0 1.1rem;padding:0}
+.fct-br>li{position:relative;padding:.55rem 0 .35rem 1.35rem}
+.fct-br>li::before{content:"";position:absolute;left:0;top:0;bottom:0;border-left:2.5px solid var(--fcl)}
+.fct-br>li:last-child::before{bottom:auto;height:1.15rem}
+.fct-br>li::after{content:"";position:absolute;left:0;top:1.15rem;width:1rem;border-top:2.5px solid var(--fcl)}
+.fct-lab{display:inline-block;font-size:.75rem;font-weight:700;background:var(--fcl);color:var(--card);border-radius:99px;padding:.08rem .55rem;margin-bottom:.4rem;line-height:1.5}
+.fct-join{font-size:.8rem;color:var(--muted);margin:.5rem 0 .3rem 1.1rem}
+@media (max-width:760px){.fcw{display:none}.fct{display:block}}
 .fc{display:flex;flex-direction:column;align-items:stretch;gap:0;margin-top:.8rem}
 .fcn{align-self:center;max-width:22rem;text-align:center;border:2px solid var(--line);border-radius:14px;padding:.55rem .8rem;background:var(--card);font-weight:600;line-height:1.3}
 .fcn.start{background:var(--p1);color:#fff;border-radius:999px;padding:.6rem 1.2rem}
@@ -1507,7 +1519,7 @@ il_q_gamble:"Gambling",il_q_gamble_s:"Huge months, then huge losses.",il_q_gambl
 il_s5_t:"Someone shows a big profit. What do you ask?",il_s5_p:"Follow the arrows from the top. Hover over (or tap) any box for more.",
 il_f_start:"You see a big profit",il_f_start_tip:"A screenshot, a video, a signal group, a friend. It always starts the same way: a number that looks amazing.",
 il_f_q1:"Is it shown in money ($) or percent (%)?",il_f_q1_tip:"Money amounts are easy to make look big. Percent tells you how hard the account was really working.",
-il_f_swipe:"Swipe sideways to see the whole chart.",il_f_l_money:"Money ($)",il_f_l_pct:"Percent (%)",il_f_l_yes:"Yes",il_f_l_no:"No",
+il_f_join:"Both paths continue here:",il_f_l_money:"Money ($)",il_f_l_pct:"Percent (%)",il_f_l_yes:"Yes",il_f_l_no:"No",
 il_f_ask:"Ask: how big is the account?",il_f_ask_tip:"Without the account size, a dollar amount tells you nothing. $1,000 can be 0.1% or 100%.",
 il_f_conv:"Turn it into %: profit ÷ account",il_f_conv_tip:"Use the calculator in section 1. Turn it into a monthly figure too, so you can compare it with the line below.",
 il_f_pct:"Already a percentage",il_f_pct_tip:"Good. Now check what period it covers: a day, a week or a month?",
@@ -1901,7 +1913,7 @@ il_q_gamble:"การพนัน",il_q_gamble_s:"เดือนที่ไ�
 il_s5_t:"มีคนโชว์กำไรก้อนโต ควรถามอะไร?",il_s5_p:"ไล่ตามลูกศรจากด้านบน ชี้เมาส์ (หรือแตะ) ที่กล่องใดก็ได้เพื่อดูคำอธิบายเพิ่ม",
 il_f_start:"คุณเห็นกำไรก้อนโต",il_f_start_tip:"ภาพหน้าจอ วิดีโอ กลุ่มสัญญาณเทรด หรือเพื่อน ทุกอย่างเริ่มเหมือนกัน: ตัวเลขที่ดูน่าทึ่ง",
 il_f_q1:"แสดงเป็นจำนวนเงิน ($) หรือเปอร์เซ็นต์ (%)?",il_f_q1_tip:"จำนวนเงินทำให้ดูเยอะได้ง่าย เปอร์เซ็นต์บอกว่าพอร์ตทำงานหนักแค่ไหนจริงๆ",
-il_f_swipe:"ปัดไปด้านข้างเพื่อดูแผนภาพทั้งหมด",il_f_l_money:"เงิน ($)",il_f_l_pct:"เปอร์เซ็นต์ (%)",il_f_l_yes:"ใช่",il_f_l_no:"ไม่ใช่",
+il_f_join:"ทั้งสองทางมาต่อที่นี่:",il_f_l_money:"เงิน ($)",il_f_l_pct:"เปอร์เซ็นต์ (%)",il_f_l_yes:"ใช่",il_f_l_no:"ไม่ใช่",
 il_f_ask:"ถาม: พอร์ตใหญ่แค่ไหน?",il_f_ask_tip:"ถ้าไม่รู้ขนาดพอร์ต จำนวนเงินไม่ได้บอกอะไรเลย $1,000 อาจเป็น 0.1% หรือ 100% ก็ได้",
 il_f_conv:"แปลงเป็น %: กำไร ÷ พอร์ต",il_f_conv_tip:"ใช้เครื่องคิดเลขในส่วนที่ 1 และแปลงเป็นตัวเลขต่อเดือนด้วย เพื่อเทียบกับเส้นแบ่งด้านล่าง",
 il_f_pct:"เป็นเปอร์เซ็นต์อยู่แล้ว",il_f_pct_tip:"ดีแล้ว ต่อไปดูว่าเป็นของช่วงเวลาไหน: วัน สัปดาห์ หรือเดือน?",
@@ -2746,7 +2758,11 @@ const FN=[['start','start','1/1/2/5'],['q1','fq','2/1/3/5'],['ask','','3/1/4/3']
 const FE=[['start','q1'],['q1','ask','l_money'],['q1','pct','l_pct'],['ask','conv'],['conv','q2'],['pct','q2'],['q2','how','l_yes'],['q2','q4','l_no'],['how','q3'],
   ['q3','e_luck','l_no'],['q3','e_rare','l_yes'],['q4','e_real','l_yes'],['q4','e_wait','l_no']];
 function flow(){
-  return`<div class="fcw"><div class="fc2" id="fc2"><svg class="fcsvg" aria-hidden="true"></svg>${FN.map(([k,cls,area])=>`<div class="fcn ${cls} itp" data-itip="il_f_${k}_tip" data-n="${k}" tabindex="0" style="grid-area:${area}">${esc(t('il_f_'+k))}</div>`).join('')}</div></div><p class="small muted fcswipe">${esc(t('il_f_swipe'))}</p>`;}
+  return`<div class="fcw"><div class="fc2" id="fc2"><svg class="fcsvg" aria-hidden="true"></svg>${FN.map(([k,cls,area])=>`<div class="fcn ${cls} itp" data-itip="il_f_${k}_tip" data-n="${k}" tabindex="0" style="grid-area:${area}">${esc(t('il_f_'+k))}</div>`).join('')}</div></div>`+flowTree();}
+function flowTree(){
+  const n=k=>{const c=(FN.find(x=>x[0]===k)||[])[1]||'';return`<div class="fcn ${c} itp" data-itip="il_f_${k}_tip" tabindex="0">${esc(t('il_f_'+k))}</div>`;},dn='<div class="fct-dn" aria-hidden="true"></div>';
+  const br=items=>`<ul class="fct-br">${items.map(([lab,body])=>`<li><span class="fct-lab">${esc(t('il_f_'+lab))}</span>${body}</li>`).join('')}</ul>`;
+  return`<div class="fct">${n('start')+dn+n('q1')+br([['l_money',n('ask')+dn+n('conv')],['l_pct',n('pct')]])}<p class="fct-join">${esc(t('il_f_join'))}</p>${dn+n('q2')+br([['l_yes',n('how')+dn+n('q3')+br([['l_yes',n('e_rare')],['l_no',n('e_luck')]])],['l_no',n('q4')+br([['l_yes',n('e_real')],['l_no',n('e_wait')]])]])}</div>`;}
 function drawFlow(){
   const box=$('fc2');if(!box||!box.offsetParent)return;const svg=box.querySelector('.fcsvg'),b=box.getBoundingClientRect(),W=box.scrollWidth,H=box.scrollHeight;
   const R=k=>{const r=box.querySelector('[data-n="'+k+'"]').getBoundingClientRect();return{l:r.left-b.left,r:r.right-b.left,t:r.top-b.top,b:r.bottom-b.top,cx:(r.left+r.right)/2-b.left};};
