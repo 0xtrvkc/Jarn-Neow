@@ -25,7 +25,7 @@ The interface is in **English and Thai (ไทย)**. Switch with the EN / ไ�
 
 Built for phones and first-time users, with a Thai spirit-night look: Jarn Neow the shaman, ghosts and charms as animated pixel sprites.
 
-- A 7-step start-up check on every visit: two quick questions about testing, and a short quiz on common trading illusions (high win rate, "10% a day", lucky streaks, one great month, risk per trade).
+- A cheeky opening screen when the site loads ("So you know how to trade? Then why does the margin call keep calling you?"), then a 7-step start-up check on every visit: two quick questions about testing, and a short quiz on common trading illusions (high win rate, "10% a day", lucky streaks, one great month, risk per trade).
 - Four inputs: **win rate**, **reward : risk**, **risk per trade** and **number of trades tested**.
 - A plain-language verdict, an equity fan of possible futures, and a step-by-step plan to fix what's wrong.
 - The animations follow your numbers: the shaman cheers, frowns, thinks or sobs with the verdict, a charm or a ghost pops up when the verdict changes, and on wide screens more ghosts gather in the margins the riskier it gets. Expert mode has no animations. With reduced motion turned on in your device settings, the sprites stay still.

@@ -571,6 +571,29 @@ html[data-mode=desk] .gtop{justify-content:flex-end}
 .fspr{display:none}
 html[data-mode=play] .fspr{display:flex;gap:.6rem;margin-bottom:.4rem;opacity:.95}
 
+/* the roast screen */
+.gate-box.intro>:not(.gtop):not(#gate-intro){display:none!important}
+.gate-box.intro .gtop>.spr{display:none!important}
+.gate-box.intro .gtop{margin-bottom:0;justify-content:flex-end}
+#gate-intro{text-align:center}
+.rst{position:relative;display:flex;justify-content:center;align-items:flex-end;min-height:168px;margin:-1rem 0 .4rem}
+html[data-mode=desk] .rst{display:none}
+.rgh{position:absolute;right:calc(50% + 72px);bottom:0;animation:spr calc(var(--n)*90ms) steps(var(--n)) infinite,peek 2.8s ease-in-out infinite}
+@keyframes peek{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(-8px,-12px) rotate(4deg)}}
+.rk{font-weight:600;color:var(--muted);margin:0 0 .35rem}
+.rt{font-size:clamp(1.8rem,7vw,2.4rem);margin:0 0 .4rem}
+.rq{font-size:1.1rem;font-weight:600;margin:0 0 .8rem}
+.rl{list-style:none;margin:0 auto 1rem;padding:0;display:grid;gap:.4rem;max-width:24rem}
+.rl li{background:var(--soft);border:2px solid var(--line);border-radius:12px;padding:.4rem .7rem;font-weight:600}
+.rl li::before{content:"✕ ";color:var(--bad);font-weight:700}
+html[data-mode=desk] .rl li{border-width:1px;border-radius:2px}
+.rob{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
+.rob .btn{min-width:10rem}
+.shake{animation:shake .5s .25s both}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-7px) rotate(-2deg)}40%{transform:translateX(7px) rotate(2deg)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
+.pop{animation:popin .45s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes popin{from{transform:scale(.4);opacity:0}}
+html[data-mode=desk] .shake,html[data-mode=desk] .pop{animation:none}
 /* ============ responsive ============ */
 @media (max-width:899px){
   .play-grid{grid-template-columns:1fr}
@@ -607,6 +630,7 @@ html[data-mode=play] .fspr{display:flex;gap:.6rem;margin-bottom:.4rem;opacity:.9
 <div id="gate" class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
   <div class="gate-box">
     <div class="gtop"><span class="spr" data-s="shaman_thinking" style="--s:2" aria-hidden="true"></span><div class="seg langseg" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="th" aria-pressed="false">ไทย</button></div></div>
+    <div id="gate-intro" hidden></div>
     <div class="gprog" id="gate-prog" aria-hidden="true"></div><p class="gkick" id="gate-step"></p>
     <div id="gate-s0">
     <h2 id="gate-title" data-i18n="gate_title"></h2>
@@ -1263,6 +1287,7 @@ gate_ok_t:"Both tests done.",gate_ok_p:"Use your forward-test numbers here. They
 flag_nn:"No backtest and no forward test: treat every result below as an illustration, not evidence.",flag_bt:"Backtest only: these numbers may be overfit, so the results below are probably optimistic.",flag_ft:"Forward test only: without a backtest, a small sample like this may be luck.",
 layout_full:"Full dashboard",layout_guided:"Step by step",
 gate_title:"Quick check first",
+ro_kick:"I'm Jarn Neow, spirit doctor for dying trading accounts.",ro_t:"So you know how to trade?",ro_p:"Then why does the margin call keep calling you? 📞",ro_1:"Win rate 90%. Balance: 0.",ro_2:"\"One more trade and I'll win it all back.\"",ro_3:"Stop loss? Never heard of her.",ro_yes:"Yes, I'm a pro",ro_no:"…okay, help me",ro_sure:"Sure you are. 😏",ro_jk:"Just kidding. Lemme help.",ro_jk_p:"2 quick questions and 5 tiny quizzes, about a minute. Then we find out if your account survives.",ro_go:"Let's go",
 gate_intro:"Two questions, so we can tell you how far to trust your result. You can continue either way.",
 gate_q_bt:"Have you backtested this strategy?",gate_q_ft:"Have you forward tested it (demo or a small live account)?",
 yes:"Yes, done",no:"Not yet",gate_continue:"Continue",
@@ -1660,6 +1685,7 @@ gate_ok_t:"ทดสอบครบทั้งสองอย่างแล้
 flag_nn:"ยังไม่ได้ Backtest และ Forward test: ผลลัพธ์ด้านล่างเป็นเพียงตัวอย่าง ไม่ใช่หลักฐาน",flag_bt:"มีแค่ Backtest: ตัวเลขอาจ Overfit ผลลัพธ์ด้านล่างจึงน่าจะดีเกินจริง",flag_ft:"มีแค่ Forward test: เมื่อไม่มี Backtest ตัวอย่างขนาดเล็กแบบนี้อาจเป็นแค่โชค",
 mode_desk:"ผู้เชี่ยวชาญ",desk_h1:"จารย์เหนียว โหมดผู้เชี่ยวชาญ: วิเคราะห์ความเสี่ยงของกลยุทธ์",desk_in_h:"ค่าที่ใส่",layout_full:"แดชบอร์ดเต็ม",layout_guided:"ทีละขั้น",
 gate_title:"ขอเช็กก่อนเริ่มนะ",
+ro_kick:"ข้าคือจารย์เหนียว หมอผีประจำพอร์ตแตก",ro_t:"เทรดเป็นจริงเหรอ?",ro_p:"ถ้าเป็นจริง ทำไม Margin call โทรหาเจ้าทุกวันล่ะ 📞",ro_1:"Win rate 90% แต่พอร์ตเหลือ 0",ro_2:"\"อีกไม้เดียว เดี๋ยวได้คืน\"",ro_3:"Stop loss? ไม่รู้จัก",ro_yes:"เป็นสิ โปรนะ",ro_no:"…ช่วยหน่อย",ro_sure:"แน่ใจนะ 😏",ro_jk:"ล้อเล่นน่า ให้ข้าช่วย",ro_jk_p:"ตอบ 2 คำถามกับควิซสั้นๆ 5 ข้อ ใช้เวลาราวนาทีเดียว แล้วมาดูกันว่าพอร์ตเจ้าจะรอดไหม",ro_go:"เริ่มเลย",
 gate_intro:"สองคำถาม เพื่อบอกได้ว่าควรเชื่อผลลัพธ์ของคุณแค่ไหน ตอบแบบไหนก็ไปต่อได้",
 gate_q_bt:"คุณ Backtest กลยุทธ์นี้แล้วหรือยัง?",gate_q_ft:"คุณ Forward test แล้วหรือยัง (บัญชีเดโม่หรือบัญชีจริงเล็กๆ)?",
 yes:"ทำแล้ว",no:"ยังไม่ได้ทำ",gate_continue:"ไปต่อ",
@@ -4047,7 +4073,7 @@ function gateRender(){
   if(k){msg.hidden=false;msg.dataset.k=k;
     msg.innerHTML=`<b>${esc(t('gate_'+k+'_t'))}</b> ${esc(t('gate_'+k+'_p'))}`+(k==='ok'?'':`<ul>${[1,2,3].map(i=>`<li>${esc(t('gate_'+k+'_'+i))}</li>`).join('')}</ul>`);
   }else{msg.hidden=true;msg.innerHTML='';}
-  stepRender();flagRender();}
+  stepRender();renderIntro();flagRender();}
 let gstep=0;const GN=ILL.NQ+2;
 function stepRender(){
   const k=gateKey(),q=gstep>0;$('gate-s0').hidden=q;$('gate-sq').hidden=!q;
@@ -4064,7 +4090,18 @@ function goStep(n){gstep=n;stepRender();gate.scrollTop=0;const h=gate.querySelec
 /* while a popup is open, everything behind it is inert: no keyboard focus, hidden from screen readers */
 function syncInert(){const sc=$('scope'),g=$('gate'),top=!sc.hidden?sc:!g.hidden?g:null;
   [...document.body.children].forEach(el=>{if(el.tagName==='SCRIPT'||el.id==='tip')return;const on=!!top&&el!==top&&!el.contains(top);if(on)el.setAttribute('inert','');else el.removeAttribute('inert');});}
-function openGate(){answers.bt=answers.ft=null;gstep=0;ILL.reset();gateRender();document.body.classList.add('locked');gate.hidden=false;syncInert();const b=gate.querySelector('.yn button');if(b)b.focus();}
+/* the roast: a cheeky first screen on page load, before the real questions */
+let intro=0;
+function renderIntro(){
+  const el=$('gate-intro');gate.querySelector('.gate-box').classList.toggle('intro',!!intro);el.hidden=!intro;
+  if(!intro){el.innerHTML='';return;}
+  if(intro===1)el.innerHTML=`<div class="rst">${SPR('shaman_angry',3,'rsh')}${SPR('ghost_phi_pop',2,'rgh')}</div><p class="rk">${esc(t('ro_kick'))}</p><h2 id="ro-t" class="rt shake">${esc(t('ro_t'))}</h2><p class="rq">${esc(t('ro_p'))}</p><ul class="rl">${[1,2,3].map(i=>`<li>${esc(t('ro_'+i))}</li>`).join('')}</ul><div class="rob"><button type="button" class="btn alt" data-ro="pro">${esc(t('ro_yes'))}</button><button type="button" class="btn" data-ro="help">${esc(t('ro_no'))}</button></div>`;
+  else el.innerHTML=`<div class="rst">${SPR('shaman_happy',3,'rsh')}${SPR('spirit_flame',2,'rgh')}</div>${intro===3?`<p class="rk">${esc(t('ro_sure'))}</p>`:''}<h2 id="ro-t" class="rt pop">${esc(t('ro_jk'))}</h2><p class="rq">${esc(t('ro_jk_p'))}</p><div class="rob"><button type="button" class="btn" data-ro="go">${esc(t('ro_go'))}</button></div>`;
+  gate.setAttribute('aria-labelledby','ro-t');}
+$('gate-intro').addEventListener('click',e=>{const b=e.target.closest('[data-ro]');if(!b)return;const k=b.dataset.ro;
+  intro=k==='pro'?3:k==='help'?2:0;gateRender();gate.scrollTop=0;
+  const f=intro?gate.querySelector('#gate-intro [data-ro]'):gate.querySelector('.yn button');if(f)f.focus();});
+function openGate(first){answers.bt=answers.ft=null;gstep=0;intro=first===true?1:0;ILL.reset();gateRender();document.body.classList.add('locked');gate.hidden=false;syncInert();const b=gate.querySelector(intro?'#gate-intro [data-ro]':'.yn button');if(b)b.focus();}
 function closeGate(){ILL.hide();gate.hidden=true;document.body.classList.remove('locked');syncInert();window.__sfxGate=gateKey();flagRender();if(root.dataset.mode==='desk')DESK.analyze();else PLAY.render();}
 gate.querySelectorAll('.q').forEach(q=>q.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;answers[q.dataset.q]=b.dataset.a;gateRender();}));
 $('gate-go').addEventListener('click',()=>{if(!gateKey())return;if(gstep<GN-1){if(gstep>0&&!ILL.answered(gstep))return;goStep(gstep+1);}else closeGate();});
@@ -4169,9 +4206,10 @@ toDesk();
 document.querySelectorAll('#seg-mode button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
 setLang(lang,false);
 if(mode==='desk')DESK.analyze();else PLAY.render();
-openGate();
+openGate(true);
 window.__sfx={PLAY,DESK,setLang,setMode,MISSING};
 root.classList.remove('js-wait');
+{const f=gate.hidden?null:gate.querySelector(intro?'#gate-intro [data-ro]':'.yn button');if(f)f.focus();}
 /* optional visit counter: GoatCounter, no cookies. Off while empty; to switch on, create a free site at goatcounter.com
    and put its code here (for https://jarnneow.goatcounter.com the code is 'jarnneow'). Only the page path is sent. */
 const COUNTER='';
