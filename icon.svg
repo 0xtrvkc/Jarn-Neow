@@ -1,8 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#bde7ff"/>
-  <g stroke="#23194f" stroke-width="3.5" stroke-linejoin="round">
-    <rect x="7" y="27" width="25" height="25" rx="7" fill="#7c5cff" transform="rotate(-8 19.5 39.5)"/>
-    <rect x="18" y="9" width="25" height="25" rx="7" fill="#ff6fb5" transform="rotate(6 30.5 21.5)"/>
-    <rect x="29" y="29" width="25" height="25" rx="7" fill="#ffd23f" transform="rotate(-3 41.5 41.5)"/>
-  </g>
+  <!-- Jarn Neow: a yantra-style mark. Gated square frame, circle, triangle and centre dot, in the beginner-mode spirit colours -->
+  <rect width="64" height="64" rx="14" fill="#1c0a2e"/>
+  <path d="M9 9H26V5H38V9H55V26H59V38H55V55H38V59H26V55H9V38H5V26H9Z" fill="none" stroke="#ffcb2f" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="32" cy="32" r="16" fill="#3a1260" stroke="#f05aa6" stroke-width="3"/>
+  <path d="M32 19.5L43 38.5H21Z" fill="none" stroke="#ffcb2f" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="32" cy="32" r="3.2" fill="#adef4a"/>
+  <g fill="#adef4a"><circle cx="9" cy="9" r="2"/><circle cx="55" cy="9" r="2"/><circle cx="9" cy="55" r="2"/><circle cx="55" cy="55" r="2"/></g>
 </svg>
