@@ -2,12 +2,12 @@
    - the page and index.json: network first, so a new version shows up straight away; the saved copy is used offline
    - gold month files, fonts, sprites and icons: from the device once downloaded (they never change), network otherwise
    Nothing here sends data anywhere; it only keeps copies of this site's own files in the browser. */
-const VERSION = 'jn-v2';
+const VERSION = 'jn-v3';
 const PAGE = 'jn-page-' + VERSION;
 const FILES = 'jn-files-' + VERSION;
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(PAGE).then(c => c.addAll(['./', 'index.html', 'icon.svg'])).catch(() => {}).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(PAGE).then(c => c.addAll(['./', 'index.html', 'icon.svg?v=2'])).catch(() => {}).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
