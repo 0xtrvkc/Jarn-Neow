@@ -2966,9 +2966,9 @@ function btErrText(m){
 const dfmtM=k=>{const d=new Date(Date.UTC(+k.slice(0,4),+k.slice(5,7)-1,1));return d.toLocaleDateString(LANG==='th'?'th-TH-u-ca-gregory':'en-GB',{month:'short',year:'numeric',timeZone:'UTC'});};
 const BT={idx:null,idxErr:null,from:null,to:null,dir:'buy',res:null,sig:null,kind:null,busy:false,prog:'',err:null,worker:null,id:0};
 const btBase=()=>new URL('data/gold/',location.href).href;
-/* month files are immutable, so on the live site they come from jsDelivr, pinned to a git tag (cached forever, no GitHub Pages bandwidth); this site is the fallback */
+/* month files never change, so on the live site they come from jsDelivr pinned to a commit (cached forever, no GitHub Pages bandwidth); this site is the fallback */
 const BT_REPO='0xtrvkc/Jarn-Neow';
-const btBases=()=>{const own=btBase(),tag=BT.idx&&BT.idx.cdnTag;return tag&&location.protocol==='https:'?['https://cdn.jsdelivr.net/gh/'+BT_REPO+'@'+tag+'/data/gold/',own]:[own];};
+const btBases=()=>{const own=btBase(),tag=BT.idx&&(BT.idx.cdnRef||BT.idx.cdnTag);return tag&&location.protocol==='https:'?['https://cdn.jsdelivr.net/gh/'+BT_REPO+'@'+tag+'/data/gold/',own]:[own];};
 const btFile=()=>location.protocol==='file:';
 const btCan=()=>typeof DecompressionStream!=='undefined'&&typeof Worker!=='undefined';
 const ymOf=min=>new Date(min*60000).toISOString().slice(0,7);

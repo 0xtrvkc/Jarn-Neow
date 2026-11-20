@@ -87,7 +87,7 @@ Every Expert strategy type ends with a **Backtest on real gold** section. It rep
   - **Real losing streaks (fixed stop):** real streaks against what independent trades would produce, which checks whether losses cluster.
 - The available date range is shown as a timeline, with your selected months highlighted.
 - Only the months in your range are downloaded (about 50 KB per month), and the backtest runs in the background, so the page stays responsive. A full 16-year run takes about 2–4 seconds.
-- On the live site the month files come from the jsDelivr CDN, pinned to a git tag, with this site as the automatic fallback. Each file is checked against its expected bar count; a damaged or missing month stops the run with a clear message instead of being skipped.
+- On the live site the month files come from the jsDelivr CDN, pinned to a commit, with this site as the automatic fallback. Each file is checked against its expected bar count; a damaged or missing month stops the run with a clear message instead of being skipped.
 
 **How the replay works:**
 - Contract-roll jumps between futures months are removed.
@@ -201,11 +201,12 @@ The app itself has no build step and no dependencies. Edit `index.html` and refr
 To rebuild or extend the gold data (needs Python with `pyarrow` and `numpy`):
 
 ```
-python3 tools/build_gold_data.py GC_v_0_ohlcv-1m.parquet data/gold gold-data-YYYY-MM-DD
-git add data/gold && git commit -m "Update gold data"
-git tag gold-data-YYYY-MM-DD && git push origin main gold-data-YYYY-MM-DD
+python3 tools/build_gold_data.py GC_v_0_ohlcv-1m.parquet data/gold
+git add data/gold && git commit -m "Update gold data" && git push
+python3 tools/build_gold_data.py GC_v_0_ohlcv-1m.parquet data/gold $(git rev-parse HEAD)
+git add data/gold/index.json && git commit -m "Pin gold data on jsDelivr" && git push
 ```
 
-The tag name is written into `index.json`; the live site loads the month files from jsDelivr at that tag. Use a new tag name for every data update, because jsDelivr caches a tag's files permanently.
+The second build writes that commit's ID into `index.json`, and the live site then loads the month files from jsDelivr at that commit, which never changes, so they're cached permanently. A tag pointing at the data commit works too. Without a ref, the site serves the files itself.
 
 Prices are stored unadjusted in $0.10 ticks. Each month is a gzip-compressed file of variable-length integers (time step, open, high, low, close). The format is documented at the top of the script.

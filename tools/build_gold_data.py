@@ -2,10 +2,10 @@
 
 Usage:  python3 tools/build_gold_data.py GC_v_0_ohlcv-1m.parquet data/gold [cdn-tag]
 
-cdn-tag (optional): a git tag that will hold exactly these files, e.g. gold-data-2026-11-13.
-The live site then loads the month files from jsDelivr at that tag and falls back to its own copy.
-After committing the new data, create and push the tag:  git tag <cdn-tag> && git push origin <cdn-tag>
-Without a tag the site serves the files itself.
+cdn-ref (optional): a git tag or full commit ID that holds exactly these month files.
+The live site then loads the month files from jsDelivr at that ref and falls back to its own copy.
+Usual flow: build without a ref, commit and push the data, then build again with that commit's ID
+(git rev-parse HEAD) or a tag pointing at it, and commit index.json. Without a ref the site serves the files itself.
 
 Output
   data/gold/index.json      months, bar counts, date range and contract-roll table
@@ -44,7 +44,7 @@ def zz(a):
     return (a << 1) ^ (a >> 63)
 
 
-def main(src, dst, cdn_tag=None):
+def main(src, dst, cdn_ref=None):
     t = pq.read_table(src, columns=['ts_event', 'open', 'high', 'low', 'close', 'instrument_id']).to_pandas()
     t = t.sort_values('ts_event').drop_duplicates('ts_event')
     ts = t.ts_event.values.astype('datetime64[m]').astype(np.int64)
@@ -93,7 +93,7 @@ def main(src, dst, cdn_tag=None):
     meta = {
         'symbol': 'GC (COMEX gold futures, continuous front contract)',
         'tick': 0.1,
-        **({'cdnTag': cdn_tag} if cdn_tag else {}),
+        **({'cdnRef': cdn_ref} if cdn_ref else {}),
         'bars': int(len(ts)),
         'from': int(ts[0]),
         'to': int(ts[-1]),
