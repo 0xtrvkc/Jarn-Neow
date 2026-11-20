@@ -520,8 +520,10 @@ footer{max-width:var(--maxw);margin:0 auto;padding:0 1rem 2.5rem;color:var(--mut
 html[data-mode=desk] footer{max-width:1600px}
 
 /* ============ spirit theme (beginner only; Expert has no sprites and no animation) ============ */
-.spr{--w:56px;--h:56px;--n:16;--s:1;display:inline-block;flex:none;width:calc(var(--w)*var(--s));height:calc(var(--h)*var(--s));background-repeat:no-repeat;background-position:0 0;background-size:calc(var(--w)*var(--s)*var(--n)) 100%;image-rendering:pixelated;animation:spr calc(var(--n)*90ms) steps(var(--n)) infinite;vertical-align:middle}
-@keyframes spr{to{background-position:calc(var(--w)*var(--s)*var(--n)*-1) 0}}
+.spr{--w:56px;--h:56px;--s:1;display:inline-block;flex:none;width:calc(var(--w)*var(--s));height:calc(var(--h)*var(--s));background-repeat:no-repeat;background-position:0 0;background-size:1600% 100%;image-rendering:pixelated;-webkit-animation:spr 1.44s steps(16) infinite;animation:spr 1.44s steps(16) infinite;vertical-align:middle}
+/* 16 frames side by side: 106.667% of the leftover width moves exactly 16 frames, so steps(16) shows each frame once */
+@-webkit-keyframes spr{from{background-position:0 0}to{background-position:106.6667% 0}}
+@keyframes spr{from{background-position:0 0}to{background-position:106.6667% 0}}
 html[data-mode=desk] .spr,html[data-mode=desk] .haunt,html[data-mode=desk] .boo{display:none!important}
 .spr[data-s=logo_jarn_neow_en]{--w:112px;background-image:url(sprites/logo_jarn_neow_en.png)}
 .spr[data-s=logo_jarn_neow_th]{--w:112px;--h:48px;background-image:url(sprites/logo_jarn_neow_th.png)}
@@ -578,7 +580,7 @@ html[data-mode=play] .fspr{display:flex;gap:.6rem;margin-bottom:.4rem;opacity:.9
 #gate-intro{text-align:center}
 .rst{position:relative;display:flex;justify-content:center;align-items:flex-end;min-height:168px;margin:-1rem 0 .4rem}
 html[data-mode=desk] .rst{display:none}
-.rgh{position:absolute;right:calc(50% + 72px);bottom:0;animation:spr calc(var(--n)*90ms) steps(var(--n)) infinite,peek 2.8s ease-in-out infinite}
+.rgh{position:absolute;right:calc(50% + 72px);bottom:0;animation:spr 1.44s steps(16) infinite,peek 2.8s ease-in-out infinite}
 @keyframes peek{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(-8px,-12px) rotate(4deg)}}
 .rk{font-weight:600;color:var(--muted);margin:0 0 .35rem}
 .rt{font-size:clamp(1.8rem,7vw,2.4rem);margin:0 0 .4rem}
@@ -611,7 +613,7 @@ html[data-mode=desk] .shake,html[data-mode=desk] .pop{animation:none}
   .compare{grid-template-columns:1fr}
   .top{padding:.6rem .7rem}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html[data-mode=play] .spr{animation:spr 1.44s steps(16) infinite!important}}
 </style>
 </head>
 <body class="locked">
@@ -2476,6 +2478,8 @@ function spirits(a){
     const n=a.v==='ok'?(spN%2?'amulet_cursed':'spirit_flame'):a.v==='warn'?'spirit_eye':(a.E<=0?'slime_monster':GHOSTS[spN%GHOSTS.length]);spN++;
     const card=$('verdict-card'),old=card.querySelector('.boo');if(old)old.remove();
     const b=document.createElement('div');b.className='boo';b.dataset.k=a.v;b.setAttribute('aria-hidden','true');b.innerHTML=SPR(n,2);b.addEventListener('animationend',e=>{if(e.target===b)b.remove();});card.appendChild(b);}
+  const rs=$('v-body').querySelector('.vhead .spr');
+  if(rs&&lastSp!==null){rs.dataset.s='risk_calculating';clearTimeout(spirits.t);spirits.t=setTimeout(()=>{const r=$('v-body').querySelector('.vhead .spr');if(r)r.dataset.s=RISKS[A.v];},500);}
   lastSp=k;}
 const FIELDS={wr:{min:5,max:100,step:0.1},rr:{min:0.2,max:100,step:0.01},risk:{min:0.1,max:100,step:0.01},n:{min:5,max:1000,step:1}};
 const errs={},touched={};
