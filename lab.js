@@ -15,17 +15,14 @@ lab_s3:"Compare the two. A rule fitted to the past usually falls apart in the fo
 lp_chart:"Chart",lp_entry:"Entry signal",lp_exit:"Exit",lp_money:"Money and costs",
 l_tf:"Timeframe",tf_1:"1 minute",tf_5:"5 minutes",tf_15:"15 minutes",tf_60:"1 hour",tf_240:"4 hours",tf_1440:"1 day",
 l_dir:"Trade direction",dir_both:"Buy and sell",dir_long:"Buy only",dir_short:"Sell only",
-l_sig:"Signal",sig_ma:"Moving average cross",sig_rsi:"RSI",sig_bb:"Bollinger Bands",sig_macd:"MACD",sig_stoch:"Stochastic",sig_break:"Breakout",
-sd_ma:"Buys when the fast average crosses above the slow one and sells when it crosses below.",
-sd_rsi:"Buys when RSI climbs back above the low level and sells when it falls back below the high level.",
-sd_bb_rev:"Buys when price closes back inside the lower band and sells when it closes back inside the upper band.",
-sd_bb_break:"Buys when price closes above the upper band and sells when it closes below the lower band.",
-sd_macd:"Buys when MACD crosses above its signal line and sells when it crosses below.",
-sd_stoch:"Buys when %K crosses above %D from below the low level and sells when it crosses below %D from above the high level.",
-sd_break:"Buys on the first close above the highest high of the last N candles and sells on the first close below the lowest low.",
-l_matype:"Average type",l_fast:"Fast period",l_slow:"Slow period",l_period:"Period",l_lo:"Low level",l_hi:"High level",l_bbk:"Band width (standard deviations)",
-l_bbmode:"Use the bands for",bb_rev:"Reversal",bb_break:"Breakout",l_msig:"Signal period",l_k:"%K period",l_ks:"%K smoothing",l_d:"%D period",l_n:"Candles to look back",
-l_filt:"Trend filter",filt_off:"Off",filt_ema:"EMA trend",filt_sma:"SMA trend",l_filtn:"Trend average period",filt_hint:"With the filter on, it buys only when price closes above the average and sells only when it closes below.",
+l_preset:"Start from a preset",pre_pick:"Choose a preset…",pre_ma:"EMA 20 / 50 cross",pre_rsi:"RSI leaves 30 / 70",pre_bbrev:"Bollinger Bands reversal",pre_bbbrk:"Bollinger Bands breakout",pre_macd:"MACD crosses its signal line",
+pre_stoch:"Stochastic cross from oversold",pre_don:"20-candle breakout (Donchian)",pre_pull:"Pullback in an uptrend (EMA 20 above EMA 200)",pre_adx:"+DI / −DI cross with ADX above 25",pre_engulf:"Engulfing candle with the EMA 200 trend",
+r_buy:"Buy when all of these are true",r_sell:"Sell when all of these are true",r_add:"Add a condition",r_del:"Remove this condition",r_mode:"Sell rule",r_mirror:"Mirror of the buy rule",r_own:"Its own conditions",
+r_num:"a number",r_value:"Value",r_out:"Line",r_none:"No conditions yet: this side never trades.",r_max:"Up to 4 conditions on each side.",
+r_sum_buy:"Buys when {x}.",r_sum_sell:"Sells when {x}.",r_and:" and ",r_hint:"Signals are read when a candle closes. The mirrored sell rule flips each condition: crosses above becomes crosses below, RSI 30 becomes 70, lower band becomes upper band.",
+op_xa:"crosses above",op_xb:"crosses below",op_gt:"is above",op_lt:"is below",op_bull:"appears (bullish)",op_bear:"appears (bearish)",op_any:"appears",
+g_price:"Price",g_avg:"Moving averages",g_band:"Bands and channels",g_osc:"Oscillators",g_trend:"Trend strength",g_vol:"Volatility",g_pat:"Candlestick patterns",
+d_bull:"a bullish {x} candle appears",d_bear:"a bearish {x} candle appears",d_any:"a {x} candle appears",
 l_stop:"Stop loss",stop_pips:"Fixed pips",stop_atr:"ATR multiple",stop_none:"None",l_stopv_p:"Stop distance (pips)",l_stopv_a:"Stop distance (× ATR)",
 l_tgt:"Take profit",tgt_none:"None",tgt_pips:"Fixed pips",tgt_atr:"ATR multiple",tgt_r:"R multiple",l_tgtv_p:"Target distance (pips)",l_tgtv_a:"Target distance (× ATR)",l_tgtv_r:"Target (× stop distance)",
 l_opp:"On an opposite signal",opp_yes:"Reverse",opp_no:"Ignore",l_maxb:"Close after this many candles (0 = never)",l_atrn:"ATR period",
@@ -73,6 +70,7 @@ lim:["Futures, not spot: a broker's XAUUSD prices, hours and gaps differ slightl
 e_file:"The playground needs the app opened from the web (https://), not as a file on your computer.",e_nodecomp:"This browser can't unpack the gold data. Use a recent Chrome, Edge, Firefox or Safari.",
 e_idx:"Couldn't load the list of gold months: {msg}",e_net:"Couldn't download the gold data. Check your connection and try again.",e_http:"The gold data server answered {code} for {m}. Try again later.",
 lg_bt:"Backtest",lg_fw:"Forward test",lg_low:"Lowest point in the day",lg_up:"Month up",lg_down:"Month down",
+PL:{},
 e_bad:"The gold file for {m} was damaged on the way. Try again.",e_busy:"Too many tests are running right now. Wait a minute and try again.",e_other:"The test stopped: {msg}"
 });
 Object.assign(I18N.th,{
@@ -83,17 +81,14 @@ lab_s3:"เทียบผลสองช่วง กฎที่จูนจ�
 lp_chart:"กราฟ",lp_entry:"สัญญาณเข้า",lp_exit:"การออก",lp_money:"เงินและต้นทุน",
 l_tf:"ไทม์เฟรม",tf_1:"1 นาที",tf_5:"5 นาที",tf_15:"15 นาที",tf_60:"1 ชั่วโมง",tf_240:"4 ชั่วโมง",tf_1440:"1 วัน",
 l_dir:"ทิศทางการเทรด",dir_both:"ทั้งซื้อและขาย",dir_long:"ซื้ออย่างเดียว",dir_short:"ขายอย่างเดียว",
-l_sig:"สัญญาณ",sig_ma:"เส้นค่าเฉลี่ยตัดกัน",sig_rsi:"RSI",sig_bb:"Bollinger Bands",sig_macd:"MACD",sig_stoch:"Stochastic",sig_break:"Breakout",
-sd_ma:"ซื้อเมื่อเส้นเร็วตัดขึ้นเหนือเส้นช้า และขายเมื่อตัดลง",
-sd_rsi:"ซื้อเมื่อ RSI กลับขึ้นเหนือระดับล่าง และขายเมื่อกลับลงใต้ระดับบน",
-sd_bb_rev:"ซื้อเมื่อราคาปิดกลับเข้ามาในกรอบล่าง และขายเมื่อปิดกลับเข้ามาในกรอบบน",
-sd_bb_break:"ซื้อเมื่อราคาปิดเหนือกรอบบน และขายเมื่อปิดใต้กรอบล่าง",
-sd_macd:"ซื้อเมื่อ MACD ตัดขึ้นเหนือเส้น Signal และขายเมื่อตัดลง",
-sd_stoch:"ซื้อเมื่อ %K ตัดขึ้นเหนือ %D จากใต้ระดับล่าง และขายเมื่อตัดลงใต้ %D จากเหนือระดับบน",
-sd_break:"ซื้อเมื่อราคาปิดเหนือจุดสูงสุดของ N แท่งล่าสุดเป็นครั้งแรก และขายเมื่อปิดใต้จุดต่ำสุดเป็นครั้งแรก",
-l_matype:"ชนิดค่าเฉลี่ย",l_fast:"คาบเส้นเร็ว",l_slow:"คาบเส้นช้า",l_period:"คาบ",l_lo:"ระดับล่าง",l_hi:"ระดับบน",l_bbk:"ความกว้างกรอบ (ส่วนเบี่ยงเบนมาตรฐาน)",
-l_bbmode:"ใช้กรอบแบบ",bb_rev:"กลับตัว",bb_break:"Breakout",l_msig:"คาบเส้น Signal",l_k:"คาบ %K",l_ks:"การทำให้ %K เรียบ",l_d:"คาบ %D",l_n:"จำนวนแท่งย้อนหลัง",
-l_filt:"ตัวกรองเทรนด์",filt_off:"ปิด",filt_ema:"เทรนด์ EMA",filt_sma:"เทรนด์ SMA",l_filtn:"คาบค่าเฉลี่ยของเทรนด์",filt_hint:"เมื่อเปิดตัวกรอง จะซื้อเฉพาะตอนราคาปิดเหนือค่าเฉลี่ย และขายเฉพาะตอนปิดใต้ค่าเฉลี่ย",
+l_preset:"เริ่มจากชุดสำเร็จรูป",pre_pick:"เลือกชุดสำเร็จรูป…",pre_ma:"EMA 20 / 50 ตัดกัน",pre_rsi:"RSI ออกจาก 30 / 70",pre_bbrev:"Bollinger Bands กลับตัว",pre_bbbrk:"Bollinger Bands Breakout",pre_macd:"MACD ตัดเส้น Signal",
+pre_stoch:"Stochastic ตัดกันจากโซน Oversold",pre_don:"Breakout 20 แท่ง (Donchian)",pre_pull:"ย่อตัวในขาขึ้น (EMA 20 อยู่เหนือ EMA 200)",pre_adx:"+DI / −DI ตัดกัน และ ADX เหนือ 25",pre_engulf:"แท่ง Engulfing ตามเทรนด์ EMA 200",
+r_buy:"ซื้อเมื่อทุกข้อด้านล่างเป็นจริง",r_sell:"ขายเมื่อทุกข้อด้านล่างเป็นจริง",r_add:"เพิ่มเงื่อนไข",r_del:"ลบเงื่อนไขนี้",r_mode:"กฎขาย",r_mirror:"กลับด้านจากกฎซื้อ",r_own:"ตั้งเงื่อนไขเอง",
+r_num:"ตัวเลข",r_value:"ค่า",r_out:"เส้น",r_none:"ยังไม่มีเงื่อนไข ฝั่งนี้จึงไม่เทรด",r_max:"ตั้งได้สูงสุดฝั่งละ 4 เงื่อนไข",
+r_sum_buy:"ซื้อเมื่อ {x}",r_sum_sell:"ขายเมื่อ {x}",r_and:" และ ",r_hint:"อ่านสัญญาณตอนแท่งเทียนปิด กฎขายแบบกลับด้านจะพลิกทุกเงื่อนไข: ตัดขึ้นกลายเป็นตัดลง RSI 30 กลายเป็น 70 กรอบล่างกลายเป็นกรอบบน",
+op_xa:"ตัดขึ้นเหนือ",op_xb:"ตัดลงใต้",op_gt:"อยู่เหนือ",op_lt:"อยู่ใต้",op_bull:"เกิดขึ้น (ขาขึ้น)",op_bear:"เกิดขึ้น (ขาลง)",op_any:"เกิดขึ้น",
+g_price:"ราคา",g_avg:"เส้นค่าเฉลี่ย",g_band:"กรอบและช่องราคา",g_osc:"ออสซิลเลเตอร์",g_trend:"ความแรงของเทรนด์",g_vol:"ความผันผวน",g_pat:"รูปแบบแท่งเทียน",
+d_bull:"เกิดแท่ง {x} ขาขึ้น",d_bear:"เกิดแท่ง {x} ขาลง",d_any:"เกิดแท่ง {x}",
 l_stop:"Stop loss",stop_pips:"pips คงที่",stop_atr:"เท่าของ ATR",stop_none:"ไม่ตั้ง",l_stopv_p:"ระยะ Stop (pips)",l_stopv_a:"ระยะ Stop (× ATR)",
 l_tgt:"Take profit",tgt_none:"ไม่ตั้ง",tgt_pips:"pips คงที่",tgt_atr:"เท่าของ ATR",tgt_r:"เท่าของ R",l_tgtv_p:"ระยะเป้ากำไร (pips)",l_tgtv_a:"ระยะเป้ากำไร (× ATR)",l_tgtv_r:"เป้ากำไร (× ระยะ Stop)",
 l_opp:"เมื่อเกิดสัญญาณตรงข้าม",opp_yes:"กลับฝั่ง",opp_no:"ไม่สนใจ",l_maxb:"ปิดเมื่อครบจำนวนแท่งนี้ (0 = ไม่ปิด)",l_atrn:"คาบ ATR",
@@ -141,20 +136,29 @@ lim:["เป็นฟิวเจอร์ส ไม่ใช่ Spot ราค�
 e_file:"สนามทดลองต้องเปิดแอปจากเว็บ (https://) ไม่ใช่เปิดเป็นไฟล์ในเครื่อง",e_nodecomp:"เบราว์เซอร์นี้แตกไฟล์ข้อมูลทองไม่ได้ ใช้ Chrome, Edge, Firefox หรือ Safari รุ่นใหม่",
 e_idx:"โหลดรายการเดือนของข้อมูลทองไม่สำเร็จ: {msg}",e_net:"ดาวน์โหลดข้อมูลทองไม่สำเร็จ ตรวจการเชื่อมต่อแล้วลองใหม่",e_http:"เซิร์ฟเวอร์ข้อมูลทองตอบกลับ {code} สำหรับ {m} ลองใหม่ภายหลัง",
 lg_bt:"Backtest",lg_fw:"Forward test",lg_low:"จุดต่ำสุดระหว่างวัน",lg_up:"เดือนที่บวก",lg_down:"เดือนที่ลบ",
+PL:{"Period":"คาบ","Fast":"เร็ว","Slow":"ช้า","Signal":"Signal","Step":"ขั้น","Maximum":"สูงสุด","Width (std. dev.)":"ความกว้าง (SD)","ATR period":"คาบ ATR","Width (× ATR)":"ความกว้าง (× ATR)","%K period":"คาบ %K","%K smoothing":"ทำให้ %K เรียบ","%D period":"คาบ %D","Short":"สั้น","Medium":"กลาง","Long":"ยาว","Multiplier":"ตัวคูณ","Close":"ราคาปิด","Open":"ราคาเปิด","High":"ราคาสูงสุด","Low":"ราคาต่ำสุด","upper":"กรอบบน","middle":"เส้นกลาง","lower":"กรอบล่าง","line":"เส้น MACD","signal":"เส้น Signal","histogram":"ฮิสโตแกรม","up":"ขึ้น","down":"ลง"},
 e_bad:"ไฟล์ข้อมูลทองของ {m} เสียระหว่างดาวน์โหลด ลองใหม่",e_busy:"ตอนนี้มีการทดสอบมากเกินไป รอสักครู่แล้วลองใหม่",e_other:"การทดสอบหยุดลง: {msg}"
 });
 const tl=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k];
 
 /* ---------- settings ---------- */
-const SIGDEF={ma:{type:'ema',fast:20,slow:50},rsi:{n:14,lo:30,hi:70},bb:{n:20,k:2,mode:'rev'},macd:{fast:12,slow:26,sig:9},stoch:{k:14,ks:3,d:3,lo:20,hi:80},break:{n:20}};
-/* number fields: [key, label, min, max, step, whole number] */
-const SIGF={ma:[['fast','l_fast',2,500,1,1],['slow','l_slow',3,1000,1,1]],rsi:[['n','l_period',2,200,1,1],['lo','l_lo',1,49,1],['hi','l_hi',51,99,1]],
-  bb:[['n','l_period',2,500,1,1],['k','l_bbk',0.5,5,0.1]],macd:[['fast','l_fast',2,200,1,1],['slow','l_slow',3,400,1,1],['sig','l_msig',2,100,1,1]],
-  stoch:[['k','l_k',2,200,1,1],['ks','l_ks',1,50,1,1],['d','l_d',1,50,1,1],['lo','l_lo',1,49,1],['hi','l_hi',51,99,1]],break:[['n','l_n',2,500,1,1]]};
-const DEF=()=>({tf:60,dir:'both',sig:'ma',p:JSON.parse(JSON.stringify(SIGDEF)),filt:'off',filtN:200,stop:'atr',stopV:{pips:100,atr:2},tgt:'r',tgtV:{pips:200,atr:4,r:2},opp:'yes',maxBars:0,atrN:14,
+/* ready-made rules; each becomes ordinary conditions the user can edit */
+const X=(id,p,o)=>({id,p:p||{},o:o||'v'}),N=v=>({num:v}),CL=()=>X('price',{},'c');
+const PRESETS={ma:[{a:X('ema',{n:20}),op:'xa',b:X('ema',{n:50})}],rsi:[{a:X('rsi',{n:14}),op:'xa',b:N(30)}],bbrev:[{a:CL(),op:'xa',b:X('bb',{n:20,k:2},'lo')}],
+  bbbrk:[{a:CL(),op:'xa',b:X('bb',{n:20,k:2},'up')}],macd:[{a:X('macd',{f:12,s:26,g:9},'m'),op:'xa',b:X('macd',{f:12,s:26,g:9},'s')}],
+  stoch:[{a:X('stoch',{k:14,ks:3,d:3},'k'),op:'xa',b:X('stoch',{k:14,ks:3,d:3},'d')},{a:X('stoch',{k:14,ks:3,d:3},'k'),op:'lt',b:N(30)}],don:[{a:CL(),op:'xa',b:X('don',{n:20},'up')}],
+  pull:[{a:CL(),op:'xa',b:X('ema',{n:20})},{a:X('ema',{n:20}),op:'gt',b:X('ema',{n:200})}],adx:[{a:X('dmi',{n:14},'p'),op:'xa',b:X('dmi',{n:14},'m')},{a:X('dmi',{n:14},'adx'),op:'gt',b:N(25)}],
+  engulf:[{a:X('p_engulf'),op:'bull'},{a:CL(),op:'gt',b:X('ema',{n:200})}]};
+const clone=x=>JSON.parse(JSON.stringify(x));
+const preset=k=>({mode:'mirror',buy:clone(PRESETS[k]),sell:[]});
+const DEF=()=>({tf:60,dir:'both',rule:preset('ma'),stop:'atr',stopV:{pips:100,atr:2},tgt:'r',tgtV:{pips:200,atr:4,r:2},opp:'yes',maxBars:0,atrN:14,
   size:'risk',risk:1,lots:0.1,bal:10000,spread:3,comm:7,btLen:12,fwLen:6,start:null});
 let C=DEF();
-try{const s=JSON.parse(localStorage.getItem('jn_lab')||'null');if(s&&typeof s==='object'){C=Object.assign(DEF(),s);C.p=Object.assign(JSON.parse(JSON.stringify(SIGDEF)),s.p||{});['ma','rsi','bb','macd','stoch','break'].forEach(k=>{C.p[k]=Object.assign({},SIGDEF[k],C.p[k]);});C.stopV=Object.assign({pips:100,atr:2},C.stopV);C.tgtV=Object.assign({pips:200,atr:4,r:2},C.tgtV);}}catch(e){}
+const IR=LABIND;
+/* a saved rule is used only if every indicator in it still exists */
+const okX=x=>!!x&&(x.num!==undefined?isFinite(x.num):!!IR.byId[x.id]&&IR.byId[x.id].outs.some(o=>o[0]===x.o));
+const okRule=R=>R&&Array.isArray(R.buy)&&Array.isArray(R.sell)&&R.buy.concat(R.sell).every(c=>okX(c.a)&&(IR.byId[c.a.id].kind==='pat'||okX(c.b)));
+try{const s=JSON.parse(localStorage.getItem('jn_lab')||'null');if(s&&typeof s==='object'){C=Object.assign(DEF(),s);['sig','p','filt','filtN'].forEach(k=>delete C[k]);if(!okRule(C.rule))C.rule=preset('ma');C.stopV=Object.assign({pips:100,atr:2},C.stopV);C.tgtV=Object.assign({pips:200,atr:4,r:2},C.tgtV);}}catch(e){}
 const save=()=>{try{localStorage.setItem('jn_lab',JSON.stringify(C));}catch(e){}};
 const bad={};
 const BTL=[3,6,9,12,18,24],FWL=[1,2,3,4,6,9,12,18,24];
@@ -163,15 +167,11 @@ const BPM={1:28000,5:5600,15:1870,60:470,240:122,1440:21};
 
 /* the parameters the worker runs, and a signature of everything that changes a result except the dates */
 function params(){
-  const sp=Object.assign({kind:C.sig},C.p[C.sig]);
-  return{tf:+C.tf,sig:sp,filt:{on:C.filt!=='off',type:C.filt==='sma'?'sma':'ema',n:C.filtN},dir:C.dir,
+  return{tf:+C.tf,rule:C.rule,dir:C.dir,
     stop:{kind:C.stop,v:C.stop==='none'?0:C.stopV[C.stop]},tgt:{kind:C.tgt,v:C.tgt==='none'?0:C.tgtV[C.tgt]},opp:C.opp==='yes',maxBars:C.maxBars,atrN:C.atrN,
     size:{kind:C.size,v:C.size==='risk'?C.risk:C.lots},bal:C.bal,spread:C.spread,comm:C.comm,pv:10};}
 const sigOf=()=>JSON.stringify(params());
-function warmBars(P){const S=P.sig;let p=14,w=14;
-  if(S.kind==='ma')p=Math.max(S.fast,S.slow);else if(S.kind==='rsi')w=S.n;else if(S.kind==='bb')p=S.n;else if(S.kind==='macd')p=Math.max(S.fast,S.slow)+S.sig;else if(S.kind==='stoch')p=S.k+S.ks+S.d;else if(S.kind==='break')p=S.n+1;
-  if(P.filt.on)p=Math.max(p,P.filt.n);if(P.stop.kind==='atr'||P.tgt.kind==='atr')w=Math.max(w,P.atrN);
-  return Math.max(2*p+20,5*w,50);}
+const warmBars=P=>IR.warmOf(P.rule);
 const warmMonths=()=>Math.ceil(warmBars(params())/BPM[C.tf])+1;
 
 /* ---------- data and the worker ---------- */
@@ -236,18 +236,69 @@ const cmp=v=>{const a=Math.abs(v);return a>=1e6?(+(v/1e6).toPrecision(3))+'M':a>
 const opt=(v,cur,label)=>`<option value="${v}"${String(v)===String(cur)?' selected':''}>${esc(label)}</option>`;
 const sel=(id,key,cur,opts)=>`<div class="formrow"><label for="${id}">${esc(t(key))}</label><select id="${id}" class="txt" data-lk="${id}">${opts.map(o=>opt(o[0],cur,t(o[1]))).join('')}</select></div>`;
 const fld=(id,key,val,min,max,step)=>`<div class="formrow"><label for="${id}">${esc(t(key))}</label><input id="${id}" class="txt${bad[id]?' bad':''}" type="number" inputmode="decimal" min="${min}" max="${max}" step="${step}" value="${val}" data-lk="${id}" data-min="${min}" data-max="${max}" aria-invalid="${!!bad[id]}"></div><p class="ferr" id="le-${id}"${bad[id]?'':' hidden'}>${esc(bad[id]||'')}</p>`;
+/* ---------- the rule builder ---------- */
+const PL=k=>(LANG==='th'&&tl('PL')[k])||k;
+const GROUPS=['price','avg','band','osc','trend','vol','pat'];
+const PAIR={macd:1,stoch:1,srsi:1,aroon:1};
+const defP=r=>{const o={};r.ps.forEach(p=>{o[p[0]]=p[2];});return o;};
+const outName=(r,o)=>{const x=r.outs.find(z=>z[0]===o);return x?PL(x[1]):'';};
+const nfmt=v=>(+v).toLocaleString('en-US',{maximumFractionDigits:4});
+function xName(x){if(x.num!==undefined)return nfmt(x.num);const r=IR.byId[x.id];if(r.id==='price')return outName(r,x.o);
+  const ps=r.ps.map(p=>nfmt(x.p[p[0]])).join(', ');if(r.byOut)return outName(r,x.o)+(ps?'('+ps+')':'');return r.name+(ps?'('+ps+')':'')+(r.outs.length>1?' '+outName(r,x.o):'');}
+function cText(c){const r=IR.byId[c.a.id];if(r.kind==='pat')return t('d_'+c.op,{x:r.name});return xName(c.a)+' '+t('op_'+c.op)+' '+xName(c.b);}
+const indOpts=(cur,pats)=>GROUPS.filter(g=>pats||g!=='pat').map(g=>`<optgroup label="${esc(t('g_'+g))}">`+IR.REG.filter(r=>r.g===g).map(r=>opt(r.id,cur,r.full&&r.full!==r.name?r.name+' – '+r.full:r.name)).join('')+'</optgroup>').join('');
+/* a new left-hand side picks sensible partners: averages and bands are compared with the close, paired oscillators with their own second line */
+function newCond(id){const r=IR.byId[id];
+  if(r.kind==='pat')return{a:X(id,{},'v'),op:r.dirs[0]};
+  if(r.kind==='price'&&id!=='price'){const o=r.outs.some(z=>z[0]==='lo')?'lo':r.outs[0][0];return{a:CL(),op:'xa',b:X(id,defP(r),o)};}
+  if(id==='price')return{a:CL(),op:'xa',b:X('ema',{n:50})};
+  const p=defP(r);if(PAIR[id])return{a:X(id,p,r.outs[0][0]),op:'xa',b:X(id,clone(p),r.outs[1][0])};
+  return{a:X(id,p,r.outs[0][0]),op:r.id==='dmi'?'gt':'xa',b:N(r.lv)};}
+function xParams(side,k,w,x,hide){const r=IR.byId[x.id],id=f=>`lc-${side}-${k}-${w}-${f}`;let h='';
+  if(!hide&&r.ps.length)h+=`<div class="cps">`+r.ps.map(p=>`<label for="${id('p-'+p[0])}">${esc(PL(p[1]))}<input id="${id('p-'+p[0])}" class="txt${bad[id('p-'+p[0])]?' bad':''}" type="number" inputmode="decimal" step="${p[5]?1:'any'}" min="${p[3]}" max="${p[4]}" data-min="${p[3]}" data-max="${p[4]}" data-whole="${p[5]}" value="${x.p[p[0]]}" data-c="${w}.p.${p[0]}"></label>`).join('')+`</div>`+
+    r.ps.map(p=>`<p class="ferr" id="le-${id('p-'+p[0])}"${bad[id('p-'+p[0])]?'':' hidden'}>${esc(bad[id('p-'+p[0])]||'')}</p>`).join('');
+  if(r.outs.length>1)h+=`<select id="${id('o')}" class="txt" data-c="${w}.o" aria-label="${esc(t('r_out'))}">${r.outs.map(o=>opt(o[0],x.o,PL(o[1]))).join('')}</select>`;
+  return h;}
+function condHTML(side,k,c){
+  const r=IR.byId[c.a.id],id=f=>`lc-${side}-${k}-${f}`;
+  let h=`<div class="cond" data-side="${side}" data-k="${k}"><div class="crow"><select id="${id('a-id')}" class="txt" data-c="a.id" aria-label="${esc(t('r_buy'))} ${k+1}">${indOpts(c.a.id,true)}</select>`+
+    `<button type="button" class="cdel" data-cdel="1" aria-label="${esc(t('r_del'))}" title="${esc(t('r_del'))}">×</button></div>`+xParams(side,k,'a',c.a);
+  const ops=r.kind==='pat'?r.dirs:['xa','xb','gt','lt'];
+  h+=`<select id="${id('op')}" class="txt" data-c="op">${ops.map(o=>opt(o,c.op,t('op_'+o))).join('')}</select>`;
+  if(r.kind!=='pat'){const num=c.b.num!==undefined;
+    h+=`<select id="${id('b-t')}" class="txt" data-c="b.t">${opt('num',num?'num':'',t('r_num'))}${indOpts(num?'':c.b.id,false)}</select>`;
+    if(num)h+=`<div class="cps"><label for="${id('b-num')}">${esc(t('r_value'))}<input id="${id('b-num')}" class="txt${bad[id('b-num')]?' bad':''}" type="number" inputmode="decimal" step="any" value="${c.b.num}" data-c="b.num" data-min="-1e12" data-max="1e12"></label></div>`;
+    else h+=xParams(side,k,'b',c.b,c.b.id===c.a.id);}
+  return h+`</div>`;}
+function entryCard(){const R=C.rule,sellC=IR.sellOf(R),list=(side,cs)=>cs.map((c,k)=>condHTML(side,k,c)).join('')+(cs.length?'':`<p class="small muted" style="margin:.3rem 0">${esc(t('r_none'))}</p>`)+
+    (cs.length<4?`<button type="button" class="btn alt cadd" data-cadd="${side}">+ ${esc(t('r_add'))}</button>`:`<p class="small muted" style="margin:.3rem 0">${esc(t('r_max'))}</p>`);
+  const sum=cs=>cs.length?cs.map(cText).join(t('r_and')):'–';
+  return`<div class="card"><h3>${esc(t('lp_entry'))}</h3>`+
+    `<div class="formrow"><label for="lb-preset">${esc(t('l_preset'))}</label><select id="lb-preset" class="txt">${opt('','',t('pre_pick'))}${Object.keys(PRESETS).map(k=>opt(k,'',t('pre_'+k))).join('')}</select></div>`+
+    `<p class="rlab">${esc(t('r_buy'))}</p>`+list('buy',R.buy)+
+    sel('lb-rmode','r_mode',R.mode,[['mirror','r_mirror'],['own','r_own']])+(R.mode==='own'?`<p class="rlab">${esc(t('r_sell'))}</p>`+list('sell',R.sell):'')+
+    `<div class="rsum small"><p>${esc(t('r_sum_buy',{x:sum(R.buy)}))}</p><p>${esc(t('r_sum_sell',{x:sum(sellC)}))}</p></div><p class="small muted" style="margin:0">${esc(t('r_hint'))}</p></div>`;}
+function condEvent(el,kind){
+  const box=el.closest('.cond');if(!box)return false;const side=box.dataset.side,k=+box.dataset.k,list=C.rule[side],c=list[k],f=el.dataset.c;
+  if(kind==='change'){
+    if(f==='a.id')list[k]=newCond(el.value);
+    else if(f==='op')c.op=el.value;
+    else if(f==='a.o')c.a.o=el.value;
+    else if(f==='b.o')c.b.o=el.value;
+    else if(f==='b.t'){if(el.value==='num'){const r=IR.byId[c.a.id];c.b=N(typeof r.lv==='number'?r.lv:0);}else{const r=IR.byId[el.value];c.b=X(el.value,el.value===c.a.id?clone(c.a.p):defP(r),r.outs[el.value===c.a.id&&r.outs.length>1?1:0][0]);}}
+    else return false;
+    Object.keys(bad).filter(x=>x.startsWith('lc-')).forEach(x=>delete bad[x]);save();clampStart();drawAside();drawMain();return true;}
+  /* number typed into an indicator setting or a level */
+  const v=parseFloat(el.value),min=+el.dataset.min,max=+el.dataset.max,ok=el.value.trim()!==''&&isFinite(v)&&v>=min&&v<=max,msg=t('e_field',{min:nfmt(min),max:nfmt(max)});
+  if(ok){if(f==='b.num')c.b.num=v;else{const[w,,key]=f.split('.'),val=el.dataset.whole==='1'?Math.round(v):v;c[w].p[key]=val;if(w==='a'&&c.b&&c.b.id===c.a.id)c.b.p=clone(c.a.p);}}
+  if(ok)delete bad[el.id];else bad[el.id]=msg;el.classList.toggle('bad',!ok);el.setAttribute('aria-invalid',String(!ok));const p=$('le-'+el.id);if(p){p.hidden=ok;p.textContent=ok?'':msg;}
+  if(ok){save();clampStart();const rs=document.querySelector('#lab-aside .rsum');if(rs){const tpl=document.createElement('template');tpl.innerHTML=entryCard();rs.replaceWith(tpl.content.querySelector('.rsum'));}}
+  drawMain();return true;}
 function aside(){
-  const P=C.p[C.sig],sigDesc=C.sig==='bb'?(P.mode==='break'?'sd_bb_break':'sd_bb_rev'):'sd_'+C.sig;
   let h=`<div class="card"><h3>${esc(t('lp_chart'))}</h3>`+sel('lb-tf','l_tf',C.tf,[[1,'tf_1'],[5,'tf_5'],[15,'tf_15'],[60,'tf_60'],[240,'tf_240'],[1440,'tf_1440']])+
     sel('lb-dir','l_dir',C.dir,[['both','dir_both'],['long','dir_long'],['short','dir_short']])+`</div>`;
-  h+=`<div class="card"><h3>${esc(t('lp_entry'))}</h3>`+sel('lb-sig','l_sig',C.sig,[['ma','sig_ma'],['rsi','sig_rsi'],['bb','sig_bb'],['macd','sig_macd'],['stoch','sig_stoch'],['break','sig_break']])+
-    `<p class="small muted" style="margin:.1rem 0 .6rem">${esc(t(sigDesc))}</p>`;
-  if(C.sig==='ma')h+=sel('lb-p-type','l_matype',P.type,[['ema','EMA'],['sma','SMA']]);
-  if(C.sig==='bb')h+=sel('lb-p-mode','l_bbmode',P.mode,[['rev','bb_rev'],['break','bb_break']]);
-  SIGF[C.sig].forEach(f=>{h+=fld('lb-p-'+f[0],f[1],P[f[0]],f[2],f[3],f[4]);});
-  h+=sel('lb-filt','l_filt',C.filt,[['off','filt_off'],['ema','filt_ema'],['sma','filt_sma']]);
-  if(C.filt!=='off')h+=fld('lb-filtN','l_filtn',C.filtN,5,1000,1)+`<p class="small muted" style="margin:0">${esc(t('filt_hint'))}</p>`;
-  h+=`</div><div class="card"><h3>${esc(t('lp_exit'))}</h3>`+sel('lb-stop','l_stop',C.stop,[['pips','stop_pips'],['atr','stop_atr'],['none','stop_none']]);
+  h+=entryCard();
+  h+=`<div class="card"><h3>${esc(t('lp_exit'))}</h3>`+sel('lb-stop','l_stop',C.stop,[['pips','stop_pips'],['atr','stop_atr'],['none','stop_none']]);
   if(C.stop!=='none')h+=C.stop==='pips'?fld('lb-stopV','l_stopv_p',C.stopV.pips,1,100000,1):fld('lb-stopV','l_stopv_a',C.stopV.atr,0.1,50,0.1);
   h+=sel('lb-tgt','l_tgt',C.tgt,[['none','tgt_none'],['pips','tgt_pips'],['atr','tgt_atr']].concat(C.stop==='none'?[]:[['r','tgt_r']]));
   if(C.tgt!=='none')h+=C.tgt==='pips'?fld('lb-tgtV','l_tgtv_p',C.tgtV.pips,1,100000,1):C.tgt==='atr'?fld('lb-tgtV','l_tgtv_a',C.tgtV.atr,0.1,100,0.1):fld('lb-tgtV','l_tgtv_r',C.tgtV.r,0.1,50,0.1);
@@ -260,19 +311,14 @@ function aside(){
   h+=`<p class="small muted" style="margin:0">${esc(t('money_hint'))}</p></div>`;
   return h;}
 /* where each input writes its value */
-const SET={'lb-tf':v=>{C.tf=+v;},'lb-dir':v=>{C.dir=v;},'lb-sig':v=>{C.sig=v;},'lb-p-type':v=>{C.p.ma.type=v;},'lb-p-mode':v=>{C.p.bb.mode=v;},'lb-filt':v=>{C.filt=v;},
+const SET={'lb-tf':v=>{C.tf=+v;},'lb-dir':v=>{C.dir=v;},'lb-preset':v=>{if(PRESETS[v])C.rule=preset(v);},'lb-rmode':v=>{if(v==='own'&&C.rule.mode!=='own')C.rule.sell=clone(IR.sellOf(C.rule));C.rule.mode=v;},
   'lb-stop':v=>{C.stop=v;if(v==='none'&&C.tgt==='r')C.tgt='pips';},'lb-tgt':v=>{C.tgt=v;},'lb-opp':v=>{C.opp=v;},'lb-size':v=>{C.size=v;}};
-const NUM={'lb-filtN':['filtN',1],'lb-maxBars':['maxBars',1],'lb-atrN':['atrN',1],'lb-bal':['bal'],'lb-risk':['risk'],'lb-lots':['lots'],'lb-spread':['spread'],'lb-comm':['comm']};
+const NUM={'lb-maxBars':['maxBars',1],'lb-atrN':['atrN',1],'lb-bal':['bal'],'lb-risk':['risk'],'lb-lots':['lots'],'lb-spread':['spread'],'lb-comm':['comm']};
 function numInput(el){
   const id=el.id,v=parseFloat(el.value),min=+el.dataset.min,max=+el.dataset.max;let ok=el.value.trim()!==''&&isFinite(v)&&v>=min&&v<=max,msg=t('e_field',{min:min.toLocaleString('en-US'),max:max.toLocaleString('en-US')});
-  let whole=false;
   if(ok){
-    if(id.startsWith('lb-p-')){const k=id.slice(5),f=SIGF[C.sig].find(x=>x[0]===k);whole=!!(f&&f[5]);const P=Object.assign({},C.p[C.sig],{[k]:whole?Math.round(v):v});
-      if((C.sig==='ma'||C.sig==='macd')&&P.fast>=P.slow){ok=false;msg=t('e_order');}else C.p[C.sig]=P;}
-    else if(id==='lb-stopV')C.stopV[C.stop]=v;else if(id==='lb-tgtV')C.tgtV[C.tgt]=v;
+    if(id==='lb-stopV')C.stopV[C.stop]=v;else if(id==='lb-tgtV')C.tgtV[C.tgt]=v;
     else if(NUM[id]){const[k,w]=NUM[id];C[k]=w?Math.round(v):v;}}
-  /* the fast/slow pair is checked together, so a fixed pair clears both fields */
-  if(ok&&(id==='lb-p-fast'||id==='lb-p-slow')){delete bad['lb-p-fast'];delete bad['lb-p-slow'];['lb-p-fast','lb-p-slow'].forEach(x=>{const e=$(x);if(e){e.classList.remove('bad');e.setAttribute('aria-invalid','false');}const p=$('le-'+x);if(p)p.hidden=true;});}
   if(ok)delete bad[id];else bad[id]=msg;
   el.classList.toggle('bad',!ok);el.setAttribute('aria-invalid',String(!ok));const p=$('le-'+id);if(p){p.hidden=ok;p.textContent=ok?'':msg;}
   if(ok){save();clampStart();}drawMain();}
@@ -400,10 +446,15 @@ function init(root){
   root.innerHTML=`<div class="desk-layout"><aside class="d-aside" id="lab-aside" aria-label="Playground settings"></aside><div class="d-col" id="lab-main"></div></div>`;
   drawAside();drawMain();
   const a=$('lab-aside'),m=$('lab-main');
-  a.addEventListener('change',e=>{const el=e.target;if(el.tagName!=='SELECT'||!SET[el.id])return;SET[el.id](el.value);
-    if(el.id==='lb-sig'||el.id==='lb-stop'||el.id==='lb-tgt'||el.id==='lb-size'){Object.keys(bad).forEach(k=>delete bad[k]);}
+  a.addEventListener('change',e=>{const el=e.target;if(el.tagName!=='SELECT')return;if(el.dataset.c){condEvent(el,'change');return;}if(!SET[el.id])return;SET[el.id](el.value);
+    if(el.id==='lb-preset'||el.id==='lb-rmode'||el.id==='lb-stop'||el.id==='lb-tgt'||el.id==='lb-size'){Object.keys(bad).forEach(k=>delete bad[k]);}
     save();clampStart();drawAside();drawMain();});
-  a.addEventListener('input',e=>{const el=e.target;if(el.tagName==='INPUT')numInput(el);});
+  a.addEventListener('input',e=>{const el=e.target;if(el.tagName!=='INPUT')return;if(el.dataset.c)condEvent(el,'input');else numInput(el);});
+  a.addEventListener('click',e=>{const add=e.target.closest('[data-cadd]'),del=e.target.closest('[data-cdel]');
+    if(add){const L=C.rule[add.dataset.cadd];if(L.length<4)L.push({a:CL(),op:'gt',b:X('ema',{n:200})});}
+    else if(del){const box=del.closest('.cond');C.rule[box.dataset.side].splice(+box.dataset.k,1);}
+    else return;Object.keys(bad).filter(x=>x.startsWith('lc-')).forEach(x=>delete bad[x]);save();clampStart();drawAside();drawMain();
+    const nb=add?document.querySelector('#lab-aside [data-cadd="'+add.dataset.cadd+'"]'):null;if(nb)nb.focus();});
   m.addEventListener('change',e=>{const el=e.target.closest('[data-lp]');if(!el)return;const k=el.dataset.lp;
     if(k==='start')C.start=el.value;else{C[k]=+el.value;if(k==='btLen'){const o=fwOpts(C.btLen);if(!o.includes(C.fwLen))C.fwLen=o.reduce((p,v)=>Math.abs(v-C.btLen/2)<Math.abs(p-C.btLen/2)?v:p,o[0]);}}
     save();clampStart();drawMain();});

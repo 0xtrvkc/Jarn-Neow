@@ -76,10 +76,12 @@ Expert mode has two tabs: **Risk calculator** (everything above) and **Gold play
 
 **Build a rule**
 - **Timeframe:** 1 minute, 5 minutes, 15 minutes, 1 hour, 4 hours or 1 day. Candles are built from the 1-minute bars. Daily and 4-hour candles close at 17:00 New York time, like most MT5 gold brokers (server time UTC+2 in winter, UTC+3 in summer).
-- **Entry signal:** moving average cross (EMA or SMA), RSI leaving oversold or overbought, Bollinger Bands (reversal or breakout), MACD crossing its signal line, Stochastic cross from oversold or overbought, or a breakout of the last N candles. An optional EMA or SMA trend filter, and buy-only, sell-only or both.
+- **Entry rule builder:** "Buy when all of these are true", with up to 4 conditions. Each condition compares an indicator with another indicator or a number: *crosses above*, *crosses below*, *is above* or *is below*; candlestick patterns use *appears*. The sell rule is either the mirror of the buy rule (crosses above becomes crosses below, RSI 30 becomes 70, the lower band becomes the upper band, +DI and −DI swap, while ADX and ATR levels stay as they are) or its own set of conditions. A plain-language summary under the builder shows exactly what will trade. Ten presets cover the common setups (EMA cross, RSI 30/70, Bollinger reversal and breakout, MACD, Stochastic, Donchian breakout, pullback in a trend, +DI/−DI with ADX, engulfing with the trend), and buy-only, sell-only or both.
+- **Indicators (33), plus price (close, open, high, low):** SMA, EMA, WMA, DEMA, TEMA, TRIMA, KAMA, Hull MA, linear regression, Parabolic SAR; Bollinger Bands, Donchian and Keltner channels; RSI, Stochastic, Stochastic RSI, MACD, PPO, CCI, Williams %R, CMO, ROC, Momentum, TRIX, Ultimate oscillator, Balance of power; ADX with +DI and −DI, Aroon, Aroon oscillator; ATR, NATR, standard deviation and regression slope.
+- **Candlestick patterns (11):** engulfing, harami, hammer, shooting star, morning star, evening star, three white soldiers, three black crows, piercing line, dark cloud cover and doji.
 - **Exit:** stop in pips, as an ATR multiple or none; target in pips, as an ATR multiple, as a multiple of the stop (R) or none; close and reverse on an opposite signal or ignore it; an optional time limit in candles.
 - **Money:** starting balance, risk % per trade (rounded down to 0.01 lots) or fixed lots, spread and commission. 1 pip = $0.10, and 1 pip is worth $10 per lot.
-- **Indicators** use TA-Lib's formulas and start-up rules. Each one was checked against TA-Lib on real gold candles (5-minute, 1-hour and daily) and matches to rounding error. Enough months before the start are loaded for the indicators to settle.
+- **Indicators** use TA-Lib's formulas, start-up rules and default candle settings. `tools/check_indicators.py` compares every one with TA-Lib on real gold candles; they match to rounding error on 1-minute, 5-minute, 1-hour, 4-hour and daily candles, and the patterns match exactly. Hull MA and Keltner channel aren't TA-Lib functions, so they're built from TA-Lib's WMA, EMA and ATR. Volume indicators aren't offered because the gold files hold prices only. Enough months before the start are loaded for the indicators to settle.
 
 **Walk-forward test against over-fitting**
 1. Pick a backtest length (3 to 24 months) and a start month, then tune the settings on the backtest as often as you like.
@@ -191,7 +193,8 @@ The code is released under the [MIT License](LICENSE). The gold data in `data/go
 index.html                   the app: HTML, CSS and the JavaScript for Beginner mode, the start-up check and the shared engine
 expert.js                    Expert mode's risk calculator, loaded the first time Expert opens
 lab.js                       the gold playground tab, loaded the first time it opens
-lab-worker.js                the playground's background worker: gold data, candles, indicators and fills
+lab-worker.js                the playground's background worker: gold data, candles and fills
+lab-ind.js                   the playground's indicators, candlestick patterns and rule engine (shared by the page and the worker)
 sw.js                        service worker: offline use and instant return visits
 fonts/                       the app's fonts (SIL Open Font License; licences included)
 sprites/                     animated pixel sprites for Beginner mode (16 frames each, 90 ms per frame)
@@ -200,12 +203,13 @@ og.png                       link-preview image (1200 × 630)
 data/gold/index.json         available months, bar counts and the contract-roll table
 data/gold/YYYY-MM.bin        1-minute gold bars, one compressed file per month
 tools/build_gold_data.py     rebuilds data/gold from a 1-minute OHLC parquet file
+tools/check_indicators.py    checks every playground indicator against TA-Lib
 README.md                    this file
 LICENSE                      MIT licence for the code
 data/gold/README.md          where the gold data comes from and its terms
 ```
 
-The app itself has no build step and no dependencies. Edit `index.html` or `expert.js` and refresh. After changing `expert.js`, update `EXPERT_V` in `index.html` (any new value, for example the first 8 characters of the file's SHA-1) so browsers fetch the new copy. After changing `lab.js` or `lab-worker.js`, update `LAB_V` the same way.
+The app itself has no build step and no dependencies. Edit `index.html` or `expert.js` and refresh. After changing `expert.js`, update `EXPERT_V` in `index.html` (any new value, for example the first 8 characters of the file's SHA-1) so browsers fetch the new copy. After changing `lab.js`, `lab-ind.js` or `lab-worker.js`, update `LAB_V` the same way.
 
 To rebuild or extend the gold data (needs Python with `pyarrow` and `numpy`):
 

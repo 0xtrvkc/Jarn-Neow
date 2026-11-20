@@ -3,6 +3,7 @@
    finds signals on closed bars and fills them on the 1-minute bars that follow.
    Prices are integers in ticks of $0.10, and 1 pip = 1 tick. Times are minutes since 1970-01-01 UTC. */
 'use strict';
+if(typeof importScripts==='function'&&typeof window==='undefined')importScripts('lab-ind.js'+(self.location&&self.location.search||''));
 
 /* ---------- data files ---------- */
 const cache=new Map(),CAP=60;
@@ -56,56 +57,9 @@ function aggregate(B,tf){
     else{if(B.h[i]>H[K])H[K]=B.h[i];if(B.l[i]<L[K])L[K]=B.l[i];C[K]=B.c[i];I1[K]=i;}}
   K++;return{n:K,t:T.subarray(0,K),o:O.subarray(0,K),h:H.subarray(0,K),l:L.subarray(0,K),c:C.subarray(0,K),i0:I0.subarray(0,K),i1:I1.subarray(0,K)};}
 
-/* ---------- indicators (TA-Lib formulas; values before the start-up period are NaN) ---------- */
-const nanArr=n=>{const a=new Float64Array(n);a.fill(NaN);return a;};
-function SMA(x,p,from){from=from||0;const n=x.length,o=nanArr(n);let s=0,k=0;
-  for(let i=from;i<n;i++){s+=x[i];k++;if(k>p)s-=x[i-p];if(k>=p)o[i]=s/p;}return o;}
-/* EMA seeded with the simple average of its first p values, as TA-Lib does by default */
-function EMA(x,p,from){from=from||0;const n=x.length,o=nanArr(n),a=2/(p+1);if(n-from<p)return o;
-  let s=0;for(let i=from;i<from+p;i++)s+=x[i];let e=s/p;o[from+p-1]=e;
-  for(let i=from+p;i<n;i++){e=(x[i]-e)*a+e;o[i]=e;}return o;}
-function RSI(c,p){const n=c.length,o=nanArr(n);if(n<=p)return o;
-  let g=0,l=0;for(let i=1;i<=p;i++){const d=c[i]-c[i-1];if(d>0)g+=d;else l-=d;}g/=p;l/=p;o[p]=g+l?100*g/(g+l):0;
-  for(let i=p+1;i<n;i++){const d=c[i]-c[i-1];g=(g*(p-1)+(d>0?d:0))/p;l=(l*(p-1)+(d<0?-d:0))/p;o[i]=g+l?100*g/(g+l):0;}return o;}
-function ATR(h,l,c,p){const n=c.length,o=nanArr(n);if(n<=p)return o;
-  const tr=i=>Math.max(h[i]-l[i],Math.abs(h[i]-c[i-1]),Math.abs(l[i]-c[i-1]));
-  let s=0;for(let i=1;i<=p;i++)s+=tr(i);let a=s/p;o[p]=a;
-  for(let i=p+1;i<n;i++){a=(a*(p-1)+tr(i))/p;o[i]=a;}return o;}
-/* Bollinger Bands: simple average ± k population standard deviations */
-function BB(c,p,k){const n=c.length,m=SMA(c,p),up=nanArr(n),lo=nanArr(n);let s2=0;
-  for(let i=0;i<n;i++){s2+=c[i]*c[i];if(i>=p)s2-=c[i-p]*c[i-p];if(i>=p-1){const mu=m[i],v=Math.max(0,s2/p-mu*mu),sd=Math.sqrt(v);up[i]=mu+k*sd;lo[i]=mu-k*sd;}}
-  return{mid:m,up,lo};}
-/* MACD as TA-Lib computes it: both averages start on the slow average's first bar, the signal line is an EMA of MACD */
-function MACD(c,f,s,g){const n=c.length;if(f>s){const x=f;f=s;s=x;}
-  const slow=EMA(c,s),fast=EMA(c,f,s-f),line=nanArr(n);for(let i=s-1;i<n;i++)line[i]=fast[i]-slow[i];
-  const sig=EMA(line,g,s-1),macd=nanArr(n);for(let i=s+g-2;i<n;i++)macd[i]=line[i];return{macd,sig};}
-/* Slow stochastic: %K over k bars, smoothed by a simple average of ks bars; %D = simple average of %K over d bars */
-function STOCH(h,l,c,k,ks,d){const n=c.length,fk=nanArr(n);
-  for(let i=k-1;i<n;i++){let hh=-Infinity,ll=Infinity;for(let j=i-k+1;j<=i;j++){if(h[j]>hh)hh=h[j];if(l[j]<ll)ll=l[j];}fk[i]=hh>ll?100*(c[i]-ll)/(hh-ll):0;}
-  const sk=SMA(fk,ks,k-1),sd=SMA(sk,d,k+ks-2),K=nanArr(n);for(let i=k+ks+d-3;i<n;i++)K[i]=sk[i];return{k:K,d:sd};}
-/* highest high / lowest low of the p bars before this one (the current bar is not included) */
-function PREVMAX(x,p){const n=x.length,o=nanArr(n);for(let i=p;i<n;i++){let m=-Infinity;for(let j=i-p;j<i;j++)if(x[j]>m)m=x[j];o[i]=m;}return o;}
-function PREVMIN(x,p){const n=x.length,o=nanArr(n);for(let i=p;i<n;i++){let m=Infinity;for(let j=i-p;j<i;j++)if(x[j]<m)m=x[j];o[i]=m;}return o;}
-const MA=(type,x,p)=>type==='sma'?SMA(x,p):EMA(x,p);
-
-/* ---------- signals: +1 buy, −1 sell, 0 nothing, decided when bar i closes ---------- */
-function signals(F,P){
-  const n=F.n,c=F.c,h=F.h,l=F.l,S=P.sig,out=new Int8Array(n);
-  const up=(a,b,i)=>a[i-1]<=b[i-1]&&a[i]>b[i],dn=(a,b,i)=>a[i-1]>=b[i-1]&&a[i]<b[i];
-  const cst=v=>{const a=new Float64Array(n);a.fill(v);return a;};
-  let L=()=>0;
-  if(S.kind==='ma'){const a=MA(S.type,c,S.fast),b=MA(S.type,c,S.slow);L=i=>up(a,b,i)?1:dn(a,b,i)?-1:0;}
-  else if(S.kind==='rsi'){const r=RSI(c,S.n),lo=cst(S.lo),hi=cst(S.hi);L=i=>up(r,lo,i)?1:dn(r,hi,i)?-1:0;}
-  else if(S.kind==='bb'){const b=BB(c,S.n,S.k);
-    L=S.mode==='break'?i=>up(c,b.up,i)?1:dn(c,b.lo,i)?-1:0:i=>c[i-1]<b.lo[i-1]&&c[i]>=b.lo[i]?1:c[i-1]>b.up[i-1]&&c[i]<=b.up[i]?-1:0;}
-  else if(S.kind==='macd'){const m=MACD(c,S.fast,S.slow,S.sig);L=i=>up(m.macd,m.sig,i)?1:dn(m.macd,m.sig,i)?-1:0;}
-  else if(S.kind==='stoch'){const s=STOCH(h,l,c,S.k,S.ks,S.d);L=i=>up(s.k,s.d,i)&&s.k[i-1]<S.lo?1:dn(s.k,s.d,i)&&s.k[i-1]>S.hi?-1:0;}
-  else if(S.kind==='break'){const hh=PREVMAX(h,S.n),ll=PREVMIN(l,S.n);L=i=>c[i]>hh[i]&&!(c[i-1]>hh[i-1])?1:c[i]<ll[i]&&!(c[i-1]<ll[i-1])?-1:0;}
-  const flt=P.filt&&P.filt.on?MA(P.filt.type,c,P.filt.n):null;
-  for(let i=1;i<n;i++){let s=L(i);if(!s)continue;
-    if(flt){if(!(flt[i]===flt[i]))s=0;else if(s>0&&!(c[i]>flt[i]))s=0;else if(s<0&&!(c[i]<flt[i]))s=0;}
-    if(P.dir==='long'&&s<0)s=0;if(P.dir==='short'&&s>0)s=0;out[i]=s;}
-  return out;}
+/* ---------- indicators and rules live in lab-ind.js (shared with the page) ---------- */
+const IND=typeof LABIND!=='undefined'?LABIND:require('./lab-ind.js');
+const signals=(F,P)=>IND.signals(F,P.rule,P.dir);
 
 /* ---------- the trading run ----------
    win.a: first minute an entry may happen; win.s: first minute of the forward period (0 = none); win.b: end of the test (exclusive).
@@ -167,18 +121,15 @@ function run(B,F,sig,atr,P,win){
   if(lastJ>=0){mark(lastJ);days.push([cur*1440,dEq,dMin,dPx]);}
   return{seg:win.s?seg:[seg[0]],days,trades,dead,final:bal};}
 
-/* ---------- start-up length: bars needed before the first trade so indicators have settled ---------- */
-function warmBars(P){const S=P.sig;let p=14,w=14;
-  if(S.kind==='ma')p=Math.max(S.fast,S.slow);else if(S.kind==='rsi')w=S.n;else if(S.kind==='bb')p=S.n;else if(S.kind==='macd')p=Math.max(S.fast,S.slow)+S.sig;else if(S.kind==='stoch')p=S.k+S.ks+S.d;else if(S.kind==='break')p=S.n+1;
-  if(P.filt&&P.filt.on)p=Math.max(p,P.filt.n);if(P.stop.kind==='atr'||P.tgt.kind==='atr')w=Math.max(w,P.atrN);
-  return Math.max(2*p+20,5*w,50);}
+/* start-up length: candles needed before the first trade so indicators have settled */
+const warmBars=P=>IND.warmOf(P.rule);
 
 function backtest(B,P,win){
-  const F=aggregate(B,P.tf),sig=signals(F,P),atr=ATR(F.h,F.l,F.c,P.atrN);
+  const F=aggregate(B,P.tf),sig=signals(F,P),atr=IND.ATR(F.h,F.l,F.c,P.atrN);
   let k0=0;while(k0<F.n&&F.t[k0]<win.a)k0++;
   const r=run(B,F,sig,atr,P,win);r.warm=k0;r.need=warmBars(P);r.bars=F.n;return r;}
 
-const API={decode,join,aggregate,srvOff,SMA,EMA,RSI,ATR,BB,MACD,STOCH,PREVMAX,PREVMIN,signals,run,backtest,warmBars};
+const API={decode,join,aggregate,srvOff,signals,run,backtest,warmBars};
 if(typeof self!=='undefined'&&typeof window==='undefined'&&typeof importScripts==='function'){
   self.onmessage=async ev=>{const m=ev.data;
     try{const list=m.months,res=new Array(list.length);let next=0,done=0;

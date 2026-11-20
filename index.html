@@ -435,6 +435,13 @@ html[data-dtab=lab] .risk-only{display:none!important}
 .labrun{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:.9rem}
 .labsteps{margin:.2rem 0 0;padding-left:1.2rem}.labsteps li{margin:.15rem 0}
 .labul{margin:0;padding-left:1.1rem}.labul li{margin:.3rem 0}
+.rlab{margin:.8rem 0 .2rem;font-weight:600;font-size:.86rem}
+.cond{border:1px solid var(--line);background:var(--soft);padding:.5rem;margin:.35rem 0;border-radius:2px;display:grid;gap:.35rem}
+.cond .txt{width:100%;min-width:0}.crow{display:flex;gap:.35rem;align-items:center}
+.cdel{flex:none;width:2rem;height:2rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:2px;cursor:pointer;font-size:1.1rem;line-height:1}.cdel:hover{color:var(--bad);border-color:var(--bad)}
+.cps{display:flex;flex-wrap:wrap;gap:.3rem .6rem}.cps label{display:flex;align-items:center;gap:.35rem;font-size:.8rem;color:var(--muted)}.cps .txt{width:4.8rem}
+.cond .ferr{margin:0}.cadd{margin:.2rem 0 .4rem;width:100%}
+.rsum{border-left:2px solid var(--accent);padding:.1rem 0 .1rem .6rem;margin:.8rem 0 .5rem}.rsum p{margin:.15rem 0}
 .desk-layout{display:grid;grid-template-columns:340px minmax(0,1fr);gap:1rem;padding-top:1rem;align-items:start}
 .d-aside{position:sticky;top:64px;max-height:calc(100vh - 76px);overflow:auto;padding-right:2px}
 .dgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:1rem}
@@ -2067,13 +2074,13 @@ Object.assign(I18N.en,{
 
 
 
-sc_bt_can:["Gold playground","A separate Expert tab. Build an entry rule from moving averages, RSI, Bollinger Bands, MACD, Stochastic or breakouts, with stops and targets, on 1-minute to daily candles. It backtests the rule on 16 years of real 1-minute gold prices, then runs it once, unchanged, on the months straight after (a walk-forward test) to show whether the result holds on data it wasn't tuned on."]
+sc_bt_can:["Gold playground","A separate Expert tab. Build an entry rule from 33 indicators and 11 candlestick patterns (TA-Lib formulas), with stops and targets, on 1-minute to daily candles. It backtests the rule on 16 years of real 1-minute gold prices, then runs it once, unchanged, on the months straight after (a walk-forward test) to show whether the result holds on data it wasn't tuned on."]
 });
 Object.assign(I18N.th,{
 
 
 
-sc_bt_can:["สนามทดลองทองคำ","แท็บแยกในโหมดผู้เชี่ยวชาญ สร้างกฎเข้าเทรดจากเส้นค่าเฉลี่ย RSI, Bollinger Bands, MACD, Stochastic หรือ Breakout พร้อม Stop และเป้ากำไร บนแท่งเทียนตั้งแต่ 1 นาทีถึงรายวัน ทดสอบย้อนหลังกับราคาทองจริงราย 1 นาที 16 ปี แล้วรันกฎเดิมโดยไม่แก้อีกหนึ่งครั้งกับเดือนที่ต่อจากนั้น (Walk-forward) เพื่อดูว่าผลยังอยู่ได้กับข้อมูลที่ไม่ได้จูนหรือไม่"]
+sc_bt_can:["สนามทดลองทองคำ","แท็บแยกในโหมดผู้เชี่ยวชาญ สร้างกฎเข้าเทรดจากอินดิเคเตอร์ 33 ตัวและรูปแบบแท่งเทียน 11 แบบ (สูตรของ TA-Lib) พร้อม Stop และเป้ากำไร บนแท่งเทียนตั้งแต่ 1 นาทีถึงรายวัน ทดสอบย้อนหลังกับราคาทองจริงราย 1 นาที 16 ปี แล้วรันกฎเดิมโดยไม่แก้อีกหนึ่งครั้งกับเดือนที่ต่อจากนั้น (Walk-forward) เพื่อดูว่าผลยังอยู่ได้กับข้อมูลที่ไม่ได้จูนหรือไม่"]
 });
 /* UX review round (Nov 2026): plain words, example labels, animation switch */
 Object.assign(I18N.en,{
@@ -2812,15 +2819,16 @@ function loadDesk(){
     sc.onerror=()=>{deskLoading=null;if(main)main.innerHTML=`<div class="errnote">${esc(t('desk_load_err'))}</div>`;fail(new Error('expert.js'));};document.head.appendChild(sc);});
   return deskLoading;}
 /* ----- the gold playground (an Expert tab) lives in lab.js and lab-worker.js, loaded the first time the tab opens ----- */
-const LAB_V='5fb29aca';
+const LAB_V='360d6ff7';
 const labReady=()=>typeof LAB!=='undefined';
 let labLoading=null;
 function loadLab(){
   if(labReady())return Promise.resolve();
   if(labLoading)return labLoading;
   const box=$('lab');box.innerHTML=`<div class="card empty" style="margin-top:1rem">${esc(t('lab_loading'))}</div>`;
-  labLoading=new Promise((ok,fail)=>{const sc=document.createElement('script');sc.src='lab.js?v='+LAB_V;sc.onload=()=>{try{LAB.init(box);ok();}catch(e){fail(e);}};
-    sc.onerror=()=>{labLoading=null;box.innerHTML=`<div class="errnote" style="margin-top:1rem">${esc(t('lab_load_err'))}</div>`;fail(new Error('lab.js'));};document.head.appendChild(sc);});
+  const add=src=>new Promise((ok,fail)=>{const sc=document.createElement('script');sc.src=src+'?v='+LAB_V;sc.onload=ok;sc.onerror=()=>fail(new Error(src));document.head.appendChild(sc);});
+  labLoading=(typeof LABIND!=='undefined'?Promise.resolve():add('lab-ind.js')).then(()=>add('lab.js')).then(()=>{LAB.init(box);})
+    .catch(e=>{labLoading=null;box.innerHTML=`<div class="errnote" style="margin-top:1rem">${esc(t('lab_load_err'))}</div>`;throw e;});
   return labLoading;}
 function setDtab(v,save){
   v=v==='lab'?'lab':'risk';root.dataset.dtab=v;if(save)store.set('jn_dtab',v);
