@@ -425,6 +425,16 @@ html[data-mode=desk] .warnnote{background:#1f1807;color:#e3c27a;border:1px solid
 html[data-mode=desk] .errnote{background:#220e10;color:#ffb5b8;border-radius:2px;border-width:1px}
 
 /* ============ desk ============ */
+.dtabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-top:1rem}
+.dtabs button{background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:.55rem 1rem;color:var(--muted);font-weight:600;cursor:pointer}
+.dtabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--accent)}
+.dtabs button:hover{color:var(--ink)}
+html[data-dtab=lab] .risk-only{display:none!important}
+.labav .fw{fill:var(--c1)}.labav .warm{fill:var(--muted);opacity:.35}
+.labsel{margin:.25rem 0 0;font-size:.86rem;display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .5rem}.labsel .k{display:inline-block;width:.8rem;height:.8rem;border-radius:2px}.labsel .k.bt{background:var(--accent)}.labsel .k.fw{background:var(--c1);margin-left:.6rem}
+.labrun{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:.9rem}
+.labsteps{margin:.2rem 0 0;padding-left:1.2rem}.labsteps li{margin:.15rem 0}
+.labul{margin:0;padding-left:1.1rem}.labul li{margin:.3rem 0}
 .desk-layout{display:grid;grid-template-columns:340px minmax(0,1fr);gap:1rem;padding-top:1rem;align-items:start}
 .d-aside{position:sticky;top:64px;max-height:calc(100vh - 76px);overflow:auto;padding-right:2px}
 .dgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:1rem}
@@ -676,8 +686,8 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
   <div class="controls">
     <div class="seg langseg" id="seg-lang" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="th" aria-pressed="false">ไทย</button></div>
     <div class="seg" id="seg-mode" role="group" aria-label="Mode"><button type="button" data-mode="play" aria-pressed="true" data-i18n="mode_play"></button><button type="button" data-mode="desk" aria-pressed="false" data-i18n="mode_desk"></button></div>
-    <div class="seg only-desk" id="seg-layout" role="group" aria-label="Dashboard"><button type="button" data-layout="full" aria-pressed="true" data-i18n="layout_full"></button><button type="button" data-layout="guided" aria-pressed="false" data-i18n="layout_guided"></button></div>
-    <div class="seg only-desk"><button type="button" id="btn-explain" aria-pressed="true" data-i18n="ex_all"></button></div>
+    <div class="seg only-desk risk-only" id="seg-layout" role="group" aria-label="Dashboard"><button type="button" data-layout="full" aria-pressed="true" data-i18n="layout_full"></button><button type="button" data-layout="guided" aria-pressed="false" data-i18n="layout_guided"></button></div>
+    <div class="seg only-desk risk-only"><button type="button" id="btn-explain" aria-pressed="true" data-i18n="ex_all"></button></div>
   </div>
 </header>
 
@@ -765,6 +775,8 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
 
 <!-- ===================== DESK (expert) ===================== -->
 <section id="desk" aria-label="Expert mode"><h1 class="sr-only" data-i18n="desk_h1"></h1>
+  <div class="dtabs" role="tablist" aria-label="Expert tools"><button type="button" role="tab" id="dt-risk" data-dtab="risk" aria-selected="true" aria-controls="desk-risk" data-i18n="dtab_risk"></button><button type="button" role="tab" id="dt-lab" data-dtab="lab" aria-selected="false" aria-controls="lab" tabindex="-1" data-i18n="dtab_lab"></button></div>
+  <div id="desk-risk" role="tabpanel" aria-labelledby="dt-risk">
   <div class="desk-layout">
     <aside class="d-aside" aria-labelledby="d-in-h"><h2 class="sr-only" id="d-in-h" data-i18n="desk_in_h"></h2>
       <div class="card" id="p-type">
@@ -844,6 +856,8 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
     </aside>
     <div class="d-col"><div class="errnote inerr" id="desk-err" role="alert" hidden></div><div class="warnnote unsetnote" id="desk-unset" role="status" hidden></div><p class="warnnote testflag" hidden style="margin-bottom:1rem"></p><div class="card xbar"><div><b data-i18n="md_title"></b><span class="small muted" data-i18n="md_text"></span></div><div class="xbtns"><button type="button" class="btn" id="md-desk" data-i18n="md_dl"></button><button type="button" class="btn alt" id="md-desk-copy" data-i18n="md_copy"></button></div></div><nav class="djump" id="d-jump" aria-label="Sections" hidden></nav><div class="d-main" id="d-main"><div class="card empty" data-i18n="d_empty"></div></div></div>
   </div>
+  </div>
+  <div id="lab" role="tabpanel" aria-labelledby="dt-lab" hidden></div>
 </section>
 </main>
 
@@ -1231,7 +1245,7 @@ f_wr:"Win rate",h_wr:"Out of 100 trades, how many closed in profit? Use your for
 f_rr:"Average reward : risk",h_rr:"On average, how much do winners make compared with what a loser costs? If you risk 1 to make 1.5, type 1.5.",
 f_risk:"Risk per trade",h_risk:"The share of your account you lose when the stop loss is hit, per trade.",
 f_n:"Trades in your test",h_n:"How many trades the numbers above are based on. Fewer trades means less certainty.",
-share:"Copy link to share",file_reading:"Reading the file…",share_done:"Link copied!",md_dl:"Download report (.md)",md_dl_play:"Download my report (.md)",md_copy:"Copy as text",md_copied:"Copied!",md_saved:"Report downloaded",md_title:"Full report",md_text:"Every card on this page in one Markdown file: inputs, results, the data behind each chart, the action plan, trading rules, method and limits. For grid and no-stop strategies, run the gold test first to include it.",md_play_note:"The report is a Markdown (.md) file with everything on this page plus more detail: a risk ladder, streak odds, how sure you can be and a rules checklist. It opens in any notes app, Notion, Obsidian or GitHub. Nothing is uploaded.",
+share:"Copy link to share",file_reading:"Reading the file…",share_done:"Link copied!",md_dl:"Download report (.md)",md_dl_play:"Download my report (.md)",md_copy:"Copy as text",md_copied:"Copied!",md_saved:"Report downloaded",md_title:"Full report",md_text:"Every card on this page in one Markdown file: inputs, results, the data behind each chart, the action plan, trading rules, method and limits.",md_play_note:"The report is a Markdown (.md) file with everything on this page plus more detail: a risk ladder, streak odds, how sure you can be and a rules checklist. It opens in any notes app, Notion, Obsidian or GitHub. Nothing is uploaded.",
 nudge_desk:"Want more inputs and more charts? Expert mode adds costs, sizing rules and lot size. Uploading trade history is optional.",nudge_desk_btn:"Open Expert mode",
 vs_noedge:"On average every trade you take is worth {E}. Wins and losses do not balance out, so no position size can save this strategy.",
 vs_risk_bad:"There is an edge, but at {risk}% per trade you would blow the account in about {blow} of simulated futures over the next {H} trades.",
@@ -1629,7 +1643,7 @@ f_wr:"Win rate (อัตราชนะ)",h_wr:"จากการเทรด 
 f_rr:"Reward : Risk เฉลี่ย",h_rr:"เฉลี่ยแล้วไม้ที่ชนะได้เท่าไรเมื่อเทียบกับที่ไม้แพ้เสีย ถ้าเสี่ยง 1 เพื่อได้ 1.5 ให้ใส่ 1.5",
 f_risk:"ความเสี่ยงต่อไม้",h_risk:"สัดส่วนของพอร์ตที่คุณจะเสียเมื่อโดน Stop loss ในแต่ละไม้",
 f_n:"จำนวนไม้ในการทดสอบ",h_n:"ตัวเลขข้างบนมาจากการเทรดกี่ไม้ ยิ่งน้อยยิ่งไม่แน่นอน",
-share:"คัดลอกลิงก์ไปแชร์",file_reading:"กำลังอ่านไฟล์…",share_done:"คัดลอกแล้ว!",md_dl:"ดาวน์โหลดรายงาน (.md)",md_dl_play:"ดาวน์โหลดรายงานของฉัน (.md)",md_copy:"คัดลอกเป็นข้อความ",md_copied:"คัดลอกแล้ว!",md_saved:"ดาวน์โหลดรายงานแล้ว",md_title:"รายงานฉบับเต็ม",md_text:"ทุกการ์ดในหน้านี้รวมเป็นไฟล์ Markdown ไฟล์เดียว: ค่าที่ใส่ ผลลัพธ์ ข้อมูลเบื้องหลังทุกกราฟ แผนสิ่งที่ต้องทำ กฎการเทรด วิธีคำนวณ และข้อจำกัด สำหรับกลยุทธ์แบบกริดและแบบไม่มี Stop loss ถ้าต้องการรวมการทดสอบกับทองจริง ให้รันก่อน",md_play_note:"รายงานเป็นไฟล์ Markdown (.md) มีทุกอย่างในหน้านี้พร้อมรายละเอียดเพิ่ม: ตารางระดับความเสี่ยง โอกาสแพ้ติดกัน ความมั่นใจในตัวเลข และเช็กลิสต์กฎการเทรด เปิดได้ในแอปโน้ตทั่วไป Notion, Obsidian หรือ GitHub ไม่มีการอัปโหลดข้อมูล",
+share:"คัดลอกลิงก์ไปแชร์",file_reading:"กำลังอ่านไฟล์…",share_done:"คัดลอกแล้ว!",md_dl:"ดาวน์โหลดรายงาน (.md)",md_dl_play:"ดาวน์โหลดรายงานของฉัน (.md)",md_copy:"คัดลอกเป็นข้อความ",md_copied:"คัดลอกแล้ว!",md_saved:"ดาวน์โหลดรายงานแล้ว",md_title:"รายงานฉบับเต็ม",md_text:"ทุกการ์ดในหน้านี้รวมเป็นไฟล์ Markdown ไฟล์เดียว: ค่าที่ใส่ ผลลัพธ์ ข้อมูลเบื้องหลังทุกกราฟ แผนสิ่งที่ต้องทำ กฎการเทรด วิธีคำนวณ และข้อจำกัด",md_play_note:"รายงานเป็นไฟล์ Markdown (.md) มีทุกอย่างในหน้านี้พร้อมรายละเอียดเพิ่ม: ตารางระดับความเสี่ยง โอกาสแพ้ติดกัน ความมั่นใจในตัวเลข และเช็กลิสต์กฎการเทรด เปิดได้ในแอปโน้ตทั่วไป Notion, Obsidian หรือ GitHub ไม่มีการอัปโหลดข้อมูล",
 nudge_desk:"อยากได้ค่าป้อนและกราฟมากกว่านี้ไหม? โหมดผู้เชี่ยวชาญเพิ่มต้นทุน กฎขนาดไม้ และขนาดล็อต การอัปโหลดประวัติการเทรดไม่บังคับ",nudge_desk_btn:"เปิดโหมดผู้เชี่ยวชาญ",
 vs_noedge:"โดยเฉลี่ยแล้วทุกไม้ที่คุณเทรดมีค่า {E} กำไรกับขาดทุนไม่หักล้างกัน ขนาดไม้เท่าไรก็ช่วยกลยุทธ์นี้ไม่ได้",
 vs_risk_bad:"มี Edge แต่ถ้าเสี่ยง {risk}% ต่อไม้ พอร์ตจะแตกประมาณ {blow} ของอนาคตที่จำลองไว้ ภายใน {H} ไม้ถัดไป",
@@ -1921,7 +1935,7 @@ st_grid:"Grid / martingale",st_grid_d:"Adds orders as price moves against you, c
 st_nostop:"No hard stop",st_nostop_d:"One position, held until price comes back",
 st_more:"Trailing exits and several positions at once aren't modelled yet.",scope_open:"What Expert mode can and can't do",
 p_grid:"Grid settings",p_nostop:"Position",
-d_glot:"First order size (lots)",d_glot_ns:"Position size (lots)",d_gstep:"Distance between orders (pips)",d_gmult:"Lot multiplier per new order",d_ggrow:"How each new order grows",vh_sum:"How to find this",vh_1:"Open the pair's daily chart (D1) and add Average True Range (ATR) with period 14. MT4 / MT5: Insert → Indicators → Oscillators → Average True Range. TradingView: Indicators → Average True Range.",vh_2:"ATR shows a price move, not pips. Type it below to convert it.",vc_atr:"ATR value from the chart",vc_kind:"Pair",vc_k_std:"Most pairs (0.0001)",vc_k_jpy:"JPY pairs (0.01)",vc_k_g10:"Gold, $0.10",vc_k_g01:"Gold, $0.01",vc_out:"= {p} pips",vc_use:"Use {p}",vh_3:"Volatility comes in waves, and a calm month can show half the range of a busy one. Use the higher of today's ATR(14) and a typical value over the past year, or try both and compare.",vh_link:"Or look up pips per pair on Investing.com's Forex Volatility Calculator. It counts gold in $0.01 pips, so divide its gold figure by 10 for $0.10 pips.",vh_unit:"Use the same unit as your distance between orders and take-profit. The gold test counts gold in $0.10 pips; Myfxbook files usually count $0.01.",g_sens:"This result leans on the daily range you entered ({v} pips). At {v2} pips (1.5×), the chance of falling {dd}% within {H} cycles is {b}, compared with {a} now.",file_gold_unit:"Your file counts gold in $0.01 pips; distances were converted to the app's gold pip of $0.10, the unit the gold test uses.",det_line:"Detected: {type}.",det_why_grid:"{sl} of {n} trades had a stop loss, {multi}% of trades closed together with others in {c} groups, and lots grew inside {grow}% of those groups.",det_why_fixed:"{sl} of {n} trades had a stop loss.",det_why_fixed2:"Only {sl} of {n} trades had a stop loss recorded, but trades closed one at a time and losses stayed near a typical size, so stops are probably managed by hand.",det_why_nostop:"{k} of {n} trades had no stop loss, trades closed one at a time, and the worst losses were far bigger than a typical loss.",det_now:"You switched to {type}; the inputs are filled for that type.",det_use:"Use {type} instead",file_multi_g:"This account ran grids on {k} pairs, and up to {c} had a cycle open at the same moment. This page analyses {sym} alone with the whole balance of {bal}. Losses on several pairs often come together, so the real risk to the account is higher than shown. To get closer, enter {sym}'s share of the balance, for example {bal} ÷ {k} = {share}.",file_applied_g:"Filled from {sym}'s {c} cycles ({from} to {to}): first order {lot} lots (cycles started between {lo} and {hi} lots); {grow}; distance between orders {step} pips (single gaps ranged from {glo} to {ghi} pips; the average spacing across the ladder is used); up to {max} orders (the most seen in the file; your EA may allow more); take-profit {tp} pips from the average price; commission {comm} per lot; value per pip {pv}; balance {bal}. The daily range isn't in the file, so it stays as entered. Edit any of them.",file_applied_ns:"Filled from {sym}'s {n} trades ({from} to {to}): position size {lot} lots, take-profit {tp} pips, commission {comm} per lot, value per pip {pv}, balance {bal}. The daily range isn't in the file, so it stays as entered. Edit any of them.",file_applied_g1:"Filled from {sym}'s {n} trades ({from} to {to}): first order {lot} lots, take-profit {tp} pips, commission {comm} per lot, value per pip {pv}, balance {bal}. These trades never had more than one order open at a time, so spacing, lot growth and order count can't be read from the file and stay as entered. If this isn't a grid, switch the type above.",file_nofit:"Couldn't read the grid settings from this symbol's trades: it needs at least 5 trades with open and close prices.",grow_add:"each new order adds {x} lots",grow_mult:"each new order is {x}× the one before",gr_scaled:"money rescaled to a first order of {lot} lots",gr_when:"Your history runs from {from} to {to}; the worst real cycle ended on {w} and the deepest floating loss began on {d}.",gr_upto:"up to {x}",gr_worse:"Your real cycles reached order {k} more often than the simulation ({b} vs {a}). The simulation is too gentle for this account: raise the daily range until these numbers match.",gr_harsher:"The simulation reaches order {k} more often than your history ({a} vs {b}). That errs on the safe side, or your history covered a calm stretch.",gr_close:"The simulation and your history agree on how often cycles reach order {k} ({a} vs {b}).",gr_worse_ns:"Your real win rate ({b}) is lower than the simulation's ({a}). The simulation is too gentle for this account: raise the daily range.",gr_harsher_ns:"The simulation wins less often ({a}) than your history ({b}). That errs on the safe side, or your history covered a calm stretch.",gr_close_ns:"The simulation's win rate is close to your history's.",gr_tail:"Your file is {c} cycles over {d} days, one stretch of market. A grid that hasn't blown up yet can still blow up on the next big move.",gn_real:"Your Myfxbook cycles next to the simulated ones. A cycle is every order of one pair and side that closed together. Money is rescaled to the first order size above, so different lot sizes in your history compare fairly. The deepest floating loss adds up each order's own worst moment, so the real figure was at most this. If your history went deeper than the simulation, trust your history.",d_ggrow_mult:"Multiply (×)",d_ggrow_add:"Add a fixed amount (+)",d_gadd:"Lots added per new order",d_gmax:"Maximum number of orders",
+d_glot:"First order size (lots)",d_glot_ns:"Position size (lots)",d_gstep:"Distance between orders (pips)",d_gmult:"Lot multiplier per new order",d_ggrow:"How each new order grows",vh_sum:"How to find this",vh_1:"Open the pair's daily chart (D1) and add Average True Range (ATR) with period 14. MT4 / MT5: Insert → Indicators → Oscillators → Average True Range. TradingView: Indicators → Average True Range.",vh_2:"ATR shows a price move, not pips. Type it below to convert it.",vc_atr:"ATR value from the chart",vc_kind:"Pair",vc_k_std:"Most pairs (0.0001)",vc_k_jpy:"JPY pairs (0.01)",vc_k_g10:"Gold, $0.10",vc_k_g01:"Gold, $0.01",vc_out:"= {p} pips",vc_use:"Use {p}",vh_3:"Volatility comes in waves, and a calm month can show half the range of a busy one. Use the higher of today's ATR(14) and a typical value over the past year, or try both and compare.",vh_link:"Or look up pips per pair on Investing.com's Forex Volatility Calculator. It counts gold in $0.01 pips, so divide its gold figure by 10 for $0.10 pips.",vh_unit:"Use the same unit as your distance between orders and take-profit. For gold this app counts a pip as $0.10; Myfxbook files usually count $0.01.",g_sens:"This result leans on the daily range you entered ({v} pips). At {v2} pips (1.5×), the chance of falling {dd}% within {H} cycles is {b}, compared with {a} now.",file_gold_unit:"Your file counts gold in $0.01 pips; distances were converted to the app's gold pip of $0.10.",det_line:"Detected: {type}.",det_why_grid:"{sl} of {n} trades had a stop loss, {multi}% of trades closed together with others in {c} groups, and lots grew inside {grow}% of those groups.",det_why_fixed:"{sl} of {n} trades had a stop loss.",det_why_fixed2:"Only {sl} of {n} trades had a stop loss recorded, but trades closed one at a time and losses stayed near a typical size, so stops are probably managed by hand.",det_why_nostop:"{k} of {n} trades had no stop loss, trades closed one at a time, and the worst losses were far bigger than a typical loss.",det_now:"You switched to {type}; the inputs are filled for that type.",det_use:"Use {type} instead",file_multi_g:"This account ran grids on {k} pairs, and up to {c} had a cycle open at the same moment. This page analyses {sym} alone with the whole balance of {bal}. Losses on several pairs often come together, so the real risk to the account is higher than shown. To get closer, enter {sym}'s share of the balance, for example {bal} ÷ {k} = {share}.",file_applied_g:"Filled from {sym}'s {c} cycles ({from} to {to}): first order {lot} lots (cycles started between {lo} and {hi} lots); {grow}; distance between orders {step} pips (single gaps ranged from {glo} to {ghi} pips; the average spacing across the ladder is used); up to {max} orders (the most seen in the file; your EA may allow more); take-profit {tp} pips from the average price; commission {comm} per lot; value per pip {pv}; balance {bal}. The daily range isn't in the file, so it stays as entered. Edit any of them.",file_applied_ns:"Filled from {sym}'s {n} trades ({from} to {to}): position size {lot} lots, take-profit {tp} pips, commission {comm} per lot, value per pip {pv}, balance {bal}. The daily range isn't in the file, so it stays as entered. Edit any of them.",file_applied_g1:"Filled from {sym}'s {n} trades ({from} to {to}): first order {lot} lots, take-profit {tp} pips, commission {comm} per lot, value per pip {pv}, balance {bal}. These trades never had more than one order open at a time, so spacing, lot growth and order count can't be read from the file and stay as entered. If this isn't a grid, switch the type above.",file_nofit:"Couldn't read the grid settings from this symbol's trades: it needs at least 5 trades with open and close prices.",grow_add:"each new order adds {x} lots",grow_mult:"each new order is {x}× the one before",gr_scaled:"money rescaled to a first order of {lot} lots",gr_when:"Your history runs from {from} to {to}; the worst real cycle ended on {w} and the deepest floating loss began on {d}.",gr_upto:"up to {x}",gr_worse:"Your real cycles reached order {k} more often than the simulation ({b} vs {a}). The simulation is too gentle for this account: raise the daily range until these numbers match.",gr_harsher:"The simulation reaches order {k} more often than your history ({a} vs {b}). That errs on the safe side, or your history covered a calm stretch.",gr_close:"The simulation and your history agree on how often cycles reach order {k} ({a} vs {b}).",gr_worse_ns:"Your real win rate ({b}) is lower than the simulation's ({a}). The simulation is too gentle for this account: raise the daily range.",gr_harsher_ns:"The simulation wins less often ({a}) than your history ({b}). That errs on the safe side, or your history covered a calm stretch.",gr_close_ns:"The simulation's win rate is close to your history's.",gr_tail:"Your file is {c} cycles over {d} days, one stretch of market. A grid that hasn't blown up yet can still blow up on the next big move.",gn_real:"Your Myfxbook cycles next to the simulated ones. A cycle is every order of one pair and side that closed together. Money is rescaled to the first order size above, so different lot sizes in your history compare fairly. The deepest floating loss adds up each order's own worst moment, so the real figure was at most this. If your history went deeper than the simulation, trust your history.",d_ggrow_mult:"Multiply (×)",d_ggrow_add:"Add a fixed amount (+)",d_gadd:"Lots added per new order",d_gmax:"Maximum number of orders",
 d_gtp:"Take-profit from average price (pips)",d_gtp_ns:"Take-profit (pips)",d_gsl:"Stop after the last order (pips, 0 = none)",d_gsl_ns:"Exit if down (pips, 0 = never)",
 d_gvol:"Pair's average daily range (pips)",d_gauto:"Lot size",d_gauto_fixed:"Fixed",d_gauto_scale:"Grows with balance",d_gmkt:"Market model",d_gmkt_real:"Fat tails + trends (realistic)",d_gmkt_calm:"Random walk (optimistic)",
 d_hor_cyc:"Horizon (cycles)",d_grid_hint:"A cycle starts with the first order and ends when all orders close. Every distance here is in pips.",
@@ -1988,7 +2002,7 @@ st_grid:"กริด / มาร์ติงเกล",st_grid_d:"เปิด�
 st_nostop:"ไม่มี Stop loss",st_nostop_d:"ถือไม้เดียวจนกว่าราคาจะกลับมา",
 st_more:"ยังไม่รองรับการออกแบบ Trailing stop และการถือหลายไม้พร้อมกัน",scope_open:"โหมดผู้เชี่ยวชาญทำอะไรได้และไม่ได้",
 p_grid:"ตั้งค่ากริด",p_nostop:"ออเดอร์",
-d_glot:"ขนาดออเดอร์แรก (ล็อต)",d_glot_ns:"ขนาดออเดอร์ (ล็อต)",d_gstep:"ระยะห่างระหว่างออเดอร์ (pips)",d_gmult:"ตัวคูณล็อตของออเดอร์ใหม่",d_ggrow:"วิธีเพิ่มขนาดออเดอร์ใหม่",vh_sum:"หาค่านี้ได้อย่างไร",vh_1:"เปิดกราฟรายวัน (D1) ของคู่เงิน แล้วใส่อินดิเคเตอร์ Average True Range (ATR) ค่า 14 ใน MT4 / MT5: Insert → Indicators → Oscillators → Average True Range ใน TradingView: Indicators → Average True Range",vh_2:"ATR แสดงเป็นระยะราคา ไม่ใช่ pips ใส่ค่าด้านล่างเพื่อแปลง",vc_atr:"ค่า ATR จากกราฟ",vc_kind:"คู่เงิน",vc_k_std:"คู่เงินทั่วไป (0.0001)",vc_k_jpy:"คู่เงิน JPY (0.01)",vc_k_g10:"ทองคำ $0.10",vc_k_g01:"ทองคำ $0.01",vc_out:"= {p} pips",vc_use:"ใช้ {p}",vh_3:"ความผันผวนมาเป็นช่วงๆ เดือนที่ตลาดนิ่งอาจมีระยะวิ่งแค่ครึ่งหนึ่งของเดือนที่ตลาดคึกคัก ให้ใช้ค่าที่สูงกว่าระหว่าง ATR(14) ปัจจุบัน กับค่าปกติในรอบหนึ่งปี หรือลองทั้งสองค่าแล้วเทียบกัน",vh_link:"หรือดู pips ต่อคู่เงินได้ที่ Forex Volatility Calculator ของ Investing.com เว็บนี้นับทองคำเป็น pip ละ $0.01 ถ้าต้องการ pip ละ $0.10 ให้หารตัวเลขทองคำด้วย 10",vh_unit:"ใช้หน่วยเดียวกับระยะห่างระหว่างออเดอร์และ Take-profit การทดสอบกับทองจริงนับทองคำเป็น pip ละ $0.10 ส่วนไฟล์ Myfxbook มักนับ pip ละ $0.01",g_sens:"ผลนี้ขึ้นกับระยะวิ่งต่อวันที่คุณใส่ ({v} pips) ถ้าเป็น {v2} pips (1.5 เท่า) โอกาสที่พอร์ตลดลง {dd}% ภายใน {H} รอบจะเป็น {b} เทียบกับ {a} ตอนนี้",file_gold_unit:"ไฟล์ของคุณนับทองคำเป็น pip ละ $0.01 ระยะต่างๆ จึงถูกแปลงเป็น pip ทองของแอป คือ $0.10 ซึ่งเป็นหน่วยที่การทดสอบกับทองจริงใช้",det_line:"ตรวจพบ: {type}",det_why_grid:"ไม้ที่มี Stop loss {sl} จาก {n} ไม้ {multi}% ของไม้ปิดพร้อมไม้อื่นเป็นกลุ่ม รวม {c} กลุ่ม และขนาดล็อตเพิ่มขึ้นภายใน {grow}% ของกลุ่มเหล่านี้",det_why_fixed:"ไม้ที่มี Stop loss {sl} จาก {n} ไม้",det_why_fixed2:"มีเพียง {sl} จาก {n} ไม้ที่บันทึก Stop loss ไว้ แต่ปิดทีละไม้และขาดทุนใกล้เคียงกันทุกครั้ง จึงน่าจะตัดขาดทุนเอง",det_why_nostop:"{k} จาก {n} ไม้ไม่มี Stop loss ปิดทีละไม้ และขาดทุนครั้งที่แย่ที่สุดใหญ่กว่าปกติมาก",det_now:"คุณเปลี่ยนเป็น {type} แล้ว ค่าป้อนถูกเติมสำหรับแบบนี้",det_use:"ใช้แบบ {type} แทน",file_multi_g:"บัญชีนี้รันกริด {k} คู่เงิน และมีรอบเปิดค้างพร้อมกันสูงสุด {c} คู่ หน้านี้วิเคราะห์ {sym} คู่เดียวด้วยยอดเงินทั้งหมด {bal} ขาดทุนหลายคู่มักมาพร้อมกัน ความเสี่ยงจริงของบัญชีจึงสูงกว่าที่แสดง ถ้าต้องการให้ใกล้ความจริง ให้ใส่ส่วนแบ่งยอดเงินของ {sym} เช่น {bal} ÷ {k} = {share}",file_applied_g:"เติมจาก {c} รอบของ {sym} ({from} ถึง {to}): ออเดอร์แรก {lot} ล็อต (รอบต่างๆ เริ่มที่ {lo} ถึง {hi} ล็อต) {grow} ระยะห่างระหว่างออเดอร์ {step} pips (ช่องว่างแต่ละช่องอยู่ระหว่าง {glo} ถึง {ghi} pips จึงใช้ระยะเฉลี่ยทั้งบันได) ออเดอร์สูงสุด {max} ไม้ (มากที่สุดที่พบในไฟล์ EA ของคุณอาจเปิดได้มากกว่านี้) Take-profit {tp} pips จากราคาเฉลี่ย คอมมิชชั่น {comm} ต่อล็อต มูลค่าต่อ pip {pv} ยอดเงิน {bal} ไฟล์ไม่มีข้อมูลระยะวิ่งต่อวัน จึงใช้ค่าที่ใส่ไว้ แก้ไขค่าใดก็ได้",file_applied_ns:"เติมจาก {n} ไม้ของ {sym} ({from} ถึง {to}): ขนาดออเดอร์ {lot} ล็อต Take-profit {tp} pips คอมมิชชั่น {comm} ต่อล็อต มูลค่าต่อ pip {pv} ยอดเงิน {bal} ไฟล์ไม่มีข้อมูลระยะวิ่งต่อวัน จึงใช้ค่าที่ใส่ไว้ แก้ไขค่าใดก็ได้",file_applied_g1:"เติมจาก {n} ไม้ของ {sym} ({from} ถึง {to}): ออเดอร์แรก {lot} ล็อต Take-profit {tp} pips คอมมิชชั่น {comm} ต่อล็อต มูลค่าต่อ pip {pv} ยอดเงิน {bal} ไม้เหล่านี้ไม่เคยเปิดค้างพร้อมกันเกินหนึ่งออเดอร์ จึงอ่านระยะห่าง การเพิ่มล็อต และจำนวนออเดอร์จากไฟล์ไม่ได้ และใช้ค่าที่ใส่ไว้ ถ้านี่ไม่ใช่กริด ให้เปลี่ยนประเภทด้านบน",file_nofit:"อ่านค่าตั้งกริดจากไม้ของสัญลักษณ์นี้ไม่ได้ ต้องมีอย่างน้อย 5 ไม้ที่มีราคาเปิดและราคาปิด",grow_add:"ออเดอร์ใหม่แต่ละไม้บวกเพิ่ม {x} ล็อต",grow_mult:"ออเดอร์ใหม่แต่ละไม้ใหญ่กว่าไม้ก่อนหน้า {x} เท่า",gr_scaled:"ปรับตัวเลขเงินให้เท่ากับออเดอร์แรก {lot} ล็อต",gr_when:"ประวัติของคุณอยู่ระหว่าง {from} ถึง {to} รอบจริงที่แย่ที่สุดจบวันที่ {w} และขาดทุนลอยตัวลึกที่สุดเริ่มวันที่ {d}",gr_upto:"ไม่เกิน {x}",gr_worse:"รอบจริงของคุณไปถึงออเดอร์ที่ {k} บ่อยกว่าการจำลอง ({b} เทียบกับ {a}) การจำลองจึงเบาเกินไปสำหรับบัญชีนี้ ให้เพิ่มระยะวิ่งต่อวันจนตัวเลขใกล้กัน",gr_harsher:"การจำลองไปถึงออเดอร์ที่ {k} บ่อยกว่าประวัติของคุณ ({a} เทียบกับ {b}) ถือว่าเผื่อไว้ฝั่งปลอดภัย หรือช่วงเวลาในประวัติตลาดค่อนข้างนิ่ง",gr_close:"การจำลองกับประวัติของคุณใกล้กันในเรื่องความถี่ที่รอบไปถึงออเดอร์ที่ {k} ({a} เทียบกับ {b})",gr_worse_ns:"Win rate จริงของคุณ ({b}) ต่ำกว่าการจำลอง ({a}) การจำลองจึงเบาเกินไปสำหรับบัญชีนี้ ให้เพิ่มระยะวิ่งต่อวัน",gr_harsher_ns:"การจำลองชนะน้อยกว่า ({a}) ประวัติของคุณ ({b}) ถือว่าเผื่อไว้ฝั่งปลอดภัย หรือช่วงเวลาในประวัติตลาดค่อนข้างนิ่ง",gr_close_ns:"Win rate ของการจำลองใกล้กับประวัติของคุณ",gr_tail:"ไฟล์ของคุณมี {c} รอบ ใน {d} วัน เป็นตลาดช่วงเดียว กริดที่ยังไม่เคยพังก็ยังพังได้ในการเคลื่อนไหวใหญ่ครั้งถัดไป",gn_real:"รอบจริงจาก Myfxbook เทียบกับรอบจำลอง หนึ่งรอบคือทุกออเดอร์ของคู่เงินและฝั่งเดียวกันที่ปิดพร้อมกัน ตัวเลขเงินถูกปรับให้เท่ากับขนาดออเดอร์แรกด้านบน เพื่อให้เทียบได้แม้ประวัติใช้ล็อตต่างกัน ขาดทุนลอยตัวสูงสุดคำนวณจากผลรวมจุดที่แย่ที่สุดของแต่ละออเดอร์ ค่าจริงจึงไม่เกินตัวเลขนี้ ถ้าประวัติของคุณลึกกว่าการจำลอง ให้เชื่อประวัติ",d_ggrow_mult:"คูณ (×)",d_ggrow_add:"บวกจำนวนคงที่ (+)",d_gadd:"ล็อตที่เพิ่มต่อออเดอร์ใหม่",d_gmax:"จำนวนออเดอร์สูงสุด",
+d_glot:"ขนาดออเดอร์แรก (ล็อต)",d_glot_ns:"ขนาดออเดอร์ (ล็อต)",d_gstep:"ระยะห่างระหว่างออเดอร์ (pips)",d_gmult:"ตัวคูณล็อตของออเดอร์ใหม่",d_ggrow:"วิธีเพิ่มขนาดออเดอร์ใหม่",vh_sum:"หาค่านี้ได้อย่างไร",vh_1:"เปิดกราฟรายวัน (D1) ของคู่เงิน แล้วใส่อินดิเคเตอร์ Average True Range (ATR) ค่า 14 ใน MT4 / MT5: Insert → Indicators → Oscillators → Average True Range ใน TradingView: Indicators → Average True Range",vh_2:"ATR แสดงเป็นระยะราคา ไม่ใช่ pips ใส่ค่าด้านล่างเพื่อแปลง",vc_atr:"ค่า ATR จากกราฟ",vc_kind:"คู่เงิน",vc_k_std:"คู่เงินทั่วไป (0.0001)",vc_k_jpy:"คู่เงิน JPY (0.01)",vc_k_g10:"ทองคำ $0.10",vc_k_g01:"ทองคำ $0.01",vc_out:"= {p} pips",vc_use:"ใช้ {p}",vh_3:"ความผันผวนมาเป็นช่วงๆ เดือนที่ตลาดนิ่งอาจมีระยะวิ่งแค่ครึ่งหนึ่งของเดือนที่ตลาดคึกคัก ให้ใช้ค่าที่สูงกว่าระหว่าง ATR(14) ปัจจุบัน กับค่าปกติในรอบหนึ่งปี หรือลองทั้งสองค่าแล้วเทียบกัน",vh_link:"หรือดู pips ต่อคู่เงินได้ที่ Forex Volatility Calculator ของ Investing.com เว็บนี้นับทองคำเป็น pip ละ $0.01 ถ้าต้องการ pip ละ $0.10 ให้หารตัวเลขทองคำด้วย 10",vh_unit:"ใช้หน่วยเดียวกับระยะห่างระหว่างออเดอร์และ Take-profit แอปนี้นับทองคำเป็น pip ละ $0.10 ส่วนไฟล์ Myfxbook มักนับ pip ละ $0.01",g_sens:"ผลนี้ขึ้นกับระยะวิ่งต่อวันที่คุณใส่ ({v} pips) ถ้าเป็น {v2} pips (1.5 เท่า) โอกาสที่พอร์ตลดลง {dd}% ภายใน {H} รอบจะเป็น {b} เทียบกับ {a} ตอนนี้",file_gold_unit:"ไฟล์ของคุณนับทองคำเป็น pip ละ $0.01 ระยะต่างๆ จึงถูกแปลงเป็น pip ทองของแอป คือ $0.10",det_line:"ตรวจพบ: {type}",det_why_grid:"ไม้ที่มี Stop loss {sl} จาก {n} ไม้ {multi}% ของไม้ปิดพร้อมไม้อื่นเป็นกลุ่ม รวม {c} กลุ่ม และขนาดล็อตเพิ่มขึ้นภายใน {grow}% ของกลุ่มเหล่านี้",det_why_fixed:"ไม้ที่มี Stop loss {sl} จาก {n} ไม้",det_why_fixed2:"มีเพียง {sl} จาก {n} ไม้ที่บันทึก Stop loss ไว้ แต่ปิดทีละไม้และขาดทุนใกล้เคียงกันทุกครั้ง จึงน่าจะตัดขาดทุนเอง",det_why_nostop:"{k} จาก {n} ไม้ไม่มี Stop loss ปิดทีละไม้ และขาดทุนครั้งที่แย่ที่สุดใหญ่กว่าปกติมาก",det_now:"คุณเปลี่ยนเป็น {type} แล้ว ค่าป้อนถูกเติมสำหรับแบบนี้",det_use:"ใช้แบบ {type} แทน",file_multi_g:"บัญชีนี้รันกริด {k} คู่เงิน และมีรอบเปิดค้างพร้อมกันสูงสุด {c} คู่ หน้านี้วิเคราะห์ {sym} คู่เดียวด้วยยอดเงินทั้งหมด {bal} ขาดทุนหลายคู่มักมาพร้อมกัน ความเสี่ยงจริงของบัญชีจึงสูงกว่าที่แสดง ถ้าต้องการให้ใกล้ความจริง ให้ใส่ส่วนแบ่งยอดเงินของ {sym} เช่น {bal} ÷ {k} = {share}",file_applied_g:"เติมจาก {c} รอบของ {sym} ({from} ถึง {to}): ออเดอร์แรก {lot} ล็อต (รอบต่างๆ เริ่มที่ {lo} ถึง {hi} ล็อต) {grow} ระยะห่างระหว่างออเดอร์ {step} pips (ช่องว่างแต่ละช่องอยู่ระหว่าง {glo} ถึง {ghi} pips จึงใช้ระยะเฉลี่ยทั้งบันได) ออเดอร์สูงสุด {max} ไม้ (มากที่สุดที่พบในไฟล์ EA ของคุณอาจเปิดได้มากกว่านี้) Take-profit {tp} pips จากราคาเฉลี่ย คอมมิชชั่น {comm} ต่อล็อต มูลค่าต่อ pip {pv} ยอดเงิน {bal} ไฟล์ไม่มีข้อมูลระยะวิ่งต่อวัน จึงใช้ค่าที่ใส่ไว้ แก้ไขค่าใดก็ได้",file_applied_ns:"เติมจาก {n} ไม้ของ {sym} ({from} ถึง {to}): ขนาดออเดอร์ {lot} ล็อต Take-profit {tp} pips คอมมิชชั่น {comm} ต่อล็อต มูลค่าต่อ pip {pv} ยอดเงิน {bal} ไฟล์ไม่มีข้อมูลระยะวิ่งต่อวัน จึงใช้ค่าที่ใส่ไว้ แก้ไขค่าใดก็ได้",file_applied_g1:"เติมจาก {n} ไม้ของ {sym} ({from} ถึง {to}): ออเดอร์แรก {lot} ล็อต Take-profit {tp} pips คอมมิชชั่น {comm} ต่อล็อต มูลค่าต่อ pip {pv} ยอดเงิน {bal} ไม้เหล่านี้ไม่เคยเปิดค้างพร้อมกันเกินหนึ่งออเดอร์ จึงอ่านระยะห่าง การเพิ่มล็อต และจำนวนออเดอร์จากไฟล์ไม่ได้ และใช้ค่าที่ใส่ไว้ ถ้านี่ไม่ใช่กริด ให้เปลี่ยนประเภทด้านบน",file_nofit:"อ่านค่าตั้งกริดจากไม้ของสัญลักษณ์นี้ไม่ได้ ต้องมีอย่างน้อย 5 ไม้ที่มีราคาเปิดและราคาปิด",grow_add:"ออเดอร์ใหม่แต่ละไม้บวกเพิ่ม {x} ล็อต",grow_mult:"ออเดอร์ใหม่แต่ละไม้ใหญ่กว่าไม้ก่อนหน้า {x} เท่า",gr_scaled:"ปรับตัวเลขเงินให้เท่ากับออเดอร์แรก {lot} ล็อต",gr_when:"ประวัติของคุณอยู่ระหว่าง {from} ถึง {to} รอบจริงที่แย่ที่สุดจบวันที่ {w} และขาดทุนลอยตัวลึกที่สุดเริ่มวันที่ {d}",gr_upto:"ไม่เกิน {x}",gr_worse:"รอบจริงของคุณไปถึงออเดอร์ที่ {k} บ่อยกว่าการจำลอง ({b} เทียบกับ {a}) การจำลองจึงเบาเกินไปสำหรับบัญชีนี้ ให้เพิ่มระยะวิ่งต่อวันจนตัวเลขใกล้กัน",gr_harsher:"การจำลองไปถึงออเดอร์ที่ {k} บ่อยกว่าประวัติของคุณ ({a} เทียบกับ {b}) ถือว่าเผื่อไว้ฝั่งปลอดภัย หรือช่วงเวลาในประวัติตลาดค่อนข้างนิ่ง",gr_close:"การจำลองกับประวัติของคุณใกล้กันในเรื่องความถี่ที่รอบไปถึงออเดอร์ที่ {k} ({a} เทียบกับ {b})",gr_worse_ns:"Win rate จริงของคุณ ({b}) ต่ำกว่าการจำลอง ({a}) การจำลองจึงเบาเกินไปสำหรับบัญชีนี้ ให้เพิ่มระยะวิ่งต่อวัน",gr_harsher_ns:"การจำลองชนะน้อยกว่า ({a}) ประวัติของคุณ ({b}) ถือว่าเผื่อไว้ฝั่งปลอดภัย หรือช่วงเวลาในประวัติตลาดค่อนข้างนิ่ง",gr_close_ns:"Win rate ของการจำลองใกล้กับประวัติของคุณ",gr_tail:"ไฟล์ของคุณมี {c} รอบ ใน {d} วัน เป็นตลาดช่วงเดียว กริดที่ยังไม่เคยพังก็ยังพังได้ในการเคลื่อนไหวใหญ่ครั้งถัดไป",gn_real:"รอบจริงจาก Myfxbook เทียบกับรอบจำลอง หนึ่งรอบคือทุกออเดอร์ของคู่เงินและฝั่งเดียวกันที่ปิดพร้อมกัน ตัวเลขเงินถูกปรับให้เท่ากับขนาดออเดอร์แรกด้านบน เพื่อให้เทียบได้แม้ประวัติใช้ล็อตต่างกัน ขาดทุนลอยตัวสูงสุดคำนวณจากผลรวมจุดที่แย่ที่สุดของแต่ละออเดอร์ ค่าจริงจึงไม่เกินตัวเลขนี้ ถ้าประวัติของคุณลึกกว่าการจำลอง ให้เชื่อประวัติ",d_ggrow_mult:"คูณ (×)",d_ggrow_add:"บวกจำนวนคงที่ (+)",d_gadd:"ล็อตที่เพิ่มต่อออเดอร์ใหม่",d_gmax:"จำนวนออเดอร์สูงสุด",
 d_gtp:"ทำกำไรห่างจากราคาเฉลี่ย (pips)",d_gtp_ns:"ทำกำไร (pips)",d_gsl:"ตัดขาดทุนหลังออเดอร์สุดท้าย (pips, 0 = ไม่มี)",d_gsl_ns:"ยอมตัดขาดทุนเมื่อติดลบ (pips, 0 = ไม่ตัด)",
 d_gvol:"ช่วงราคาเฉลี่ยต่อวันของคู่เงิน (pips)",d_gauto:"ขนาดล็อต",d_gauto_fixed:"คงที่",d_gauto_scale:"เพิ่มตามยอดเงิน",d_gmkt:"แบบจำลองตลาด",d_gmkt_real:"มีราคากระโดด + เทรนด์ (สมจริง)",d_gmkt_calm:"สุ่มล้วน (มองโลกในแง่ดี)",
 d_hor_cyc:"ช่วงเวลา (รอบ)",d_grid_hint:"หนึ่งรอบเริ่มจากออเดอร์แรก และจบเมื่อปิดออเดอร์ทั้งหมด ระยะทุกช่องเป็น pips",
@@ -2050,129 +2064,17 @@ sc_cant:[["กลยุทธ์ที่ยังไม่รองรับ",[
 sc_ok:"เข้าใจแล้ว",sc_again:"เปิดอ่านอีกได้ทุกเมื่อที่ช่องประเภทกลยุทธ์"
 });
 Object.assign(I18N.en,{
-bt_src:"COMEX gold futures, 1-minute, {a} to {b}",bt_src0:"COMEX gold futures, 1-minute",bt_idx:"Loading the list of available months…",
-bt_lead_g:"Backtest: your exact rules, replayed minute by minute on 16 years of real gold prices.",
-bt_intro:"Replays your inputs on real gold prices, minute by minute, for the months you pick. 1 pip = $0.10, so a $1 move is 10 pips. The data stops at the last date shown and isn't live.",
-bt_uses_grid:"Uses every grid setting, the balance, spread, commission and value per pip. Daily range and market model aren't used: real prices replace them.",
-bt_uses_ns:"Uses the position size, take-profit, exit level, balance, spread, commission and value per pip. Daily range and market model aren't used: real prices replace them.",
-
-bt_from:"From",bt_to:"To",bt_dir:"Direction",bt_dir_buy:"Buy",bt_dir_sell:"Sell",bt_dir_alt:"Alternate each cycle",bt_run:"Run test",bt_rerun:"Run again",
-bt_p12:"Last 12 months",bt_p5:"Last 5 years",bt_pall:"All data",bt_load:"Loading gold data: {done} of {total} months…",bt_running:"Running the test…",
-bt_file:"The backtest needs the published site (GitHub Pages or any web server). Browsers block data files when index.html is opened straight from disk.",
-bt_nodecomp:"This browser can't unpack the data files. Use a recent Chrome, Edge, Firefox or Safari.",
-
-bt_stale:"Your inputs or range changed since this run. Run it again to update the results.",bt_err:"Couldn't load the gold data: {msg}",bt_err_busy:"Too many people are running tests right now. Wait a minute and press Run again.",bt_err_http:"Couldn't download the gold data for {m} (error {code}). Press Run to try again.",bt_err_bad:"The gold data for {m} arrived damaged, so the test stopped rather than skip that month. Press Run to try again.",bt_err_net:"Couldn't reach the gold data. Check your connection and press Run again.",bt_range_bad:"Pick a start month that comes before the end month.",
-bt_start:"start",bt_t_final:"Final balance",bt_t_dd:"Deepest fall",bt_t_cyc:"Cycles won",bt_t_out:"Outcome",bt_out_ok:"Survived the whole range",bt_out_ruin:"Fell {x}% or more",bt_out_wipe:"Wiped out",
-
-bt_v_wiped:"The account was wiped out on {date}, {days} days into the backtest.",
-bt_v_ruin:"The account survived but crossed the −{x}% ruin line on {rdate}; its deepest fall was {dd} ({date}).",
-bt_v_ok:"The account survived the whole range. Its deepest fall was {dd} ({date}).",
-bt_v_grid:"{cyc} cycles, {win} won. Final balance {fin} ({ret}).",
-bt_adr:"Gold moved {x} pips a day on average in this period; your grid spacing is {step} pips. The simulation sections above use your daily-range input ({y} pips), so set it to about {x} for gold.",
 
 
 
-
-
-lg_bt_close:"Equity at the day's close",lg_bt_low:"Lowest equity during the day, with floating losses",lg_bt_px:"Gold, real futures price",lg_bt_worst:"Start of one of the 5 deepest cycles",
-bn_eq:"Account value through the backtest. The red band reaches down to each day's lowest point, including open losses, which is what a margin call sees. Dashed lines are the starting balance and the ruin line.",
-bn_stats:"Totals for the whole range. A cycle runs from the first order until all orders close.",
-bn_price:"Real gold futures prices over the range. Futures switch to a new contract every few months, which shows as a small jump here; the backtest removes those jumps so they don't count as real moves. Red dots mark where the 5 deepest cycles began.",
-bn_worst:"The 5 cycles whose floating loss went deepest, with how they ended.",gn_reach_bt:"The share of cycles that opened each order. The last bar shows how often the grid was completely full.",
-bn_years:"Results by calendar year. The deepest fall is measured within each year, including open losses.",
-
-
-
-sc_bt_can:["Test on real gold","Replays your exact inputs on 16 years of 1-minute COMEX gold prices for any range of months: equity day by day, the deepest falls and when they happened, the worst grid cycles, and results by year. It also reruns the test from many start dates, compares the simulation with reality, shows how gold's volatility changed, splits results into trend and range months, and finds the hours when trouble starts. It runs for grid / martingale and no-hard-stop strategies."],
-sc_bt_cant:["Test on real gold",[["Gold only, and futures rather than spot","The data is COMEX gold futures. Broker XAUUSD spot prices differ slightly, trading hours and gaps aren't identical, and roll jumps between futures contracts are removed by estimate (30 of the 81 rolls fall across a weekend and are estimated from neighbouring rolls)."],["What happens inside each minute","Only open, high, low and close are known. The backtest assumes a rising minute went open → low → high → close and a falling one open → high → low → close. When a level and the take-profit sit inside the same minute, the real order may have been different."],["Fills and costs","Orders fill exactly at their level unless price gaps past it, in which case they fill at the gap price. There is no slippage beyond that, no swap, no lot rounding to 0.01 and no margin check. Spread is charged once per order."],["Fixed data","The data ends on the last date shown and isn't updated. One past path is one sample: a grid that survived these years could still fail on the next big move."]]]
+sc_bt_can:["Gold playground","A separate Expert tab. Build an entry rule from moving averages, RSI, Bollinger Bands, MACD, Stochastic or breakouts, with stops and targets, on 1-minute to daily candles. It backtests the rule on 16 years of real 1-minute gold prices, then runs it once, unchanged, on the months straight after (a walk-forward test) to show whether the result holds on data it wasn't tuned on."]
 });
 Object.assign(I18N.th,{
-bt_src:"ฟิวเจอร์สทองคำ COMEX ราย 1 นาที {a} ถึง {b}",bt_src0:"ฟิวเจอร์สทองคำ COMEX ราย 1 นาที",bt_idx:"กำลังโหลดรายการเดือนที่มีข้อมูล…",
-bt_lead_g:"Backtest: กฎของคุณทุกข้อ เล่นซ้ำทีละนาทีบนราคาทองจริง 16 ปี",
-bt_intro:"นำค่าที่คุณใส่มาเทรดซ้ำกับราคาทองจริงทีละนาที ในช่วงเดือนที่เลือก 1 pip = $0.10 ราคาขยับ $1 จึงเท่ากับ 10 pips ข้อมูลสิ้นสุดที่วันที่แสดงและไม่ใช่ข้อมูลสด",
-bt_uses_grid:"ใช้ค่ากริดทุกช่อง ยอดเงิน สเปรด คอมมิชชั่น และมูลค่าต่อ pip ไม่ใช้ช่วงราคาต่อวันและแบบจำลองตลาด เพราะใช้ราคาจริงแทน",
-bt_uses_ns:"ใช้ขนาดออเดอร์ ทำกำไร จุดยอมตัดขาดทุน ยอดเงิน สเปรด คอมมิชชั่น และมูลค่าต่อ pip ไม่ใช้ช่วงราคาต่อวันและแบบจำลองตลาด เพราะใช้ราคาจริงแทน",
-
-bt_from:"จาก",bt_to:"ถึง",bt_dir:"ทิศทาง",bt_dir_buy:"Buy",bt_dir_sell:"Sell",bt_dir_alt:"สลับทุกรอบ",bt_run:"รันทดสอบ",bt_rerun:"รันอีกครั้ง",
-bt_p12:"12 เดือนล่าสุด",bt_p5:"5 ปีล่าสุด",bt_pall:"ข้อมูลทั้งหมด",bt_load:"กำลังโหลดข้อมูลทอง: {done} จาก {total} เดือน…",bt_running:"กำลังทดสอบ…",
-bt_file:"Backtest ต้องเปิดผ่านเว็บที่เผยแพร่แล้ว (GitHub Pages หรือเว็บเซิร์ฟเวอร์) เบราว์เซอร์จะไม่ยอมโหลดไฟล์ข้อมูลเมื่อเปิด index.html จากเครื่องโดยตรง",
-bt_nodecomp:"เบราว์เซอร์นี้แตกไฟล์ข้อมูลไม่ได้ ให้ใช้ Chrome, Edge, Firefox หรือ Safari เวอร์ชันล่าสุด",
-
-bt_stale:"ค่าที่ใส่หรือช่วงเวลาเปลี่ยนไปหลังจากรันครั้งนี้ ให้รันอีกครั้งเพื่ออัปเดตผล",bt_err:"โหลดข้อมูลทองไม่ได้: {msg}",bt_err_busy:"ตอนนี้มีคนรันทดสอบพร้อมกันเยอะเกินไป รอสักนาทีแล้วกดรันอีกครั้ง",bt_err_http:"ดาวน์โหลดข้อมูลทองของเดือน {m} ไม่ได้ (เซิร์ฟเวอร์ตอบกลับ {code}) กดรันเพื่อลองใหม่",bt_err_bad:"ข้อมูลทองของเดือน {m} เสียหายระหว่างดาวน์โหลด จึงหยุดการทดสอบแทนที่จะข้ามเดือนนั้นไป กดรันเพื่อลองใหม่",bt_err_net:"เชื่อมต่อข้อมูลทองไม่ได้ ตรวจสอบอินเทอร์เน็ตแล้วกดรันอีกครั้ง",bt_range_bad:"เลือกเดือนเริ่มต้นให้อยู่ก่อนเดือนสิ้นสุด",
-bt_start:"เริ่ม",bt_t_final:"ยอดเงินสุดท้าย",bt_t_dd:"ลดลงลึกที่สุด",bt_t_cyc:"รอบที่กำไร",bt_t_out:"ผลลัพธ์",bt_out_ok:"รอดตลอดช่วง",bt_out_ruin:"ลดลง {x}% ขึ้นไป",bt_out_wipe:"เสียพอร์ตทั้งหมด",
-
-bt_v_wiped:"พอร์ตหมดในวันที่ {date} หลังเริ่ม Backtest {days} วัน",
-bt_v_ruin:"พอร์ตรอด แต่หลุดเส้นพอร์ตแตก −{x}% ในวันที่ {rdate} ลดลงลึกที่สุด {dd} ({date})",
-bt_v_ok:"พอร์ตรอดตลอดช่วง ลดลงลึกที่สุด {dd} ({date})",
-bt_v_grid:"{cyc} รอบ กำไร {win} รอบ ยอดเงินสุดท้าย {fin} ({ret})",
-bt_adr:"ช่วงนี้ทองวิ่งเฉลี่ยวันละ {x} pips ระยะห่างกริดของคุณคือ {step} pips ส่วนการจำลองด้านบนใช้ช่วงราคาต่อวันที่ใส่ ({y} pips) สำหรับทองให้ตั้งไว้ราว {x}",
 
 
 
-
-
-lg_bt_close:"มูลค่าพอร์ตตอนปิดวัน",lg_bt_low:"มูลค่าพอร์ตต่ำสุดระหว่างวัน รวมขาดทุนลอยตัว",lg_bt_px:"ราคาทอง ราคาฟิวเจอร์สจริง",lg_bt_worst:"จุดเริ่มของ 5 รอบที่ลึกที่สุด",
-bn_eq:"มูลค่าพอร์ตตลอด Backtest แถบแดงลงไปถึงจุดต่ำสุดของแต่ละวัน รวมขาดทุนลอยตัว ซึ่งเป็นค่าที่ Margin call ใช้ เส้นประคือยอดเงินเริ่มต้นและเส้นพอร์ตแตก",
-bn_stats:"ผลรวมทั้งช่วง หนึ่งรอบเริ่มจากออเดอร์แรกจนปิดออเดอร์ทั้งหมด",
-bn_price:"ราคาฟิวเจอร์สทองจริงตลอดช่วง ฟิวเจอร์สเปลี่ยนสัญญาใหม่ทุกไม่กี่เดือน จึงเห็นเป็นรอยกระโดดเล็กๆ ในกราฟ แต่ Backtest ตัดส่วนต่างนี้ออก จึงไม่นับเป็นการเคลื่อนไหวจริง จุดแดงคือจุดเริ่มของ 5 รอบที่ลึกที่สุด",
-bn_worst:"5 รอบที่ขาดทุนลอยตัวลึกที่สุด และผลตอนจบของแต่ละรอบ",gn_reach_bt:"สัดส่วนรอบที่เปิดออเดอร์แต่ละไม้ แท่งสุดท้ายคือความถี่ที่กริดเต็ม",
-bn_years:"ผลแยกตามปีปฏิทิน การลดลงลึกที่สุดวัดภายในแต่ละปี รวมขาดทุนลอยตัว",
-
-
-
-sc_bt_can:["ทดสอบกับราคาทองจริง","นำค่าที่คุณใส่มาเทรดซ้ำกับราคาทอง COMEX ราย 1 นาที 16 ปี ในช่วงเดือนใดก็ได้ แสดงมูลค่าพอร์ตรายวัน การลดลงลึกที่สุดและเกิดเมื่อไร รอบกริดที่แย่ที่สุด และผลรายปี พร้อมรันซ้ำจากหลายวันเริ่ม เทียบการจำลองกับของจริง แสดงความผันผวนของทองที่เปลี่ยนไป แยกผลตามเดือนเทรนด์และไซด์เวย์ และหาช่วงเวลาที่ปัญหาเริ่ม ใช้ได้กับกลยุทธ์แบบกริด / มาร์ติงเกล และแบบไม่มี Stop loss"],
-sc_bt_cant:["ทดสอบกับราคาทองจริง",[["ทองคำเท่านั้น และเป็นฟิวเจอร์ส ไม่ใช่ Spot","ข้อมูลเป็นฟิวเจอร์สทองคำ COMEX ราคา XAUUSD Spot ของโบรกเกอร์ต่างกันเล็กน้อย เวลาเทรดและช่องว่างราคาไม่เหมือนกันทั้งหมด และส่วนต่างตรงรอยต่อสัญญาถูกตัดออกโดยการประมาณ (30 จาก 81 รอยต่อคร่อมวันหยุดสุดสัปดาห์ จึงประมาณจากรอยต่อใกล้เคียง)"],["สิ่งที่เกิดภายในแต่ละนาที","รู้แค่ราคาเปิด สูงสุด ต่ำสุด และปิด Backtest ถือว่านาทีที่ราคาขึ้นวิ่ง เปิด → ต่ำสุด → สูงสุด → ปิด และนาทีที่ราคาลงวิ่ง เปิด → สูงสุด → ต่ำสุด → ปิด ถ้าระดับคำสั่งและเป้ากำไรอยู่ในนาทีเดียวกัน ลำดับจริงอาจต่างออกไป"],["การจับคู่คำสั่งและต้นทุน","คำสั่งได้ราคาตรงระดับพอดี ยกเว้นราคากระโดดข้าม จึงได้ราคาหลังกระโดด ไม่มี Slippage นอกจากนั้น ไม่มี Swap ไม่ปัดล็อตเป็น 0.01 และไม่ตรวจมาร์จิ้น สเปรดคิดครั้งเดียวต่อออเดอร์"],["ข้อมูลตายตัว","ข้อมูลสิ้นสุดที่วันที่แสดงและไม่อัปเดต อดีตหนึ่งเส้นทางคือตัวอย่างเดียว กริดที่รอดในช่วงปีเหล่านี้อาจพังในการเคลื่อนไหวใหญ่ครั้งถัดไป"]]]
+sc_bt_can:["สนามทดลองทองคำ","แท็บแยกในโหมดผู้เชี่ยวชาญ สร้างกฎเข้าเทรดจากเส้นค่าเฉลี่ย RSI, Bollinger Bands, MACD, Stochastic หรือ Breakout พร้อม Stop และเป้ากำไร บนแท่งเทียนตั้งแต่ 1 นาทีถึงรายวัน ทดสอบย้อนหลังกับราคาทองจริงราย 1 นาที 16 ปี แล้วรันกฎเดิมโดยไม่แก้อีกหนึ่งครั้งกับเดือนที่ต่อจากนั้น (Walk-forward) เพื่อดูว่าผลยังอยู่ได้กับข้อมูลที่ไม่ได้จูนหรือไม่"]
 });
-Object.assign(I18N.en,{
-bt_starts:"Testing other start dates: {done} of {total}…",
-bt_avail:"Data available: {a} to {b}",bt_avail2:"{y} years of 1-minute gold prices, {n} million bars. Nothing before or after these dates.",bt_sel:"Selected: {a} to {b}, {n} months",
-bs_y:"result after {W} months",lg_bs_ok:"Stayed above the ruin line",lg_bs_ruin:"Fell {x}% or more",lg_bs_wipe:"Wiped out",
-bs_now:"Started on {ok} of {n} different dates, the account stayed above the ruin line for {W} months; {wp} starts were wiped out. The worst start was {worst}, the best {best}.",
-bs_note:"The same rules started at the beginning of different months, each run for the same length. The main backtest above is only one of these paths; this shows how much the result depended on the day you happened to start.",
-bsv_few:"Too few cycles in this range to compare reliably. Pick a longer range.",
-bsv_worse:"Real gold pushed cycles to the ruin line {x}× as often as the simulation predicted. The simulation sections above are too optimistic for gold with these settings.",
-bsv_better:"Real gold was gentler than the simulation in this range. That can be luck of the period: try other ranges before relying on it.",
-bsv_close:"Real gold behaved roughly as the simulation predicted for these settings.",
-bsv_worse0:"On real gold {x} of cycles dipped to the ruin line; the simulation never produced one. The simulation sections above are too optimistic for gold with these settings.",bsv_btn:"Use gold's real daily range ({x} pips) in the simulation",
-
-
-bsv_note:"The simulation above against the same settings on real gold. Large gaps mean the simulated price model doesn't fit gold in this period; matching the daily range is the first fix.",
-
-bv_ref_tp:"Your take-profit",bv_ref_step:"Your grid spacing",bv_ref_full:"Depth when every order is open",bv_ref_wipe:"Move that wipes the account",bv_lg_adr:"Average daily range",
-bv_now:"Gold moved {a} pips a day in {y0} and {b} in {y1}, {x}× as much. {name} of {v} pips was {r0}% of a day's range in {y0} and {r1}% in {y1}.",
-bv_note:"Gold's average daily range for each year, with your key distances as dashed lines. Settings sized for a calm year can be far too tight when gold gets more volatile.",
-btr_x:"gold's move in the month (pips)",btr_y:"account change in the month",btr_range:"Ranging",btr_mixed:"Mixed",btr_up:"Trending up",btr_down:"Trending down",
-btr_now:"Your strategy did best in {best} months (average {b}) and worst in {worst} months (average {w}).",
-btr_note:"Each dot is one month. A month counts as trending when gold's net move was at least 35% of the distance it travelled day by day, and as ranging when it was under 15%. The table shows how your strategy did in each kind of month.",
-bq_hour:"hour ({tz})",bq_count:"deep moments",
-bq_now:"Of the {n} cycles with the deepest floating losses, the most hit their worst point between {h0}:00 and {h1}:00 ({tz}).",
-
-bq_note:"When the worst 10% of cycles reached their deepest floating loss, by hour of day in your time zone and by weekday, plus what weekend and holiday gaps did to open positions."});
-Object.assign(I18N.th,{
-bt_starts:"กำลังทดสอบวันเริ่มอื่น: {done} จาก {total}…",
-bt_avail:"ข้อมูลที่มี: {a} ถึง {b}",bt_avail2:"ราคาทองราย 1 นาที {y} ปี จำนวน {n} ล้านแท่ง ไม่มีข้อมูลก่อนหรือหลังช่วงนี้",bt_sel:"ช่วงที่เลือก: {a} ถึง {b} รวม {n} เดือน",
-bs_y:"ผลหลัง {W} เดือน",lg_bs_ok:"อยู่เหนือเส้นพอร์ตแตก",lg_bs_ruin:"ลดลง {x}% ขึ้นไป",lg_bs_wipe:"เสียพอร์ตทั้งหมด",
-bs_now:"เริ่มต่างวันกัน {n} ครั้ง พอร์ตอยู่เหนือเส้นพอร์ตแตกตลอด {W} เดือน {ok} ครั้ง และเสียพอร์ตทั้งหมด {wp} ครั้ง วันเริ่มที่แย่ที่สุดคือ {worst} ที่ดีที่สุดคือ {best}",
-bs_note:"ใช้กฎเดียวกันแต่เริ่มต้นเดือนต่างกัน แต่ละครั้งรันยาวเท่ากัน Backtest หลักด้านบนเป็นแค่หนึ่งในเส้นทางเหล่านี้ การ์ดนี้แสดงว่าผลขึ้นกับวันที่บังเอิญเริ่มมากแค่ไหน",
-bsv_few:"รอบในช่วงนี้น้อยเกินไปที่จะเทียบได้น่าเชื่อถือ ให้เลือกช่วงที่ยาวขึ้น",
-bsv_worse:"ทองจริงทำให้รอบลงไปถึงเส้นพอร์ตแตกบ่อยกว่าที่การจำลองคาดไว้ {x} เท่า การจำลองด้านบนจึงมองโลกในแง่ดีเกินไปสำหรับทองด้วยค่าที่ตั้งนี้",
-bsv_better:"ทองจริงในช่วงนี้รุนแรงน้อยกว่าการจำลอง อาจเป็นแค่โชคของช่วงเวลา ลองช่วงอื่นก่อนเชื่อผลนี้",
-bsv_close:"ทองจริงเคลื่อนไหวใกล้เคียงกับที่การจำลองคาดไว้สำหรับค่าที่ตั้งนี้",
-bsv_worse0:"บนทองจริง {x} ของรอบลงไปถึงเส้นพอร์ตแตก แต่การจำลองไม่เกิดเลย การจำลองด้านบนจึงมองโลกในแง่ดีเกินไปสำหรับทองด้วยค่าที่ตั้งนี้",bsv_btn:"ใช้ช่วงราคาต่อวันจริงของทอง ({x} pips) ในการจำลอง",
-
-
-bsv_note:"การจำลองด้านบน เทียบกับค่าเดียวกันบนทองจริง ถ้าต่างกันมาก แปลว่าแบบจำลองราคาไม่เข้ากับทองในช่วงนี้ สิ่งแรกที่ควรแก้คือช่วงราคาต่อวัน",
-
-bv_ref_tp:"เป้ากำไรของคุณ",bv_ref_step:"ระยะห่างกริดของคุณ",bv_ref_full:"ความลึกเมื่อเปิดครบทุกออเดอร์",bv_ref_wipe:"ระยะสวนที่ล้างพอร์ต",bv_lg_adr:"ช่วงราคาเฉลี่ยต่อวัน",
-bv_now:"ทองวิ่งเฉลี่ยวันละ {a} pips ในปี {y0} และ {b} pips ในปี {y1} มากขึ้น {x} เท่า {name} {v} pips เท่ากับ {r0}% ของช่วงราคาต่อวันในปี {y0} และ {r1}% ในปี {y1}",
-bv_note:"ช่วงราคาเฉลี่ยต่อวันของทองในแต่ละปี พร้อมระยะสำคัญของคุณเป็นเส้นประ ค่าที่ตั้งไว้สำหรับปีที่ตลาดเงียบอาจแคบเกินไปมากเมื่อทองผันผวนขึ้น",
-btr_x:"ราคาทองเปลี่ยนในเดือนนั้น (pips)",btr_y:"พอร์ตเปลี่ยนในเดือนนั้น",btr_range:"ไซด์เวย์",btr_mixed:"ผสม",btr_up:"เทรนด์ขึ้น",btr_down:"เทรนด์ลง",
-btr_now:"กลยุทธ์ของคุณทำได้ดีที่สุดในเดือนแบบ{best} (เฉลี่ย {b}) และแย่ที่สุดในเดือนแบบ{worst} (เฉลี่ย {w})",
-btr_note:"แต่ละจุดคือหนึ่งเดือน เดือนที่นับเป็นเทรนด์คือเดือนที่ราคาเปลี่ยนสุทธิอย่างน้อย 35% ของระยะที่วิ่งรายวันรวมกัน และเป็นไซด์เวย์เมื่อต่ำกว่า 15% ตารางแสดงผลของกลยุทธ์ในแต่ละแบบเดือน",
-bq_hour:"ชั่วโมง ({tz})",bq_count:"ครั้งที่ลึกสุด",
-bq_now:"ใน {n} รอบที่ขาดทุนลอยตัวลึกที่สุด ส่วนใหญ่ลงไปถึงจุดต่ำสุดระหว่าง {h0}:00 ถึง {h1}:00 ({tz})",
-
-bq_note:"เวลาที่ 10% ของรอบที่แย่ที่สุดลงไปถึงขาดทุนลอยตัวลึกสุด แยกตามชั่วโมงในเขตเวลาของคุณและวันในสัปดาห์ พร้อมผลของช่องว่างราคาช่วงสุดสัปดาห์และวันหยุดต่อออเดอร์ที่เปิดอยู่"});
 /* UX review round (Nov 2026): plain words, example labels, animation switch */
 Object.assign(I18N.en,{
 anim:"Animations",
@@ -2229,8 +2131,8 @@ flag_bt:"มีแค่ Backtest: ตัวเลขอาจ Overfit (จู�
 });
 Object.assign(I18N.en,{unset_desk_t:"{n} inputs still use example or default values, so the results may not describe your trading. Tap one to fill it in:",jump_t:"Jump to"});
 Object.assign(I18N.th,{unset_desk_t:"มี {n} ช่องที่ยังใช้ค่าตัวอย่างหรือค่าเริ่มต้น ผลลัพธ์จึงอาจไม่ตรงกับการเทรดของคุณ แตะเพื่อไปกรอก:",jump_t:"ไปที่"});
-Object.assign(I18N.en,{desk_loading:"Loading Expert mode…",desk_load_err:"Expert mode couldn't load. Check your connection and switch to Expert again. If you opened index.html from your computer, keep expert.js in the same folder."});
-Object.assign(I18N.th,{desk_loading:"กำลังโหลดโหมดผู้เชี่ยวชาญ…",desk_load_err:"โหลดโหมดผู้เชี่ยวชาญไม่สำเร็จ ตรวจการเชื่อมต่อแล้วกดผู้เชี่ยวชาญอีกครั้ง ถ้าเปิด index.html จากเครื่อง ให้วาง expert.js ไว้ในโฟลเดอร์เดียวกัน"});
+Object.assign(I18N.en,{dtab_risk:"Risk calculator",dtab_lab:"Gold playground",lab_loading:"Loading the gold playground…",lab_load_err:"The gold playground couldn't load. Check your connection and open the tab again.",desk_loading:"Loading Expert mode…",desk_load_err:"Expert mode couldn't load. Check your connection and switch to Expert again. If you opened index.html from your computer, keep expert.js in the same folder."});
+Object.assign(I18N.th,{dtab_risk:"คำนวณความเสี่ยง",dtab_lab:"สนามทดลองทองคำ",lab_loading:"กำลังโหลดสนามทดลองทองคำ…",lab_load_err:"โหลดสนามทดลองทองคำไม่สำเร็จ ตรวจการเชื่อมต่อแล้วเปิดแท็บอีกครั้ง",desk_loading:"กำลังโหลดโหมดผู้เชี่ยวชาญ…",desk_load_err:"โหลดโหมดผู้เชี่ยวชาญไม่สำเร็จ ตรวจการเชื่อมต่อแล้วกดผู้เชี่ยวชาญอีกครั้ง ถ้าเปิด index.html จากเครื่อง ให้วาง expert.js ไว้ในโฟลเดอร์เดียวกัน"});
 function t(k,v){
   let s=I18N[LANG]&&I18N[LANG][k];if(s===undefined)s=I18N.en[k];
   if(s===undefined){MISSING.push(k);return k;}
@@ -2714,7 +2616,7 @@ function mdReport(){
   /* limits */
   md+=MD.h(2,tx('What this report leaves out','สิ่งที่รายงานนี้ไม่ได้รวมไว้'))+MD.p(t('dp_assump_p',{H}));
   md+=MD.list([tx('Spread, commission and swap. Costs lower the average per trade.','สเปรด คอมมิชชั่น และ Swap ต้นทุนทำให้ค่าเฉลี่ยต่อไม้ลดลง'),tx('Lot size for your broker and stop distance.','ขนาดล็อตตามโบรกเกอร์และระยะ Stop loss'),tx('Your real trade history (Myfxbook file).','ประวัติการเทรดจริง (ไฟล์ Myfxbook)'),
-    tx('A test on 16 years of real gold prices.','การทดสอบกับราคาทองจริง 16 ปี'),tx('Grid, martingale and no-stop strategies.','กลยุทธ์กริด มาร์ติงเกล และแบบไม่ตั้ง Stop')]);
+    tx('A playground to test indicator rules on 16 years of real gold prices.','สนามทดลองกฎจากอินดิเคเตอร์กับราคาทองจริง 16 ปี'),tx('Grid, martingale and no-stop strategies.','กลยุทธ์กริด มาร์ติงเกล และแบบไม่ตั้ง Stop')]);
   md+=MD.p(tx('Expert mode covers all of these. Switch with the Expert button at the top.','โหมดผู้เชี่ยวชาญรองรับทั้งหมดนี้ สลับได้ที่ปุ่มผู้เชี่ยวชาญด้านบน'));
   md+=MD.h(2,tx('Words used','คำศัพท์'))+MD.glossary().slice(0,10).map(g=>'- **'+g[0]+'**: '+g[1]).join('\n')+'\n';
   md+=MD.h(2,tx('Disclaimer','ข้อจำกัดความรับผิดชอบ'))+MD.p(t('disclaimer'))+'---\n\n'+MD.p(tx('Made with Jarn Neow, free and open. Calculated in your browser; nothing was uploaded.','สร้างด้วย Jarn Neow ใช้ฟรี คำนวณในเบราว์เซอร์ของคุณ ไม่มีข้อมูลถูกอัปโหลด'));
@@ -2899,7 +2801,7 @@ function toDesk(){if(!deskReady())return;if(pv()!==lastPlay){const v=JSON.parse(
 function toPlay(){if(!deskReady())return;if(dv()!==lastDesk){const v=JSON.parse(dv());PLAY.setState(v,v.t);}lastDesk=dv();lastPlay=pv();}
 
 /* ----- Expert mode code lives in expert.js and loads the first time Expert opens ----- */
-const EXPERT_V='54ad8ce7';
+const EXPERT_V='3af76d20';
 const deskReady=()=>typeof DESK!=='undefined';
 let deskLoading=null;
 function loadDesk(){
@@ -2909,6 +2811,24 @@ function loadDesk(){
   deskLoading=new Promise((ok,fail)=>{const sc=document.createElement('script');sc.src='expert.js?v='+EXPERT_V;sc.onload=()=>{try{deskBoot();ok();}catch(e){fail(e);}};
     sc.onerror=()=>{deskLoading=null;if(main)main.innerHTML=`<div class="errnote">${esc(t('desk_load_err'))}</div>`;fail(new Error('expert.js'));};document.head.appendChild(sc);});
   return deskLoading;}
+/* ----- the gold playground (an Expert tab) lives in lab.js and lab-worker.js, loaded the first time the tab opens ----- */
+const LAB_V='5fb29aca';
+const labReady=()=>typeof LAB!=='undefined';
+let labLoading=null;
+function loadLab(){
+  if(labReady())return Promise.resolve();
+  if(labLoading)return labLoading;
+  const box=$('lab');box.innerHTML=`<div class="card empty" style="margin-top:1rem">${esc(t('lab_loading'))}</div>`;
+  labLoading=new Promise((ok,fail)=>{const sc=document.createElement('script');sc.src='lab.js?v='+LAB_V;sc.onload=()=>{try{LAB.init(box);ok();}catch(e){fail(e);}};
+    sc.onerror=()=>{labLoading=null;box.innerHTML=`<div class="errnote" style="margin-top:1rem">${esc(t('lab_load_err'))}</div>`;fail(new Error('lab.js'));};document.head.appendChild(sc);});
+  return labLoading;}
+function setDtab(v,save){
+  v=v==='lab'?'lab':'risk';root.dataset.dtab=v;if(save)store.set('jn_dtab',v);
+  document.querySelectorAll('.dtabs [role=tab]').forEach(b=>{const on=b.dataset.dtab===v;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;});
+  $('desk-risk').hidden=v!=='risk';$('lab').hidden=v!=='lab';if(window.__sfxTip)window.__sfxTip.hide();
+  if(v==='lab'&&root.dataset.mode==='desk')loadLab().catch(()=>{});}
+document.querySelectorAll('.dtabs [role=tab]').forEach(b=>b.addEventListener('click',()=>setDtab(b.dataset.dtab,true)));
+document.querySelector('.dtabs').addEventListener('keydown',e=>{if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;e.preventDefault();const v=root.dataset.dtab==='lab'?'risk':'lab';setDtab(v,true);$(v==='lab'?'dt-lab':'dt-risk').focus();});
 /* once loaded: start it and apply the saved Expert preferences */
 function deskBoot(){
   DESK.init();
@@ -2988,7 +2908,7 @@ function renderScope(){
   $('scope-body').innerHTML=`<h2 id="scope-title">${esc(t('sc_title'))}</h2><p>${esc(t('sc_intro'))}</p>`+
     `<h3>${esc(t('sc_type_h'))}</h3>${li(tl('sc_types'),'›','typ')}`+
     `<h3 class="can">${esc(t('sc_can_h'))}</h3>${li(tl('sc_can').concat([tl('sc_bt_can')]),'✓','can')}`+
-    `<h3 class="cant">${esc(t('sc_cant_h'))}</h3>`+(()=>{const a=tl('sc_cant').slice();a.splice(a.length-1,0,tl('sc_bt_cant'));return a;})().map(g=>`<h4>${esc(g[0])}</h4>${li(g[1],'✕','cant')}`).join('');}
+    `<h3 class="cant">${esc(t('sc_cant_h'))}</h3>`+tl('sc_cant').map(g=>`<h4>${esc(g[0])}</h4>${li(g[1],'✕','cant')}`).join('');}
 function openScope(after){scopeBack=document.activeElement;scopeAfter=after||null;renderScope();const sc=$('scope');sc.hidden=false;sc.scrollTop=0;document.body.classList.add('locked');syncInert();$('scope-ok').focus({preventScroll:true});}
 function closeScope(){const sc=$('scope');if(sc.hidden)return;sc.hidden=true;if($('gate').hidden)document.body.classList.remove('locked');syncInert();
   if(scopeBack&&scopeBack.focus&&document.contains(scopeBack))scopeBack.focus({preventScroll:true});const f=scopeAfter;scopeAfter=null;if(f)f();}
@@ -2999,7 +2919,7 @@ $('scope').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault(
 
 /* ----- mode ----- */
 function renderActive(){
-  if(root.dataset.mode==='play'){PLAY.render();}else if(deskReady()){DESK.refreshText();}}
+  if(root.dataset.mode==='play'){PLAY.render();}else{if(deskReady())DESK.refreshText();if(labReady())LAB.refresh();}}
 function updateShareHash(){if(root.dataset.mode==='play')try{history.replaceState(null,'','#'+location.hash.slice(1).replace(/^$/,'')+'');}catch(e){}}
 function setMode(m,save){
   const prev=root.dataset.mode;root.dataset.mode=m;
@@ -3008,6 +2928,7 @@ function setMode(m,save){
   if(m==='desk'){
     if(!deskReady()){loadDesk().then(()=>{if(root.dataset.mode==='desk'){DESK.refreshText();}}).catch(()=>{});}
     else{toDesk();DESK.refreshText();}
+    if(root.dataset.dtab==='lab')loadLab().catch(()=>{});
     const nudge=()=>{if(window.matchMedia('(max-width:700px)').matches&&!sess.get('sfx_dn')){$('desk-nudge').hidden=false;sess.set('sfx_dn','1');}};
     if(prev!=='desk'){if(save)openScope(nudge);else nudge();}}
   else{$('desk-nudge').hidden=true;closeScope();toPlay();PLAY.render();}
@@ -3065,6 +2986,7 @@ root.dataset.mode=mode;
 {const tc=$('theme-color'),sync=()=>{if(tc)tc.content=root.dataset.mode==='desk'?'#0a0f15':'#1c0a2e';};new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-mode']});sync();}
 document.querySelectorAll('#seg-mode button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
 setLang(lang,false);
+setDtab(store.get('jn_dtab'),false);
 if(mode==='desk')loadDesk().then(()=>{if(root.dataset.mode==='desk')DESK.analyze();}).catch(()=>{});else PLAY.render();
 /* the start-up popup runs once; after that, people go straight to their numbers (the footer link runs it again) */
 {let g=null;try{g=JSON.parse(store.get('jn_gate')||'null');}catch(e){}

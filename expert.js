@@ -1,8 +1,6 @@
-/* Jarn Neow, Expert mode: the dashboard and the gold backtest.
+/* Jarn Neow, Expert mode: the risk dashboard.
    Loaded by index.html only when Expert is opened, so Beginner visitors don't download or parse it.
    After editing this file, change EXPERT_V in index.html so browsers fetch the new copy. */
-/* the gold backtest runs in a Web Worker built from this source */
-const BTW_SRC="\n/* min/max over arrays of any length: Math.min(...arr) fails past ~100k items */\nconst amin=function(){let m=Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]<m)m=a[i];}else if(a<m)m=a;}return m;},amax=function(){let m=-Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]>m)m=a[i];}else if(a>m)m=a;}return m;};\n/* Jarn Neow backtest worker: loads monthly gold files, removes contract-roll jumps, replays the user's rules on 1-minute bars.\n   Prices are integers in ticks of $0.10, and 1 pip = 1 tick. */\n'use strict';\nconst cache=new Map();\nfunction mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}\nfunction decode(buf){\n  let p=0;const rv=()=>{let v=0,m=1,b;do{b=buf[p++];v+=(b&127)*m;m*=128;}while(b&128);return v;},zz=v=>(v%2?-(v+1)/2:v/2);\n  const n=rv(),t0=rv(),p0=zz(rv()),t=new Int32Array(n),o=new Int32Array(n),h=new Int32Array(n),l=new Int32Array(n),c=new Int32Array(n);\n  let tt=t0,pc=p0;\n  for(let i=0;i<n;i++){tt+=rv();const oo=pc+zz(rv()),hi=rv(),lo=rv(),cc=oo+zz(rv());t[i]=tt;o[i]=oo;c[i]=cc;h[i]=Math.max(oo,cc)+hi;l[i]=Math.min(oo,cc)-lo;pc=cc;}\n  return{n,t,o,h,l,c};}\n/* decoded months stay in memory between runs, up to CAP; a full 16-year run would otherwise keep ~115 MB */\nconst CAP=60;\nconst fail=(kind,m,code)=>{const e=new Error(kind+' '+m);e.kind=kind;e.month=m;e.code=code||0;return e;};\nasync function load(url,m,expect,retry){\n  let r;try{r=await fetch(url,retry?{cache:'reload'}:undefined);}catch(e){throw fail('net',m);}\n  if(!r.ok)throw fail('http',m,r.status);\n  let buf=new Uint8Array(await r.arrayBuffer()),d;\n  try{if(buf[0]===0x1f&&buf[1]===0x8b){const ds=new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'));buf=new Uint8Array(await new Response(ds).arrayBuffer());}\n    d=decode(buf);}catch(e){throw fail('bad',m);}\n  /* a wrong or damaged file (an error page, a captive Wi-Fi page, a cut download) must not quietly become a missing month */\n  if(expect&&d.n!==expect)throw fail('bad',m);\n  for(let i=1;i<d.n;i++)if(d.t[i]<=d.t[i-1])throw fail('bad',m);\n  return d;}\n/* bases: a CDN first when there is one, then this site; a failure on one falls through to the next, then one retry */\nasync function getMonth(bases,m,expect){\n  if(cache.has(m)){const d=cache.get(m);cache.delete(m);cache.set(m,d);return d;}\n  let d=null,err=null;\n  for(const b of bases){try{d=await load(b+m+'.bin',m,expect,false);break;}catch(e){err=e;}}\n  if(!d){if(err.kind==='http'&&err.code===404)throw err;await new Promise(r=>setTimeout(r,err.code===429?1500:400));d=await load(bases[bases.length-1]+m+'.bin',m,expect,true);}\n  cache.set(m,d);while(cache.size>CAP)cache.delete(cache.keys().next().value);return d;}\n/* join months and remove roll jumps so the last contract in the range keeps its real prices */\nfunction join(parts,rolls){\n  const n=parts.reduce((a,x)=>a+x.n,0),B={n,t:new Int32Array(n),o:new Int32Array(n),h:new Int32Array(n),l:new Int32Array(n),c:new Int32Array(n)};\n  let k=0;for(const x of parts){B.t.set(x.t,k);B.o.set(x.o,k);B.h.set(x.h,k);B.l.set(x.l,k);B.c.set(x.c,k);k+=x.n;}\n  if(!n){B.adj=new Int32Array(0);return B;}\n  const t0=B.t[0],t1=B.t[n-1],rs=rolls.filter(r=>r.t>t0&&r.t<=t1).sort((a,b)=>b.t-a.t);\n  let off=0,j=0;B.adj=new Int32Array(n);\n  for(let i=n-1;i>=0;i--){while(j<rs.length&&B.t[i]<rs[j].t){off+=rs[j].d;j++;}if(off){B.o[i]+=off;B.h[i]+=off;B.l[i]+=off;B.c[i]+=off;B.adj[i]=off;}}\n  B.rolls=rs.length;return B;}\n\n/* ---------- shared bookkeeping ---------- */\nconst DAY=1440;\nfunction Book(bal0,ruin){\n  const b={bal0,floor:bal0*(1-ruin),peak:bal0,mdd:0,mddAt:0,ruinAt:-1,wipeAt:-1,dead:false,days:[],curDay:-1,dMin:Infinity,dEq:bal0,dPx:0,dPa:0,years:new Map(),months:[],mo:null};\n  b.mark=(eq,t)=>{if(eq>b.peak)b.peak=eq;const d=1-eq/b.peak;if(d>b.mdd){b.mdd=d;b.mddAt=t;}if(eq<b.dMin)b.dMin=eq;\n    const y=b.yr(t);if(eq<y.min)y.min=eq;if(eq>y.peak)y.peak=eq;const yd=1-eq/y.peak;if(yd>y.mdd)y.mdd=yd;\n    if(b.ruinAt<0&&eq<=b.floor)b.ruinAt=t;if(eq<=0&&!b.dead){b.dead=true;b.wipeAt=t;}};\n  let ys=1,ye=0,yc=null;\n  b.yr=t=>{if(t>=ys&&t<ye)return yc;const Y=new Date(t*60000).getUTCFullYear();ys=Date.UTC(Y,0,1)/60000;ye=Date.UTC(Y+1,0,1)/60000;\n    let y=b.years.get(Y);if(!y){y={y:Y,start:b.dEq,end:b.dEq,min:Infinity,peak:b.dEq,mdd:0,n:0,w:0};b.years.set(Y,y);}yc=y;return y;};\n  b.closeDay=()=>{b.days.push([b.curDay*DAY,b.dEq,Math.min(b.dMin,b.dEq),b.dPx]);\n    const k=new Date(b.curDay*DAY*60000).toISOString().slice(0,7);let m=b.mo;\n    if(!m||m.k!==k){if(m)b.months.push(m);m=b.mo={k,eq0:m?m.eq1:bal0,pa0:m?m.pa1:b.pa0,path:0,last:m?m.pa1:b.pa0,eq1:0,pa1:0};}\n    m.path+=Math.abs(b.dPa-m.last);m.last=b.dPa;m.eq1=b.dEq;m.pa1=b.dPa;};\n  b.day=(t,eq,px,pa)=>{const d=Math.floor(t/DAY);if(d!==b.curDay){if(b.curDay>=0)b.closeDay();b.curDay=d;b.dMin=Infinity;}b.dEq=eq;b.dPx=px;b.dPa=pa;b.yr(t).end=eq;};\n  b.finish=()=>{if(b.curDay>=0){b.closeDay();b.months.push(b.mo);}\n    const D=b.days,mx=1200;if(D.length>mx){const g=Math.ceil(D.length/mx),o=[];for(let i=0;i<D.length;i+=g){const s=D.slice(i,i+g);o.push([s[0][0],s[s.length-1][1],amin(s.map(x=>x[2])),s[s.length-1][3]]);}b.days=o;}};\n  return b;}\nfunction bars(B){let days=0,last=-1;for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d!==last){days++;last=d;}}return days;}\nfunction avgRange(B){let s=0,k=0,last=-1,hi=-Infinity,lo=Infinity;for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d!==last){if(last>=0){s+=hi-lo;k++;}last=d;hi=-Infinity;lo=Infinity;}if(B.h[i]>hi)hi=B.h[i];if(B.l[i]<lo)lo=B.l[i];}if(last>=0){s+=hi-lo;k++;}return k?s/k:0;}\n\n/* ---------- grid / martingale / no hard stop ---------- */\nfunction runGrid(B,P){\n  const M=P.maxN,pv=P.pv,lots=[];for(let k=0;k<M;k++)lots.push(P.add>0?P.lot0+k*P.add:P.lot0*Math.pow(P.mult,k));\n  const bk=Book(P.bal0,P.ruin);bk.pa0=B.n?B.o[0]:0;\n  let bal=P.bal0,open=false,s=1,n=0,Lt=0,S=0,A=0,y0=0,yLast=0,lf=1,cyc=0,cStart=0,cMae=0,cCost=0;\n  const st={cycles:0,wins:0,sumW:0,sumL:0,worst:0,worstAt:0,maeMax:0,maeAt:0,stops:0,longest:0,longestAt:0,reach:new Array(M).fill(0),worstList:[],cycR:0,cycW:0,dur:[],maeV:[],maeT:[],gapN:0,gapSum:0,gapWorst:0,gapWorstAt:0};let cMaeAt=0;\n  const fl=y=>open?Lt*(y-A)*pv:0;\n  function openCycle(price,t){s=P.dir==='sell'?-1:P.dir==='alt'?(cyc%2?-1:1):1;lf=P.scale?Math.max(bal,0)/P.bal0:1;y0=s*price;n=0;Lt=0;S=0;A=0;cCost=0;cMae=0;cStart=t;cyc++;open=true;fill(y0);}\n  function fill(y){const lot=lots[n]*lf,cost=lot*P.cpl;Lt+=lot;S+=lot*y;A=S/Lt;yLast=y;n++;bal-=cost;cCost+=cost;}\n  function close(y,t,kind){const g=Lt*(y-A)*pv;bal+=g;open=false;const net=g-cCost,yr=bk.yr(t);\n    st.cycles++;yr.n++;st.reach[n-1]++;if(net>0){st.wins++;st.sumW+=net;yr.w++;}else st.sumL+=net;if(kind==='stop')st.stops++;\n    if(cMae>=P.bal0*P.ruin)st.cycR++;if(cMae>=P.bal0)st.cycW++;if(st.dur.length<200000){st.dur.push(t-cStart);if(cMae>0){st.maeV.push(cMae);st.maeT.push(cMaeAt);}}\n    if(net<st.worst){st.worst=net;st.worstAt=t;}const dur=t-cStart;if(dur>st.longest){st.longest=dur;st.longestAt=cStart;}\n    if(cMae>0){const L=st.worstList;if(L.length<5||cMae>L[L.length-1].mae){L.push({start:cStart,end:t,mae:cMae,net,orders:n,side:s});L.sort((a,b)=>b.mae-a.mae);if(L.length>5)L.pop();}}\n    bk.mark(bal,t);}\n  function mark(y,t){const f=fl(y);if(-f>cMae){cMae=-f;cMaeAt=t;}if(-f>st.maeMax){st.maeMax=-f;st.maeAt=t;}bk.mark(bal+f,t);}\n  function move(p1,p2,gap,t){\n    let p=p1;\n    for(let guard=0;guard<100000;guard++){\n      if(bk.dead)return;if(!open)openCycle(p,t);\n      const y=s*p,yE=s*p2,lv=n<M?y0-n*P.step:-Infinity,sp=(n===M&&P.sl>0)?yLast-P.sl:-Infinity;\n      if(yE<y||(yE===y&&Math.max(lv,sp)>=yE&&gap)){const ev=Math.max(lv,sp);\n        if(ev<yE){mark(yE,t);return;}\n        const at=gap?yE:ev;mark(at,t);if(bk.dead)return;\n        if(sp>=lv){close(at,t,'stop');p=s===1?at:-at;if(gap)p=p2;continue;}\n        fill(at);p=s===1?at:-at;continue;}\n      if(yE>y){const T=A+P.tp;if(yE<T){mark(yE,t);return;}const at=gap?yE:T;const ps=s;close(at,t,'tp');p=ps===1?at:-at;if(gap)p=p2;continue;}\n      return;}}\n  for(let i=0;i<B.n;i++){\n    const t=B.t[i],o=B.o[i],h=B.h[i],l=B.l[i],c=B.c[i];\n    if(i===0)openCycle(o,t);else if(t-B.t[i-1]>=1440&&open){const e0=bal+fl(s*B.c[i-1]);move(B.c[i-1],o,true,t);const d=(bk.dead?0:bal+fl(s*o))-e0;st.gapN++;st.gapSum+=d;if(d<st.gapWorst){st.gapWorst=d;st.gapWorstAt=t;}}else move(B.c[i-1],o,true,t);\n    if(c>=o){move(o,l,false,t);move(l,h,false,t);move(h,c,false,t);}else{move(o,h,false,t);move(h,l,false,t);move(l,c,false,t);}\n    bk.day(t,bk.dead?0:bal+fl(s*c),c-B.adj[i],c);if(bk.dead){break;}}\n  const lastC=B.n?B.c[B.n-1]:0,floatEnd=bk.dead?0:fl(s*lastC),final=bk.dead?0:bal+floatEnd;\n  if(open&&cMae>0){if(cMae>=P.bal0*P.ruin)st.cycR++;if(cMae>=P.bal0)st.cycW++;st.maeV.push(cMae);st.maeT.push(cMaeAt);const L=st.worstList;L.push({start:cStart,end:bk.dead?bk.wipeAt:B.t[B.n-1],mae:cMae,net:null,state:bk.dead?'wiped':'open',orders:n,side:s});L.sort((a,b)=>b.mae-a.mae);if(L.length>5)L.pop();}\n  bk.finish();\n  return{kind:'grid',final,floatEnd,openOrders:open&&!bk.dead?n:0,book:pack(bk),st};}\n\nfunction yearAdr(B){const Y=new Map();let last=-1,hi=-Infinity,lo=Infinity,yr=0;const push=()=>{if(last<0)return;let y=Y.get(yr);if(!y){y={y:yr,s:0,n:0};Y.set(yr,y);}y.s+=hi-lo;y.n++;};\n  for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d!==last){push();last=d;hi=-Infinity;lo=Infinity;yr=new Date(d*DAY*60000).getUTCFullYear();}if(B.h[i]>hi)hi=B.h[i];if(B.l[i]<lo)lo=B.l[i];}push();\n  return[...Y.values()].map(y=>({y:y.y,adr:y.s/y.n,days:y.n}));}\nfunction sub(B,a,b){return{n:b-a,t:B.t.subarray(a,b),o:B.o.subarray(a,b),h:B.h.subarray(a,b),l:B.l.subarray(a,b),c:B.c.subarray(a,b),adj:B.adj.subarray(a,b)};}\n/* the same rules started at the beginning of different months, each run for the same length */\nfunction startRuns(B,P,progress){\n  const firsts=[];let last='',ld=-1;for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d===ld)continue;ld=d;const k=new Date(d*DAY*60000).toISOString().slice(0,7);if(k!==last){firsts.push({k,i});last=k;}}\n  const nm=firsts.length;if(nm<3)return null;const W=nm<=24?Math.max(1,Math.floor(nm/2)):12,cand=firsts.slice(0,nm-W+1);\n  const pick=cand.length<=36?cand:Array.from({length:36},(_,j)=>cand[Math.round(j*(cand.length-1)/35)]);\n  const out=[];pick.forEach((f,j)=>{const endIdx=f.k===firsts[nm-1].k?B.n:(firsts[firsts.indexOf(f)+W]||{i:B.n}).i,S=sub(B,f.i,endIdx);\n    const r=runGrid(S,P);\n    out.push({k:f.k,ret:r.final/P.bal0-1,ruin:r.book.ruinAt>0,wipe:r.book.wipeAt>0,wipeAt:r.book.wipeAt,mdd:Math.min(1,r.book.mdd)});if(progress)progress(j+1,pick.length);});\n  return{W,runs:out};}\nfunction slim(r){const st=r.st,v=st.maeV,tt=st.maeT,ix=v.map((x,i)=>i).sort((a,b)=>v[b]-v[a]),top=ix.slice(0,Math.max(10,Math.min(300,Math.ceil(ix.length*0.1))));\n  const hr=new Array(24).fill(0),dw=new Array(7).fill(0);top.forEach(i=>{const d=new Date(tt[i]*60000);hr[d.getUTCHours()]++;dw[d.getUTCDay()]++;});\n  const du=st.dur.slice().sort((a,b)=>a-b);st.durMed=du.length?du[Math.floor(du.length/2)]:0;st.troubleN=top.length;st.troubleHr=hr;st.troubleDw=dw;delete st.maeV;delete st.maeT;delete st.dur;return r;}\nfunction pack(b){return{months:b.months.map(m=>({m:m.k,eq0:m.eq0,eq1:m.eq1,move:m.pa1-m.pa0,path:m.path})),days:b.days,mdd:b.mdd,mddAt:b.mddAt,ruinAt:b.ruinAt,wipeAt:b.wipeAt,dead:b.dead,peak:b.peak,years:[...b.years.values()].sort((a,c)=>a.y-c.y)};}\n\nconst API={decode,join,runGrid,avgRange,bars,yearAdr,startRuns,slim,sub};\nif(typeof self!=='undefined'&&typeof window==='undefined'&&typeof importScripts==='function'){\n  self.onmessage=async ev=>{const m=ev.data;\n    try{const parts=[];let done=0;\n      const list=m.months,conc=6;let next=0;const res=new Array(list.length);\n      await Promise.all(Array.from({length:Math.min(conc,list.length)},async()=>{while(next<list.length){const i=next++;res[i]=await getMonth(m.bases||[m.base],list[i],m.counts&&m.counts[list[i]]);done++;self.postMessage({type:'progress',done,total:list.length});}}));\n      for(const r of res)parts.push(r);\n      self.postMessage({type:'progress',done:list.length,total:list.length,stage:'run'});\n      const B=join(parts,m.rolls),P=m.params;\n      const out=slim(runGrid(B,P));\n      out.yAdr=yearAdr(B);\n      self.postMessage({type:'progress',stage:'starts',done:0,total:1});\n      out.starts=startRuns(B,P,(d,n)=>{if(d%4===0||d===n)self.postMessage({type:'progress',stage:'starts',done:d,total:n});});\n      out.n=B.n;out.from=B.n?B.t[0]:0;out.to=B.n?B.t[B.n-1]:0;out.rolls=B.rolls||0;out.adr=avgRange(B);out.days=bars(B);\n      out.px0=B.n?B.o[0]:0;out.px1=B.n?B.c[B.n-1]:0;\n      self.postMessage({type:'done',out,id:m.id});\n    }catch(e){self.postMessage({type:'error',kind:e&&e.kind||'other',month:e&&e.month||'',code:e&&e.code||0,msg:String(e&&e.message||e),id:m.id});}};}\nif(typeof module!=='undefined')module.exports=API;\n";
 /* ---------- Desk (expert) ---------- */
 const DESK=(function(){
 'use strict';
@@ -55,7 +53,7 @@ function fixedFill(){
   D.filled=f;revalidate();}
 function gridFill(){
   const tr=curTrades();D.filled=null;if(tr.length<5)return;const f=gridFit(tr);if(!f)return;D.fit=f;const F={},g=D.stype==='grid';
-  /* gold files often count $0.01 as a pip; the app's gold pip is $0.10 (the gold test's unit) */
+  /* gold files often count $0.01 as a pip; the app's gold pip is $0.10 (as in the daily-range converter and the gold playground) */
   f.goldConv=/XAU|GOLD/i.test(D.symbol)&&f.pipSz>0&&f.pipSz<0.05;if(f.goldConv){const k=f.pipSz/0.1;['step','tp'].forEach(x=>{if(isFinite(f[x]))f[x]=Math.max(1,Math.round(f[x]*k));});f.gLo*=k;f.gHi*=k;f.pvK=1/k;}
   const set=(id,key,v,lo,hi)=>{if(!isFinite(v))return;v=SFX.clamp(v,lo,hi);D[key]=v;$(id).value=v;dtouch[key]=1;F[key]=v;};
   if(g){set('g-lot','gLot',f.lot0,0.01,100);if(f.maxN>=2&&isFinite(f.step)){set('g-step','gStep',f.step,1,10000);setGrow(f.grow);F.gGrow=f.grow;
@@ -378,171 +376,8 @@ function gReal(g){
 const dfmt0=ms=>new Date(ms).toISOString().slice(0,10);
 function drawGrid(){
   const g=D.gm;if(!g)return;EXPL=gExpl(g);
-  $('d-main').innerHTML=gSummary(g)+gExposure(g)+gOutcomes(g)+gSurvival(g)+gReal(g)+btSection();rowAlign();applyLayout();}
+  $('d-main').innerHTML=gSummary(g)+gExposure(g)+gOutcomes(g)+gSurvival(g)+gReal(g);rowAlign();applyLayout();}
 
-/* ---------- backtest on real gold (1-minute COMEX futures, loaded month by month in a worker) ---------- */
-function btErrText(m){
-  const mo=m.month?dfmtM(m.month):'';
-  if(m.kind==='http'&&m.code===429)return t('bt_err_busy');
-  if(m.kind==='http')return t('bt_err_http',{code:m.code,m:mo});
-  if(m.kind==='bad')return t('bt_err_bad',{m:mo});
-  if(m.kind==='net')return t('bt_err_net');
-  return t('bt_err',{msg:m.msg});}
-const dfmtM=k=>{const d=new Date(Date.UTC(+k.slice(0,4),+k.slice(5,7)-1,1));return d.toLocaleDateString(LANG==='th'?'th-TH-u-ca-gregory':'en-GB',{month:'short',year:'numeric',timeZone:'UTC'});};
-const BT={idx:null,idxErr:null,from:null,to:null,dir:'buy',res:null,sig:null,kind:null,busy:false,prog:'',err:null,worker:null,id:0};
-const btBase=()=>new URL('data/gold/',location.href).href;
-/* month files never change, so on the live site they come from jsDelivr pinned to a commit (cached forever, no GitHub Pages bandwidth); this site is the fallback */
-const BT_REPO='0xtrvkc/Jarn-Neow';
-const btBases=()=>{const own=btBase(),tag=BT.idx&&(BT.idx.cdnRef||BT.idx.cdnTag);return tag&&location.protocol==='https:'?['https://cdn.jsdelivr.net/gh/'+BT_REPO+'@'+tag+'/data/gold/',own]:[own];};
-const btFile=()=>location.protocol==='file:';
-const btCan=()=>typeof DecompressionStream!=='undefined'&&typeof Worker!=='undefined';
-const ymOf=min=>new Date(min*60000).toISOString().slice(0,7);
-const dfmt=min=>new Date(min*60000).toISOString().slice(0,10);
-function btIndex(){
-  if(BT.idx||BT.idxErr||btFile())return;
-  fetch(btBase()+'index.json').then(r=>{if(!r.ok)throw new Error('http '+r.status);return r.json();}).then(j=>{BT.idx=j;const ms=j.months.map(x=>x.m);BT.to=ms[ms.length-1];BT.from=ms[Math.max(0,ms.length-12)];btRedraw();})
-    .catch(e=>{BT.idxErr=String(e.message||e);btRedraw();});}
-function btSig(){return'g'+sigOf(SIGG)+BT.from+BT.to+BT.dir;}
-function btParams(){
-  const G=gParams();return{kind:'grid',lot0:D.gLot,add:G.add,mult:G.mult,maxN:G.M,step:G.step,tp:D.gTp,sl:D.gSl,pv:G.pv,cpl:G.cpl,bal0:D.bal,scale:D.gAuto==='scale',ruin:D.ruin/100,dir:BT.dir};}
-function btRun(){
-  if(BT.busy||!BT.idx||D.stype==='fixed')return;
-  const ms=BT.idx.months.map(x=>x.m).filter(m=>m>=BT.from&&m<=BT.to);if(!ms.length){BT.err=t('bt_range_bad');btRedraw();return;}
-  if(!BT.worker){BT.worker=new Worker(URL.createObjectURL(new Blob([BTW_SRC],{type:'text/javascript'})));
-    BT.worker.onmessage=e=>{const m=e.data;if(m.id!==undefined&&m.id!==BT.id)return;
-      if(m.type==='progress'){BT.prog=m.stage==='run'?t('bt_running'):m.stage==='starts'?t('bt_starts',{done:m.done,total:m.total}):t('bt_load',{done:m.done,total:m.total});const el=$('bt-status');if(el)el.textContent=BT.prog;return;}
-      BT.busy=false;if(m.type==='error'){BT.err=btErrText(m);}else{BT.res=m.out;BT.err=null;}btRedraw();};}
-  BT.busy=true;BT.err=null;BT.res=null;BT.prog=t('bt_load',{done:0,total:ms.length});BT.sig=btSig();BT.kind=D.stype;BT.id++;
-  const counts={};BT.idx.months.forEach(x=>{counts[x.m]=x.n;});BT.worker.postMessage({id:BT.id,bases:btBases(),months:ms,counts,rolls:BT.idx.rolls,params:btParams()});btRedraw();}
-function btRedraw(){const el=$('bt-sec');if(!el)return;const tpl=document.createElement('template');tpl.innerHTML=btSection();el.replaceWith(tpl.content.firstElementChild);rowAlign();}
-function btControls(){
-  const ms=BT.idx?BT.idx.months.map(x=>x.m):[],a=ms[0],b=ms[ms.length-1];
-  const sel=(id,v,opts)=>`<select class="txt" data-bt="${id}">${opts.map(o=>`<option value="${o[0]}"${o[0]===v?' selected':''}>${esc(o[1])}</option>`).join('')}</select>`;
-  const pre=[['12',t('bt_p12')],['60',t('bt_p5')],['all',t('bt_pall')]];
-  return`<div class="btctl">
-    <label><span>${esc(t('bt_from'))}</span><input type="month" class="txt" data-bt="from" min="${a}" max="${b}" value="${BT.from}"></label>
-    <label><span>${esc(t('bt_to'))}</span><input type="month" class="txt" data-bt="to" min="${a}" max="${b}" value="${BT.to}"></label>
-    <label><span>${esc(t('bt_dir'))}</span>${sel('dir',BT.dir,[['buy',t('bt_dir_buy')],['sell',t('bt_dir_sell')],['alt',t('bt_dir_alt')]])}</label>
-    <div class="btpre">${pre.map(p=>`<button type="button" class="btn alt" data-bt-pre="${p[0]}">${esc(p[1])}</button>`).join('')}</div>
-    <button type="button" class="btn" data-bt-run="1"${BT.busy?' disabled':''}>${esc(t(BT.res&&BT.sig!==btSig()?'bt_rerun':'bt_run'))}</button>
-    <span class="small muted" id="bt-status" aria-live="polite">${BT.busy?esc(BT.prog):''}</span></div>`;}
-function btSection(){
-  const I=BT.idx;let body='';
-  const head=`<h2>Test on real gold<small>${esc(I?t('bt_src',{a:dfmt(I.from),b:dfmt(I.to)}):t('bt_src0'))}</small></h2>`;
-  if(btFile())body=`<div class="card"><p class="warnnote" style="margin:0">${esc(t('bt_file'))}</p></div>`;
-  else if(!btCan())body=`<div class="card"><p class="warnnote" style="margin:0">${esc(t('bt_nodecomp'))}</p></div>`;
-  else if(BT.idxErr)body=`<div class="card"><p class="errnote" style="margin:0">${esc(t('bt_err',{msg:BT.idxErr}))}</p></div>`;
-  else if(!I){btIndex();body=`<div class="card"><p class="small muted" style="margin:0">${esc(t('bt_idx'))}</p></div>`;}
-  else{
-    body=`<div class="card">${btAvail()}<p class="bt-lead">${esc(t('bt_lead_g'))}</p><p class="small" style="margin:0 0 .4rem">${esc(t('bt_intro'))}</p><p class="small muted" style="margin:0 0 .8rem">${esc(t(D.stype==='grid'?'bt_uses_grid':'bt_uses_ns'))}</p>
-      ${btControls()}
-      ${BT.err?`<p class="errnote" style="margin:.7rem 0 0">${esc(BT.err)}</p>`:''}
-      ${BT.res&&BT.kind===D.stype&&BT.sig!==btSig()&&!BT.busy?`<p class="warnnote" style="margin:.7rem 0 0">${esc(t('bt_stale'))}</p>`:''}</div>`;
-    if(BT.res&&BT.kind===D.stype)body+=btGrid(BT.res);}
-  return`<section class="dsec" data-step="0" id="bt-sec">${head}${body}</section>`;}
-const xDate=v=>{const d=new Date(v*60000);return d.toISOString().slice(0,7);};
-function btEquity(r){
-  const d=r.book.days,b0=D.bal,cl=d.map(x=>[x[0],x[1]]),lo=d.map(x=>[x[0],Math.max(0,x[2])]),ymax=amax(b0*1.1,cl.map(x=>x[1]))*1.05;
-  const vl=[];if(r.book.wipeAt>0)vl.push({x:r.book.wipeAt,color:'var(--bad)'});
-  return CH.plot({w:860,h:260,m:{l:62,r:14},series:[{pts:lo,color:'var(--bad)',w:1,op:0.8},{pts:cl,color:'var(--accent)',w:2}],areas:[{upper:cl,lower:lo,color:'var(--bad)',op:0.12}],
-    hlines:[{y:b0,color:'var(--muted)',label:t('bt_start')},{y:b0*(1-D.ruin/100),color:'var(--warn)',label:t('d_ruin_line',{x:D.ruin})}],vlines:vl,xlo:d[0][0],xhi:d[d.length-1][0],ylo:0,yhi:ymax,xfmt:xDate,yfmt:v=>cmpNum(v),ylabel:'equity',label:'Equity on real gold'});}
-function btYears(r){return tbl(['Year','Start','End','Return','Deepest fall','Cycles (won)'],r.book.years.map(y=>[String(y.y),money(y.start),money(y.end),y.start>0?sgn((y.end/y.start-1)*100,1)+'%':'–','−'+pc(Math.min(1,y.mdd)),y.n+' ('+y.w+')']));}
-function btOutcome(r){const b=r.book;return b.wipeAt>0?['bad',t('bt_out_wipe'),dfmt(b.wipeAt)]:b.ruinAt>0?['bad',t('bt_out_ruin',{x:D.ruin}),dfmt(b.ruinAt)]:['ok',t('bt_out_ok'),''];}
-function btVerdict(r){const b=r.book,days=Math.round((b.wipeAt-r.from)/1440),dd='−'+pc(Math.min(1,b.mdd));
-  return b.wipeAt>0?t('bt_v_wiped',{date:dfmt(b.wipeAt),days}):b.ruinAt>0?t('bt_v_ruin',{dd,date:dfmt(b.mddAt),x:D.ruin,rdate:dfmt(b.ruinAt)}):t('bt_v_ok',{dd,date:dfmt(b.mddAt)});}
-function btGrid(r){
-  const st=r.st,b=r.book,o=btOutcome(r),ret=D.bal>0?sgn((r.final/D.bal-1)*100,1)+'%':'–';
-  const tiles=[['',t('bt_t_final'),money(r.final),ret],['bad',t('bt_t_dd'),'−'+pc(Math.min(1,b.mdd)),dfmt(b.mddAt)],['',t('bt_t_cyc'),st.cycles?pc(st.wins/st.cycles):'–',st.cycles.toLocaleString('en-US')+' cycles'],[o[0],t('bt_t_out'),o[1],o[2]]];
-  const rows=[['Range',dfmt(r.from)+' → '+dfmt(r.to)],['1-minute bars',r.n.toLocaleString('en-US')],['Contract rolls removed',String(r.rolls)],['Gold average daily range',Math.round(r.adr).toLocaleString('en-US')+' pips'],
-    ['Cycles completed (won)',st.cycles.toLocaleString('en-US')+' ('+st.wins.toLocaleString('en-US')+')'],['Average win / loss',(st.wins?money(st.sumW/st.wins):'–')+' / '+(st.cycles-st.wins?money(st.sumL/(st.cycles-st.wins)):'–')],
-    ['Worst closed cycle',st.worst<0?money(st.worst)+' ('+dfmt(st.worstAt)+')':'–'],['Deepest floating loss',money(-st.maeMax)+' ('+dfmt(st.maeAt)+')'],['Cycles ending at the final stop',String(st.stops)],
-    ['Longest cycle',(st.longest/1440).toFixed(1)+' days (from '+dfmt(st.longestAt)+')'],['Open at the end',r.openOrders?r.openOrders+' orders, floating '+money(r.floatEnd):'none']];
-  const d=b.days,px=d.map(x=>[x[0],x[3]/10]),wl=st.worstList||[];
-  const pc2=CH.plot({w:520,h:240,series:[{pts:px,color:'var(--c1)',w:1.6}],dots:wl.map(w=>{const k=d.findIndex(x=>x[0]>=Math.floor(w.start/1440)*1440);return{x:w.start,y:(k>=0?d[k][3]:d[d.length-1][3])/10,r:4,color:'var(--bad)',op:1};}),xlo:d[0][0],xhi:d[d.length-1][0],xfmt:xDate,yfmt:v=>'$'+cmpNum(v),ylabel:'gold',label:'Gold price over the backtest'});
-  const wt=wl.length?tbl(['#','Started','Ended','Side','Orders','Deepest float','Result'],wl.map((w,i)=>[String(i+1),dfmt(w.start),w.state?'–':dfmt(w.end),w.side>0?'buy':'sell',String(w.orders),money(-w.mae),w.state==='wiped'?'<b>wiped out</b>':w.state==='open'?'still open':money(w.net)])):`<p class="small muted">–</p>`;
-  const reach=G=>st.reach.map((x,i)=>({label:String(i+1),value:st.cycles?x/st.cycles*100:0,color:i===st.reach.length-1?'var(--bad)':'var(--c2)'}));
-  return`<div class="card"><div class="dverdict"><span class="light" data-v="${o[0]==='ok'?'ok':'bad'}" aria-hidden="true">${ICON[o[0]==='ok'?'ok':'bad']}</span><div><h2>${esc(o[0]==='ok'?t('bt_out_ok'):o[1])}</h2><p class="small" style="margin:0">${esc(btVerdict(r)+' '+t('bt_v_grid',{cyc:st.cycles.toLocaleString('en-US'),win:st.wins.toLocaleString('en-US'),fin:money(r.final),ret}))}</p></div></div>
-    <div class="gtile">${tiles.map(x=>`<div class="${x[0]}"><span>${esc(x[1])}</span><b>${esc(x[2])}</b>${x[3]?`<span>${esc(x[3])}</span>`:''}</div>`).join('')}</div>
-    ${D.stype==='grid'&&r.adr>0?`<p class="small muted" style="margin:.7rem 0 0">${esc(t('bt_adr',{x:Math.round(r.adr).toLocaleString('en-US'),y:D.gVol,step:D.gStep}))}</p>`:''}</div>
-  <div class="dgrid"><div class="s12">${card('Equity on real gold',ch(btEquity(r))+lg([['var(--accent)',t('lg_bt_close')],['var(--bad)',t('lg_bt_low')]])+note('bn_eq'))}</div>
-  <div class="s5">${card('Backtest statistics',kv(rows)+note('bn_stats'))}</div>
-  <div class="s7">${card('Gold price',ch(pc2)+lg([['var(--c1)',t('lg_bt_px')],['var(--bad)',t('lg_bt_worst')]])+note('bn_price'))}</div>
-  <div class="s7">${card('Deepest cycles',wt+note('bn_worst'))}</div>
-  <div class="s5">${card('Orders reached',D.stype==='grid'?ch(CH.bars({w:420,h:200,items:reach(),ymax:100,yfmt:v=>v+'%',valFmt:v=>v<1?(v<0.1?'<.1':v.toFixed(1)):Math.round(v)+'',xlabel:'order number',ylabel:'cycles reaching it',label:'Orders reached in the backtest'}))+note('gn_reach_bt'):kv([['Stops hit',String(st.stops)]])+note('gn_reach_bt'))}</div>
-  <div class="s12">${card('By year',btYears(r)+note('bn_years'))}</div>
-  ${btDeeper(r)}</div>`;}
-/* ---------- backtest: deeper analysis (only what real prices can show) ---------- */
-const lday=min=>new Date(min*60000).toLocaleDateString(LANG==='th'?'th-TH-u-ca-gregory':'en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
-const lmon=ym=>new Date(ym+'-01T00:00:00Z').toLocaleDateString(LANG==='th'?'th-TH-u-ca-gregory':'en-GB',{month:'short',year:'numeric',timeZone:'UTC'});
-function btAvail(){
-  const I=BT.idx,ms=I.months.map(x=>x.m),a=ms.indexOf(BT.from),b=ms.indexOf(BT.to),N=ms.length,W=1000,X=i=>8+i/N*(W-16);
-  const y0=+ms[0].slice(0,4),y1=+ms[N-1].slice(0,4),yrs=((I.to-I.from)/525960).toFixed(1);let ticks='';
-  for(let y=y0;y<=y1;y++){const i=ms.indexOf(y+'-01');if(i<0)continue;ticks+=`<line x1="${X(i).toFixed(1)}" x2="${X(i).toFixed(1)}" y1="16" y2="34" class="tk"/>`+((y-y0)%2===0||N<40?`<text x="${X(i).toFixed(1)}" y="50" text-anchor="middle">${y}</text>`:'');}
-  const sel=a>=0&&b>=a?`<rect x="${X(a).toFixed(1)}" y="12" width="${Math.max(3,X(b+1)-X(a)).toFixed(1)}" height="26" rx="2" class="sel"/>`:'';
-  return`<div class="btavail"><div class="btav-t"><b>${esc(t('bt_avail',{a:lday(I.from),b:lday(I.to)}))}</b><span>${esc(t('bt_avail2',{y:yrs,n:(I.bars/1e6).toFixed(1)}))}</span></div>
-    <svg viewBox="0 0 ${W} 56" role="img" aria-label="${esc(t('bt_sel',{a:lmon(BT.from),b:lmon(BT.to),n:b-a+1}))}"><rect x="8" y="18" width="${W-16}" height="14" rx="2" class="all"/>${sel}${ticks}</svg>
-    <p class="btav-s">${esc(t('bt_sel',{a:lmon(BT.from),b:lmon(BT.to),n:b-a+1}))}</p></div>`;}
-const hourOff=()=>Math.round(-new Date().getTimezoneOffset()/60);
-const tzLab=()=>{const o=hourOff();return'UTC'+(o>=0?'+':'−')+Math.abs(o);};
-const rot=a=>{const o=hourOff();return a.map((_,i)=>a[((i-o)%24+24)%24]);};
-const pctS=v=>(v<0?'−':'+')+Math.abs(v*100).toFixed(Math.abs(v)<0.1?1:0)+'%';
-function btStarts(r){
-  const S=r.starts;if(!S||!S.runs.length)return'';const R=S.runs,n=R.length,ok=R.filter(x=>!x.ruin).length,wp=R.filter(x=>x.wipe).length;
-  const srt=R.slice().sort((a,b)=>a.ret-b.ret||(a.wipeAt||0)-(b.wipeAt||0)),worst=srt[0],best=srt[n-1],med=srt[Math.floor(n/2)];
-  const every=Math.ceil(n/12),items=R.map((x,i)=>({label:i%every===0?x.k.slice(2):'',value:Math.max(-100,x.ret*100),color:x.wipe?'var(--bad)':x.ruin?'var(--warn)':'var(--ok)'}));
-  const chv=CH.bars({w:860,h:230,m:{l:56},items,yfmt:v=>Math.round(v)+'%',ylabel:t('bs_y',{W:S.W}),label:'Result by start month'});
-  const rows=[['Start dates tested',String(n)],['Length of each run',S.W+' months'],['Stayed above the ruin line',ok+' of '+n+' ('+pc(ok/n,0)+')'],['Wiped out',wp+' of '+n],['Median result',pctS(med.ret)],
-    ['Best start',lmon(best.k)+' ('+pctS(best.ret)+')'],['Worst start',lmon(worst.k)+' ('+(worst.wipe?t('bt_out_wipe'):pctS(worst.ret))+')']];
-  return`<div class="s12">${card('Start-date luck',`<div class="split">${ch(chv)}<div>${kv(rows)}</div></div>`+lg([['var(--ok)',t('lg_bs_ok')],['var(--warn)',t('lg_bs_ruin',{x:D.ruin})],['var(--bad)',t('lg_bs_wipe')]])+
-    `<p class="small" style="margin:.6rem 0 0">${esc(t('bs_now',{ok,n,W:S.W,wp,worst:lmon(worst.k),best:lmon(best.k)}))}</p>`+note('bs_note'))}</div>`;}
-function btSimReal(r){
-  let rows=[],line='',btn='';
-  {const g=D.gm;if(!g)return'';const st=r.st,c=Math.max(1,st.cycles),M=st.reach.length,rl=st.reach[M-1]/c,sl=g.reach[g.G.M-1]||0;
-    const f=(a,b)=>[a,b];rows=[['Average daily range',D.gVol+' pips (your input)',Math.round(r.adr)+' pips'],['Cycles won',pc(g.win),pc(st.wins/c)],['Average win',money(g.avgW),st.wins?money(st.sumW/st.wins):'–'],['Average loss',money(g.avgL),st.cycles-st.wins?money(st.sumL/(st.cycles-st.wins)):'–'],
-      [D.stype==='grid'?'Cycles that fill every order':'—',D.stype==='grid'?pc(sl,1):'–',D.stype==='grid'?pc(rl,1):'–'],['Cycles that dip to the ruin line',pc(g.pRuin1,2),pc(st.cycR/c,2)],['Cycles that dip past the whole balance',pc(g.pWipe1,2),pc(st.cycW/c,2)],['Median cycle length',SFX.quantile(g.days,0.5).toFixed(1)+' days',(st.durMed/1440).toFixed(1)+' days']].filter(x=>x[0]!=='—');
-    const a=g.pRuin1,b=st.cycR/c;line=st.cycles<30?t('bsv_few'):b>0&&a===0?t('bsv_worse0',{x:pc(b,2)}):b>a*1.5&&b>0?t('bsv_worse',{x:(b/a).toFixed(1)}):a>b*1.5&&a>0?t('bsv_better'):t('bsv_close');
-    if(Math.abs(r.adr-D.gVol)/r.adr>0.15)btn=`<button type="button" class="btn alt" data-bt-adr="${Math.round(r.adr)}" style="margin-top:.6rem">${esc(t('bsv_btn',{x:Math.round(r.adr)}))}</button>`;}
-  return`<div class="s6">${card('Simulation vs real gold',tbl(['','Simulation','Real gold'],rows)+`<p class="small" style="margin:.6rem 0 0">${esc(line)}</p>`+btn+note('bsv_note'))}</div>`;}
-function btVol(r){
-  const Y=r.yAdr||[];if(!Y.length)return'';const G=gParams();let refs=[];
-  if(D.stype==='grid')refs=[[D.gStep,'var(--warn)',t('bv_ref_step')],[(G.M-1)*D.gStep,'var(--bad)',t('bv_ref_full')]];
-  else{const w=gLadder(G).wipeD;refs=[[D.gTp,'var(--ok)',t('bv_ref_tp')]].concat(isFinite(w)?[[w,'var(--bad)',t('bv_ref_wipe')]]:[]);}
-  const mx=amax(Y.map(y=>y.adr)),shown=refs.filter(x=>x[0]>0&&x[0]<=mx*2.5);
-  const chv=CH.bars({w:420,h:220,items:Y.map(y=>({label:String(y.y).slice(2),value:y.adr,color:'var(--c1)'})),ymax:amax(mx,shown.map(x=>x[0]))*1.12,hlines:shown.map(x=>({y:x[0],color:x[1]})),yfmt:v=>cmpNum(v),valFmt:v=>Math.round(v)+'',ylabel:'pips a day',label:'Average daily range by year'});
-  const f=Y[0],l=Y[Y.length-1],ref=refs[0];
-  const line=t('bv_now',{y0:f.y,a:Math.round(f.adr),y1:l.y,b:Math.round(l.adr),x:(l.adr/f.adr).toFixed(1),name:ref[2],v:+ref[0].toFixed(1),r0:(ref[0]/f.adr*100).toFixed(0),r1:(ref[0]/l.adr*100).toFixed(0)});
-  return`<div class="s6">${card('Gold volatility by year',ch(chv)+lg([['var(--c1)',t('bv_lg_adr')]].concat(refs.map(x=>[x[1],x[2]+' ('+(+x[0].toFixed(1)).toLocaleString('en-US')+')'])))+`<p class="small" style="margin:.6rem 0 0">${esc(line)}</p>`+note('bv_note'))}</div>`;}
-function btTrend(r){
-  const M=(r.book.months||[]).filter(m=>m.eq0>0&&m.path>0);if(M.length<3)return'';
-  const cls=m=>{const e=Math.abs(m.move)/m.path;return e<0.15?'range':e>=0.35?(m.move>0?'up':'down'):'mixed';};
-  const col={range:'var(--c1)',mixed:'var(--muted)',up:'var(--ok)',down:'var(--bad)'},pts=M.map(m=>({x:m.move,y:Math.max(-100,(m.eq1/m.eq0-1)*100),c:cls(m),m}));
-  const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y),xm=amax(xs.map(Math.abs))*1.08,ylo=amin(0,ys),yhi=amax(0,ys);
-  const chv=CH.plot({w:520,h:250,series:[],dots:pts.map(p=>({x:p.x,y:p.y,r:3.4,color:col[p.c],op:0.9})),hlines:[{y:0,color:'var(--muted)',dash:false}],vlines:[{x:0,color:'var(--muted)'}],xlo:-xm,xhi:xm,ylo:ylo-(yhi-ylo)*0.08,yhi:yhi+(yhi-ylo)*0.08,xfmt:v=>cmpNum(Math.abs(v))===''?'0':(v<0?'−':'+')+cmpNum(Math.abs(v)),yfmt:v=>Math.round(v)+'%',xlabel:t('btr_x'),ylabel:t('btr_y'),label:'Monthly result by gold move'});
-  const order=['range','mixed','up','down'],rows=order.map(k=>{const a=pts.filter(p=>p.c===k);if(!a.length)return[t('btr_'+k),'0','–','–','–'];const avg=a.reduce((s,p)=>s+p.y,0)/a.length,w=a.reduce((x,p)=>p.y<x.y?p:x,a[0]);
-    return[t('btr_'+k),String(a.length),(avg>=0?'+':'−')+Math.abs(avg).toFixed(1)+'%',pc(a.filter(p=>p.y<0).length/a.length,0),lmon(w.m.m)+' '+(w.y>=0?'+':'−')+Math.abs(w.y).toFixed(1)+'%'];});
-  const by=order.map(k=>{const a=pts.filter(p=>p.c===k);return{k,avg:a.length?a.reduce((s,p)=>s+p.y,0)/a.length:null,n:a.length};}).filter(x=>x.n>=2),best=by.slice().sort((a,b)=>b.avg-a.avg)[0],worst=by.slice().sort((a,b)=>a.avg-b.avg)[0];
-  const line=best&&worst&&best.k!==worst.k?t('btr_now',{best:t('btr_'+best.k).toLowerCase(),b:(best.avg>=0?'+':'−')+Math.abs(best.avg).toFixed(1)+'%',worst:t('btr_'+worst.k).toLowerCase(),w:(worst.avg>=0?'+':'−')+Math.abs(worst.avg).toFixed(1)+'%'}):'';
-  return`<div class="s12">${card('Trend months vs range months',`<div class="split">${ch(chv)}<div>${tbl(['Month type','Months','Average','Losing','Worst month'],rows)}</div></div>`+lg(order.map(k=>[col[k],t('btr_'+k)]))+(line?`<p class="small" style="margin:.6rem 0 0">${esc(line)}</p>`:'')+note('btr_note'))}</div>`;}
-function btTrouble(r){
-  const st=r.st,dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],tz=tzLab();let left,right,line;
-  const gapRows=[['Weekend and holiday gaps held',String(st.gapN)],['Total effect of those gaps',money(st.gapSum)],['Worst single gap',st.gapWorst<0?money(st.gapWorst)+' ('+dfmt(st.gapWorstAt)+')':'–']];
-  {const hr=rot(st.troubleHr),mxh=hr.indexOf(amax(hr));
-    left=ch(CH.bars({w:600,h:230,items:hr.map((v,i)=>({label:i%3===0?String(i):'',value:v,color:i===mxh?'var(--bad)':'var(--c2)'})),xlabel:t('bq_hour',{tz}),ylabel:t('bq_count'),label:'Hour of the deepest moments'}));
-    const dw=[1,2,3,4,5,6,0].map(i=>st.troubleDw[i]);
-    right=ch(CH.bars({w:420,h:200,items:dw.map((v,i)=>({label:dn[[1,2,3,4,5,6,0][i]],value:v,color:'var(--c2)'})),ylabel:t('bq_count'),label:'Weekday of the deepest moments'}));
-    line=t('bq_now',{n:st.troubleN,h0:mxh,h1:(mxh+1)%24,tz,k:hr[mxh]});}
-  return`<div class="s12">${card('When the trouble starts',`<div class="split">${left}<div>${right}${kv(gapRows)}</div></div>`+`<p class="small" style="margin:.6rem 0 0">${esc(line)}</p>`+note('bq_note'))}</div>`;}
-function btDeeper(r){
-  return btStarts(r)+btSimReal(r)+btVol(r)+btTrend(r)+btTrouble(r);}
-
-function btEvents(){
-  const main=$('d-main');
-  main.addEventListener('click',e=>{const r=e.target.closest('[data-bt-run]');if(r){btRun();return;}
-    const ad=e.target.closest('[data-bt-adr]');if(ad){const v=+ad.dataset.btAdr;D.gVol=v;$('g-vol').value=v;dtouch.gVol=1;revalidate();analyze();return;}
-    const p=e.target.closest('[data-bt-pre]');if(p&&BT.idx){const ms=BT.idx.months.map(x=>x.m),k=p.dataset.btPre;BT.to=ms[ms.length-1];BT.from=k==='all'?ms[0]:ms[Math.max(0,ms.length-(+k))];btRedraw();}});
-  main.addEventListener('change',e=>{const el=e.target.closest('[data-bt]');if(!el)return;const k=el.dataset.bt,ms=BT.idx?BT.idx.months.map(x=>x.m):[];
-    if(k==='dir')BT.dir=el.value;else if(el.value){let v=el.value;if(ms.length){if(v<ms[0])v=ms[0];if(v>ms[ms.length-1])v=ms[ms.length-1];}BT[k]=v;if(BT.from>BT.to){if(k==='from')BT.to=BT.from;else BT.from=BT.to;}}
-    btRedraw();});}
 
 /* ---------- drawing ---------- */
 function verdictLine(r){
@@ -929,15 +764,6 @@ function mdRuinCurve(sim,unit,wipe){const N=sim.fin.length,H=D.hor,ra=Array.from
   return cap(tx('Share of futures that have hit the line by each point','สัดส่วนอนาคตที่แตะเส้นแล้ว ณ แต่ละจุด'))+MD.table([unit,'Hit −'+D.ruin+'%'].concat(wipe?['Wiped out']:[]).concat(['']),cps(H,[0.1,0.25,0.5,0.75,1]).map(i=>{const r=ra.filter(x=>x<=i).length/N;return[String(i),pc(r)].concat(wipe?[pc(wa.filter(x=>x<=i).length/N)]:[]).concat([MD.bar(r,Math.max(0.05,sim.ruinProb))]);}))+'\n';}
 function mdExtra(title){
   const st=D.stype,fixed=st==='fixed';
-  if(BT.res&&BT.kind===st){const r=BT.res;
-    if(title==='Equity on real gold')return mdMonthly(r);
-    if(title==='Orders reached'&&st==='grid'){const s=r.st,c=Math.max(1,s.cycles);return cap('Orders reached in the backtest')+MD.table(['Order','Cycles reaching it','Share',''],s.reach.map((x,i)=>[String(i+1),x.toLocaleString('en-US'),pc(x/c,1),MD.bar(x,c)]))+'\n';}
-    if(title==='Start-date luck'&&r.starts){const S=r.starts;return cap(tx('Every start month tested (each run lasts '+S.W+' months)','ทุกเดือนเริ่มที่ทดสอบ (แต่ละรอบยาว '+S.W+' เดือน)'))+
-      MD.table(['Start','Result','Outcome',''],S.runs.map(x=>[x.k,pctS(x.ret),x.wipe?'wiped out':x.ruin?'hit −'+D.ruin+'%':'survived',MD.bar(Math.max(0,x.ret+1),amax(S.runs.map(y=>y.ret+1)))]))+'\n';}
-    if(title==='Gold volatility by year'){const Y=r.yAdr||[],ref=st==='grid'?D.gStep:D.gTp,nm=st==='grid'?'Your spacing':'Your take-profit',mx=amax(Y.map(y=>y.adr));
-      return MD.table(['Year','Average daily range (pips)',nm+' as % of a day',''],Y.map(y=>[String(y.y),Math.round(y.adr).toLocaleString('en-US'),ref>0?(ref/y.adr*100).toFixed(0)+'%':'–',MD.bar(y.adr,mx)]))+'\n';}
-    if(title==='When the trouble starts'){const s=r.st,hr=rot(s.troubleHr),mx=amax(hr,1),dn=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],dw=[1,2,3,4,5,6,0].map(i=>s.troubleDw[i]),mw=amax(dw,1);
-      return cap('Deepest moments by hour ('+tzLab()+')')+MD.table(['Hour','Count',''],hr.map((v,i)=>[String(i).padStart(2,'0')+':00',String(v),MD.bar(v,mx)]))+'\n'+cap('By weekday')+MD.table(['Day','Count',''],dw.map((v,i)=>[dn[i],String(v),MD.bar(v,mw)]))+'\n';}}
   if(fixed&&D.model){const m=D.model;
     if(title.startsWith('Monte Carlo'))return mdFan(m.sim,'Trade');
     if(title==='Expectancy vs win rate'){const ws=[m.p-0.1,m.p-0.05,m.ci[0],m.be,m.p,m.ci[1],m.p+0.05,m.p+0.1].filter(x=>x>0&&x<1).sort((a,b)=>a-b).filter((x,i,a)=>!i||x-a[i-1]>1e-4);
@@ -977,11 +803,6 @@ function mdExtra(title){
     if(title.startsWith('Where the money goes'))return MD.table(['Per 1,000 cycles','Money'],[['From winning cycles',money(g.sumW/g.N*1000)],['From losing cycles',money(g.sumL/g.N*1000)],['Net',money(g.E*1000)]])+'\n';
     if(title==='Cumulative P(ruin) by cycle')return mdRuinCurve(g.sim,'By cycle',true);}
   return'';}
-function mdMonthly(r){
-  const M=(r.book.months||[]).filter(m=>m.eq0>0);if(!M.length)return'';const by=new Map();M.forEach(m=>{const y=m.k?m.k.slice(0,4):m.m.slice(0,4);if(!by.has(y))by.set(y,{});by.get(y)[+(m.m||m.k).slice(5,7)]=m.eq1/m.eq0-1;});
-  const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],f=v=>v===undefined?'':(v<=-1?'−100%':(v<0?'−':'+')+Math.abs(v*100).toFixed(1)+'%');
-  const yr=new Map(r.book.years.map(y=>[String(y.y),y]));
-  return cap(tx('Monthly returns (account change in each calendar month)','ผลตอบแทนรายเดือน (การเปลี่ยนแปลงของทุนในแต่ละเดือน)'))+MD.table(['Year'].concat(mn).concat(['Year']),[...by.entries()].map(([y,o])=>{const Y=yr.get(y);return[y].concat(mn.map((_,i)=>f(o[i+1]))).concat([Y&&Y.start>0?f(Y.end/Y.start-1):'']);}))+'\n';}
 function mdInputs(){
   const fixed=D.stype==='fixed',ns=D.stype==='nostop',F=D.filled||{};
   const rows=fixed?[['Strategy','d-wr','wr'],['Strategy','d-rr','rr'],['Strategy','d-n','n'],['Strategy','d-tpd','tpd'],['Risk rules','d-risk','risk'],['Risk rules','d-sizing','sizing'],['Risk rules','d-dafter','dAfter'],['Risk rules','d-dcut','dCut'],
@@ -1008,8 +829,6 @@ function mdGlance(){
       ['P(falling '+D.ruin+'% within '+D.hor+' cycles)',pc(sim.ruinProb)],['P(account wiped out)',pc(sim.wipeProb)],['Move that wipes the account',isFinite(lad.wipeD)?pip(lad.wipeD)+' pips ('+(lad.wipeD/D.gVol).toFixed(1)+' daily ranges)':'none'],
       ['Largest tested first order with P(ruin) ≤ 5%',g.safe===null?'none of the tested sizes':lf(g.safe)+' lots (now '+D.gLot+')']);
     pri=[X.gn_fan&&X.gn_fan.todo,X.gn_sweep&&X.gn_sweep.todo].filter((x,i,a)=>x&&a.indexOf(x)===i);}
-  if(BT.res&&BT.kind===st){const r=BT.res,b=r.book,o=btOutcome(r);rows.push(['Gold backtest '+dfmt(r.from)+' → '+dfmt(r.to),o[1]+(o[2]?' ('+o[2]+')':'')+', final '+money(r.final)+', deepest fall −'+pc(Math.min(1,b.mdd))+(BT.sig!==btSig()?' [stale: inputs changed]':'')]);
-    if(r.starts&&r.starts.runs.length){const R=r.starts.runs;rows.push(['Start-date luck',R.filter(x=>!x.ruin).length+' of '+R.length+' start months survived, '+R.filter(x=>x.wipe).length+' wiped out']);}}
   return MD.kv(rows,['Headline','Value'])+'\n'+(pri.length?MD.h(3,tx('First things to fix','สิ่งที่ต้องแก้ก่อน'))+MD.list(pri):MD.p(tx('Nothing urgent. Keep following the rules below and re-run as trades come in.','ไม่มีเรื่องเร่งด่วน ทำตามกฎด้านล่างต่อไป และกลับมาวิเคราะห์ใหม่เมื่อมีไม้เพิ่ม')));}
 function mdRules(){
   const st=D.stype,R=[];
@@ -1030,7 +849,6 @@ function mdRules(){
     if(isFinite(lad.ruinD))R.push(tx(`Set a price alert ${pip(lad.ruinD)} pips against the first entry: that is the ruin line (−${D.ruin}%). The account is wiped out at ${pip(lad.wipeD)} pips.`,`ตั้งแจ้งเตือนราคาที่ ${pip(lad.ruinD)} pips สวนจากออเดอร์แรก นั่นคือเส้นพอร์ตแตก (−${D.ruin}%) และพอร์ตจะหมดที่ ${pip(lad.wipeD)} pips`));
     R.push(D.gSl>0?tx(`Keep the final stop at ${D.gSl} pips after the last order, and let it fire.`,`คง Stop สุดท้ายไว้ที่ ${D.gSl} pips หลังออเดอร์สุดท้าย และปล่อยให้มันทำงาน`):tx('There is no final stop, so one long trend can take the whole account. Decide in advance where you will close everything.','ไม่มี Stop สุดท้าย เทรนด์ยาวครั้งเดียวอาจกินทั้งพอร์ต กำหนดล่วงหน้าว่าจะปิดทั้งหมดที่ไหน'));
     R.push(tx(`Re-check the pair's average daily range every month. This analysis assumes ${D.gVol} pips; if the market gets wider, every distance above shrinks in real terms.`,`ตรวจช่วงราคาเฉลี่ยต่อวันของคู่เงินทุกเดือน การวิเคราะห์นี้ใช้ ${D.gVol} pips ถ้าตลาดผันผวนขึ้น ทุกระยะด้านบนจะแคบลงในทางปฏิบัติ`));
-    if(BT.res&&BT.kind===D.stype&&BT.res.st.gapN>0&&BT.res.st.gapSum<0)R.push(tx(`Weekend gaps cost ${money(BT.res.st.gapSum)} in the gold backtest. Consider closing or hedging before the weekend.`,`Gap ช่วงสุดสัปดาห์ทำให้เสีย ${money(BT.res.st.gapSum)} ใน Backtest ทองคำ พิจารณาปิดหรือป้องกันก่อนสุดสัปดาห์`));
     R.push(tx('Expect the rare big loss. The winning streak is the normal part; the loss in the tables above is the price of it.','เตรียมใจรับการขาดทุนก้อนใหญ่ที่นาน ๆ เกิดครั้ง ช่วงที่ชนะต่อเนื่องคือส่วนปกติ ส่วนการขาดทุนในตารางด้านบนคือราคาที่ต้องจ่าย'));}
   return MD.check(R)+'\n'+tx('Signed: ____________________   Date: ____________','ลงชื่อ: ____________________   วันที่: ____________')+'\n';}
 function mdMethod(){
@@ -1048,14 +866,12 @@ function mdMethod(){
       ['Account paths','2,000 paths × '+D.hor+' cycles, built by resampling whole cycles, '+(D.gAuto==='scale'?'lots scaled with the balance':'fixed lots')+'. Seed 41.'],
       ['Size sweep','800 paths per first-order size, seed 43.'],
       ['Exposure maths','Floating loss = total lots × (distance − average entry) × value per pip + spread and commission on every order.']);
-  if(BT.res&&BT.kind===st)rows.push(['Gold backtest','COMEX gold futures, 1-minute bars, contract rolls removed, 1 pip = $0.10. Inside each minute: open → low → high → close if it closed up, open → high → low → close if down. Fills at the level, or at the open when price gaps past it.'+(st==='fixed'?' Entries are random, not yours.':'')]);
   let s=MD.table(['Piece','How it works'],rows,['l','l'])+'\n';
   if(st==='fixed')s+='```\nE[R]          = p·W − q·L\nbreak-even p  = L ÷ (W + L)\nKelly f*      = p/L − q/W\ngrowth g(f)   = p·ln(1 + f·W) + q·ln(1 − f·L)\nlots          = balance × risk ÷ (SL × value per unit)\n```\n\n';
   return s+MD.p(tx('Every simulation uses a fixed seed, so the same inputs always give the same numbers. Re-enter the inputs above to reproduce this report.','ทุกการจำลองใช้ Seed คงที่ ค่าที่ใส่เหมือนเดิมจะได้ตัวเลขเหมือนเดิมเสมอ ใส่ค่าตามตารางด้านบนเพื่อสร้างรายงานนี้ซ้ำ'));}
-function mdLimits(withBt){
+function mdLimits(){
   const tl=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k],li=a=>a.map(x=>'- **'+x[0]+'.** '+x[1]).join('\n')+'\n\n';let s='';
   tl('sc_cant').forEach(g=>{s+=MD.h(3,g[0])+li(g[1]);});
-  if(withBt){const b=tl('sc_bt_cant');s+=MD.h(3,b[0])+li(b[1]);}
   return s;}
 function mdReport(){
   clearTimeout(timer);analyze();
@@ -1064,22 +880,20 @@ function mdReport(){
   if(fixed){const m=D.model,r=D.res;EXPL=Object.assign({},buildModelExpl(m),r?buildHistExpl(r):{});
     html=mSummary(m)+mEdge(m)+mSurvival(m)+mSizing(m)+mStreaks(m)+mCosts(m)+(r?secSummary(r)+secEdge(r)+secSurvival(r)+secBehavior(r)+secCosts(r):`<section>${mHead(6)}<div class="card"><p>${esc(D.histMsg())}</p></div></section>`);}
   else{const g=D.gm;EXPL=gExpl(g);html=gSummary(g)+gExposure(g)+gOutcomes(g)+gSurvival(g)+gReal(g);}
-  const btOn=!fixed&&!!(BT.res&&BT.kind===st&&!BT.busy);if(btOn)html+=btSection();
   const tpl=document.createElement('template');tpl.innerHTML=html;
   const gk=window.__sfxGate,errs=!$('desk-err').hidden?$('desk-err').textContent:'';
   let md='# Jarn Neow risk report: '+name+'\n\n';
   md+=MD.quote(tx('A risk report for one trading strategy: how likely the account is to survive, how deep the falls can get and what size keeps the risk acceptable. It is not a profit forecast and not financial advice.','รายงานความเสี่ยงของกลยุทธ์เทรดหนึ่งระบบ: โอกาสที่พอร์ตจะรอด การย่อตัวลึกได้แค่ไหน และขนาดไม้ที่ทำให้ความเสี่ยงอยู่ในระดับรับได้ ไม่ใช่การทำนายกำไร และไม่ใช่คำแนะนำทางการเงิน'));
   md+=MD.kv([['Generated',S.local],['App','Jarn Neow, Expert mode ('+MD.appUrl()+')'],['Strategy type',name+' ('+t(st==='fixed'?'st_fixed_d':st==='grid'?'st_grid_d':'st_nostop_d')+')'],['Language',LANG==='th'?'ไทย':'English'],
-    ['Testing done',gk?t('gate_'+gk+'_t'):'not answered']].concat(fixed?[]:[['Gold backtest',btOn?dfmt(BT.res.from)+' → '+dfmt(BT.res.to):tx('not run for these inputs','ยังไม่ได้รันสำหรับค่าชุดนี้')]]),['Report','Detail']);
+    ['Testing done',gk?t('gate_'+gk+'_t'):'not answered']],['Report','Detail']);
   if(errs)md+=MD.quote('⚠ '+errs+' '+tx('The last valid values were used.','ใช้ค่าล่าสุดที่ถูกต้องแทน'));
   md+=MD.h(2,tx('At a glance','สรุปสั้น'))+mdGlance();
   md+=MD.h(2,tx('Inputs','ค่าที่ใส่'))+mdInputs()+'\n';
   if(gk)md+=MD.h(2,tx('Testing status','สถานะการทดสอบ'))+MD.p('**'+t('gate_'+gk+'_t')+'** '+t('gate_'+gk+'_p'))+(gk!=='ok'?MD.list([1,2,3].map(i=>t('gate_'+gk+'_'+i))):'');
   md+=mdWalk(tpl.content,false);
-  if(!btOn&&!fixed)md+=MD.h(2,'Test on real gold')+MD.p(tx('Not included: the gold test hasn\'t been run for these inputs. Run it at the bottom of the Expert page (any range from 7 Jun 2010 to 13 Nov 2026), then export again.','ไม่ได้รวมไว้: ยังไม่ได้รันการทดสอบกับทองจริง สำหรับค่าชุดนี้ รันได้ที่ท้ายหน้าโหมดผู้เชี่ยวชาญ (ช่วงใดก็ได้ตั้งแต่ 7 มิ.ย. 2010 ถึง 13 พ.ย. 2026) แล้วออกรายงานใหม่'));
   md+=MD.h(2,tx('Trading rules to commit to','กฎการเทรดที่ตั้งใจจะทำตาม'))+MD.p(tx('Derived from the numbers above. Print it, sign it, keep it next to the screen.','สรุปจากตัวเลขด้านบน พิมพ์ออกมา เซ็นชื่อ แล้ววางไว้ข้างจอ'))+mdRules();
   md+=MD.h(2,tx('Method and reproducibility','วิธีคำนวณและการทำซ้ำ'))+mdMethod();
-  md+=MD.h(2,tx('What this report can\'t tell you','สิ่งที่รายงานนี้บอกไม่ได้'))+mdLimits(btOn);
+  md+=MD.h(2,tx('What this report can\'t tell you','สิ่งที่รายงานนี้บอกไม่ได้'))+mdLimits();
   md+=MD.h(2,tx('Glossary','อภิธานศัพท์'))+MD.glossary().map(g=>'- **'+g[0]+'**: '+g[1]).join('\n')+'\n';
   md+=MD.h(2,tx('Disclaimer','ข้อจำกัดความรับผิดชอบ'))+MD.p(t('disclaimer'))+'---\n\n'+MD.p(tx('Made with Jarn Neow, free and open. Everything was calculated in your browser; nothing was uploaded.','สร้างด้วย Jarn Neow ใช้ฟรี ทุกอย่างคำนวณในเบราว์เซอร์ของคุณ ไม่มีข้อมูลถูกอัปโหลด'));
   draw0();
@@ -1208,7 +1022,6 @@ function init(){
     if(g){const el=$(g.dataset.unsetGo);el.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(()=>el.focus({preventScroll:true}),250);}});
   $('d-apply').addEventListener('click',()=>{autoFill();statusLine();analyze();window.scrollTo(0,0);});
   $('d-jump').addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;e.preventDefault();const sec=$(a.getAttribute('href').slice(1));if(!sec)return;sec.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});const h=sec.querySelector('h2');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}});
-  btEvents();
   const mdGo=cp=>{const b=$(cp?'md-desk-copy':'md-desk');let r=null;try{r=mdReport();}catch(e){console.error('report',e);}if(!r)return;if(cp)MD.copy(r.text,b);else{MD.download(r.file,r.text);MD.flash(b,'md_saved');}};
   $('md-desk').addEventListener('click',()=>mdGo(false));$('md-desk-copy').addEventListener('click',()=>mdGo(true));
   $('d-main').addEventListener('input',e=>{const inp=e.target.closest('.wi input[type=range]');if(!inp)return;const box=inp.closest('.wi'),r=wiRange(inp.dataset.k);

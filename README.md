@@ -13,7 +13,7 @@ Everything runs in your browser from one HTML page plus one script for Expert mo
 ## Use it
 
 - **Online:** **[0xtrvkc.github.io/Jarn-Neow](https://0xtrvkc.github.io/Jarn-Neow/)**
-- **Offline:** after one visit to the online version, the app keeps working without a connection, including any gold months you already backtested. You can also download `index.html` and `expert.js` into the same folder and open the page from disk: everything works except the gold backtest, and system fonts replace the app's fonts. With `index.html` alone, Beginner mode works and Expert mode says it can't load.
+- **Offline:** after one visit to the online version, the app keeps working without a connection, including any gold months you already tested. You can also download `index.html` and `expert.js` into the same folder and open the page from disk: everything works except the gold playground, and system fonts replace the app's fonts. With `index.html` alone, Beginner mode works and Expert mode says it can't load.
 
 The interface is in **English and Thai (ไทย)**. Switch with the EN / ไทย buttons at the top.
 
@@ -70,33 +70,31 @@ Inputs: first order size, distance between orders, how lots grow (a multiplier, 
 
 ---
 
-## Test on real gold (Expert)
+## Gold playground (Expert)
 
-Grid / martingale and no-hard-stop strategies end with a **Test on real gold** section. It replays your inputs on real **COMEX gold futures, 1-minute bars, 7 June 2010 to 13 November 2026** (5.7 million bars) for any range of months you pick. The data is historical and doesn't update.
+Expert mode has two tabs: **Risk calculator** (everything above) and **Gold playground**. The playground tests entry rules built from indicators on real **COMEX gold futures, 1-minute bars, 7 June 2010 to 13 November 2026** (5.7 million bars). The data is historical and doesn't update. The risk calculator no longer uses the gold data.
 
-- **1 pip = $0.10**, so a $1 move in gold is 10 pips.
-- **A true backtest.** These strategies are fully described by their settings, so the test replays your exact rules. It uses every grid setting, balance, spread, commission and value per pip, plus a direction (buy, sell or alternate each cycle). You get:
-  - equity day by day, including the lowest point each day with open losses;
-  - the date the account fell to the ruin line or was wiped out;
-  - the 5 deepest cycles, how many orders each cycle reached, and results by year.
-- **Not for fixed stops.** Win rate and reward:risk don't say when you enter, so there are no rules to replay. With random entries, the test only showed that the coin-flip win rate matches the break-even win rate the app already gives you, so fixed stops don't get this section. To test your entry signals, use a strategy tester such as TradingView or MT5 and bring the results here.
-- **Deeper analysis**, only what real prices can show, so none of it repeats the simulation sections above:
-  - **Start-date luck:** the same rules rerun from up to 36 different start months, each for the same length. It shows how many starts survived, how many were wiped out, and the best and worst start.
-  - **Simulation vs real gold:** what the simulation predicted next to what gold actually did, plus a one-click button to use gold's real daily range in the simulation.
-  - **Gold volatility by year:** the average daily range per year against your grid spacing or take-profit.
-  - **Trend vs range months:** each month classed as ranging, mixed, trending up or trending down, with your results in each.
-  - **When trouble starts:** the hour and weekday when the deepest floating losses happened (in your time zone), and what weekend gaps did to open positions.
-- The available date range is shown as a timeline, with your selected months highlighted.
-- Only the months in your range are downloaded (about 50 KB per month), and the backtest runs in the background, so the page stays responsive. A full 16-year run takes about 2–4 seconds.
-- On the live site the month files come from the jsDelivr CDN, pinned to a commit, with this site as the automatic fallback. Each file is checked against its expected bar count; a damaged or missing month stops the run with a clear message instead of being skipped.
+**Build a rule**
+- **Timeframe:** 1 minute, 5 minutes, 15 minutes, 1 hour, 4 hours or 1 day. Candles are built from the 1-minute bars. Daily and 4-hour candles close at 17:00 New York time, like most MT5 gold brokers (server time UTC+2 in winter, UTC+3 in summer).
+- **Entry signal:** moving average cross (EMA or SMA), RSI leaving oversold or overbought, Bollinger Bands (reversal or breakout), MACD crossing its signal line, Stochastic cross from oversold or overbought, or a breakout of the last N candles. An optional EMA or SMA trend filter, and buy-only, sell-only or both.
+- **Exit:** stop in pips, as an ATR multiple or none; target in pips, as an ATR multiple, as a multiple of the stop (R) or none; close and reverse on an opposite signal or ignore it; an optional time limit in candles.
+- **Money:** starting balance, risk % per trade (rounded down to 0.01 lots) or fixed lots, spread and commission. 1 pip = $0.10, and 1 pip is worth $10 per lot.
+- **Indicators** use TA-Lib's formulas and start-up rules. Each one was checked against TA-Lib on real gold candles (5-minute, 1-hour and daily) and matches to rounding error. Enough months before the start are loaded for the indicators to settle.
 
-**How the replay works:**
-- Contract-roll jumps between futures months are removed.
-- Inside each minute, price is assumed to go open → low → high → close when the minute closed up, and open → high → low → close when it closed down.
-- Orders fill exactly at their level, or at the gap price when price jumps past it.
-- It doesn't include swap, slippage beyond gaps, lot rounding or margin checks.
+**Walk-forward test against over-fitting**
+1. Pick a backtest length (3 to 24 months) and a start month, then tune the settings on the backtest as often as you like.
+2. Run the forward test. It uses the same settings on the months straight after the backtest. Its length is limited to between a quarter of the backtest and the full backtest length, so a lucky few weeks can't pass for proof.
+3. The verdict compares the average trade (in R when every trade had a stop, otherwise in pips): **held up**, **weakened**, **failed**, **edge too thin to confirm** (backtest profit factor under 1.1), **no edge to confirm** (the backtest lost) or **too few trades**.
 
-The backtest needs the site to be served (GitHub Pages or any web server). Browsers block the data files when `index.html` is opened straight from disk.
+The forward months lock once they've been seen. If you change the settings and run the forward test on months you've already seen with other settings, the result is marked **not a fair test**. The record of seen periods stays in your browser.
+
+**Results:** verdict, net result, deepest fall, win rate and profit factor; equity by day with the forward part marked; a backtest-vs-forward table (trades a month, win rate, profit factor, average trade, average win and loss, deepest fall, losing run, time in trade, buys and sells, gold's own move, same-minute and gap fills); monthly results; how trades ended; the latest trades; and a CSV download of every trade.
+
+**How fills work**
+- A signal is read when a candle closes, and the trade opens at the next minute's open, so the test never uses a price it couldn't have known.
+- Stops and targets are checked on every 1-minute bar, whatever the timeframe. A stop and a target inside the same minute count as the stop. Price opening past the stop fills at that open. Targets fill exactly at the target, never better.
+- Spread is charged once per trade, commission per lot. One trade is open at a time. Contract-roll jumps are removed; there's no swap or margin check.
+- Only the months needed are downloaded (about 50 KB each), and the test runs in the background. On the live site the month files come from the jsDelivr CDN, pinned to a commit, with this site as the fallback. Each file is checked against its expected bar count.
 
 ---
 
@@ -122,12 +120,11 @@ The file is read locally and never uploaded. Jarn Neow converts closed trades in
 Both modes can save the analysis as a Markdown file: **Download report (.md)**, or **Copy as text** to paste it straight into Notion, Obsidian, a notes app, GitHub or an AI chat. The file is built in your browser and nothing is uploaded. It's written in the language the app is set to.
 
 **Expert report** (bar above the results). Every card on the page, converted to text, plus the data behind each chart:
-- **Cover and at a glance:** date, strategy type, testing status, verdict, and the headline numbers (expectancy with its confidence interval, chance of ruin, drawdowns, Kelly, suggested risk or safest first-order size, backtest outcome).
+- **Cover and at a glance:** date, strategy type, testing status, verdict, and the headline numbers (expectancy with its confidence interval, chance of ruin, drawdowns, Kelly, suggested risk or safest first-order size).
 - **Inputs:** every field with its value and whether you entered it, left the default, or it came from the Myfxbook file.
 - **Every section of the page:** verdict, written report, action plan as a checklist, all statistics tables and every explanation ("what this shows", "what your numbers say", "what to do").
 - **Chart data as tables**, with text bars: equity percentiles along the way, final-equity and drawdown percentiles, ruin by trade or cycle, ruin by risk level, Kelly growth, streak odds, equity after k losses, spread sensitivity; for grids, the floating loss at multiples of the daily range, how deep cycles go and how cycles ended.
 - **Trade history** (if loaded): summary, R distribution, losing runs, model vs real trades, stop discipline, results by weekday and hour, costs. The trade list itself isn't included, only summaries and the few ticket numbers the action plan points to.
-- **Gold backtest** (if run for the current inputs): every card, plus a monthly returns table (year × month), every start month from the start-date luck test, volatility by year against your distances, and hour-by-hour tables.
 - **Trading rules to commit to**, a signed checklist derived from the numbers; **method and reproducibility** (models, path counts, seeds, formulas); the full **limitations** list; a **glossary**; and the disclaimer.
 
 **Beginner report** (under the inputs). In plain words: the verdict, your four numbers and what they mean, a money example on a 10,000 account, why the result looks the way it does, the fix plan as a checklist, the spread of 200-trade futures, the same strategy at different risk levels, losing-streak odds, how sure you can be at more trades, Kelly sizing, recovery maths, a rules checklist, what Beginner leaves out, a glossary and a link that reopens your numbers.
@@ -144,7 +141,7 @@ Both modes can save the analysis as a Markdown file: **Download report (.md)**, 
 | Sizing | Kelly criterion and log-growth curve, plus a ruin-probability sweep across risk levels |
 | Streaks | Exact probability of a run of *k* losses in *N* trades |
 | History | Bootstrap of your own R multiples (above 10,000 trades, its normal approximation, which gives the same result much faster) |
-| Gold backtest | Minute-by-minute replay of your rules on real 1-minute gold futures, with contract rolls removed |
+| Gold playground | Indicator signals (TA-Lib formulas) on candles built from 1-minute gold futures, filled on the 1-minute bars, with a backtest followed by a locked forward test |
 | Grid / no stop | 4,000 simulated cycles on 30-minute price steps scaled from the daily range (Gaussian random walk, or Student-t(3) jumps with volatility clustering and short trends), then account paths built by resampling whole cycles |
 
 All simulations use a fixed random seed, so the same inputs always give the same results.
@@ -163,7 +160,7 @@ The in-app briefing has the full list. In short:
   - It can't detect a flawed backtest.
   - The grid price model isn't fitted to real history and has no edge in either direction.
   - Rare events may not appear in the simulation.
-- **Gold backtest limits:** gold futures rather than broker spot, order inside each minute assumed, rolls partly estimated, no swap or margin, and the data ends on 13 November 2026.
+- **Gold playground limits:** gold futures rather than broker spot, a stop and target in the same minute count as the stop, rolls partly estimated, one trade at a time, no swap or margin, and the data ends on 13 November 2026. One passing forward test is one more sample, not proof.
 - **Myfxbook import limits:** closed trades only, the stop is estimated if unknown, strategy detection is a best guess, grid spacing becomes one average, one pair is analysed at a time, and strategies mixed on one account are blended together.
 - **Not:** a profit predictor, a trading signal, a test of your discipline under pressure, or financial advice.
 
@@ -192,7 +189,9 @@ The code is released under the [MIT License](LICENSE). The gold data in `data/go
 
 ```
 index.html                   the app: HTML, CSS and the JavaScript for Beginner mode, the start-up check and the shared engine
-expert.js                    Expert mode and the gold-backtest worker, loaded the first time Expert opens
+expert.js                    Expert mode's risk calculator, loaded the first time Expert opens
+lab.js                       the gold playground tab, loaded the first time it opens
+lab-worker.js                the playground's background worker: gold data, candles, indicators and fills
 sw.js                        service worker: offline use and instant return visits
 fonts/                       the app's fonts (SIL Open Font License; licences included)
 sprites/                     animated pixel sprites for Beginner mode (16 frames each, 90 ms per frame)
@@ -206,7 +205,7 @@ LICENSE                      MIT licence for the code
 data/gold/README.md          where the gold data comes from and its terms
 ```
 
-The app itself has no build step and no dependencies. Edit `index.html` or `expert.js` and refresh. After changing `expert.js`, update `EXPERT_V` in `index.html` (any new value, for example the first 8 characters of the file's SHA-1) so browsers fetch the new copy.
+The app itself has no build step and no dependencies. Edit `index.html` or `expert.js` and refresh. After changing `expert.js`, update `EXPERT_V` in `index.html` (any new value, for example the first 8 characters of the file's SHA-1) so browsers fetch the new copy. After changing `lab.js` or `lab-worker.js`, update `LAB_V` the same way.
 
 To rebuild or extend the gold data (needs Python with `pyarrow` and `numpy`):
 
