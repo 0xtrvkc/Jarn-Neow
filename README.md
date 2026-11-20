@@ -70,22 +70,20 @@ Inputs: first order size, distance between orders, lot multiplier, maximum order
 
 ## Test on real gold (Expert)
 
-Every Expert strategy type ends with a **Test on real gold** section. It replays your inputs on real **COMEX gold futures, 1-minute bars, 7 June 2010 to 13 November 2026** (5.7 million bars) for any range of months you pick. The data is historical and doesn't update.
+Grid / martingale and no-hard-stop strategies end with a **Test on real gold** section. It replays your inputs on real **COMEX gold futures, 1-minute bars, 7 June 2010 to 13 November 2026** (5.7 million bars) for any range of months you pick. The data is historical and doesn't update.
 
 - **1 pip = $0.10**, so a $1 move in gold is 10 pips.
-- **Grid / martingale and no hard stop: a true backtest.** These strategies are fully described by their settings, so the test replays your exact rules. They use every grid setting, balance, spread, commission and value per pip, plus a direction (buy, sell or alternate each cycle). You get:
+- **A true backtest.** These strategies are fully described by their settings, so the test replays your exact rules. It uses every grid setting, balance, spread, commission and value per pip, plus a direction (buy, sell or alternate each cycle). You get:
   - equity day by day, including the lowest point each day with open losses;
   - the date the account fell to the ruin line or was wiped out;
   - the 5 deepest cycles, how many orders each cycle reached, and results by year.
-- **Fixed stop: not a backtest of your entries.** For this type the section is called **Your stop and target on real gold**. Win rate and reward:risk don't say when you enter, so the test uses your SL, reward:risk, risk rules, trades per day and costs with **random entries**. It measures the **no-skill win rate** your stop and target produce on real gold, and compares it with the win rate you claim. You also get one chronological run and results by year. To test your entry signals themselves, use a strategy tester such as TradingView or MT5 and bring the results here.
+- **Not for fixed stops.** Win rate and reward:risk don't say when you enter, so there are no rules to replay. With random entries, the test only showed that the coin-flip win rate matches the break-even win rate the app already gives you, so fixed stops don't get this section. To test your entry signals, use a strategy tester such as TradingView or MT5 and bring the results here.
 - **Deeper analysis**, only what real prices can show, so none of it repeats the simulation sections above:
   - **Start-date luck:** the same rules rerun from up to 36 different start months, each for the same length. It shows how many starts survived, how many were wiped out, and the best and worst start.
   - **Simulation vs real gold:** what the simulation predicted next to what gold actually did, plus a one-click button to use gold's real daily range in the simulation.
-  - **Gold volatility by year:** the average daily range per year against your grid spacing, stop or take-profit.
+  - **Gold volatility by year:** the average daily range per year against your grid spacing or take-profit.
   - **Trend vs range months:** each month classed as ranging, mixed, trending up or trending down, with your results in each.
-  - **When trouble starts (grid / no stop):** the hour and weekday when the deepest floating losses happened (in your time zone), and what weekend gaps did to open positions.
-  - **Win rate by time of day (fixed stop):** random-entry win rate by entry hour, plus weekend gaps.
-  - **Real losing streaks (fixed stop):** real streaks against what independent trades would produce, which checks whether losses cluster.
+  - **When trouble starts:** the hour and weekday when the deepest floating losses happened (in your time zone), and what weekend gaps did to open positions.
 - The available date range is shown as a timeline, with your selected months highlighted.
 - Only the months in your range are downloaded (about 50 KB per month), and the backtest runs in the background, so the page stays responsive. A full 16-year run takes about 2–4 seconds.
 - On the live site the month files come from the jsDelivr CDN, pinned to a commit, with this site as the automatic fallback. Each file is checked against its expected bar count; a damaged or missing month stops the run with a clear message instead of being skipped.
@@ -156,7 +154,7 @@ The in-app briefing has the full list. In short:
   - It can't detect a flawed backtest.
   - The grid price model isn't fitted to real history and has no edge in either direction.
   - Rare events may not appear in the simulation.
-- **Gold backtest limits:** gold futures rather than broker spot, order inside each minute assumed, rolls partly estimated, no swap or margin, fixed-stop entries are random rather than yours, and the data ends on 13 November 2026.
+- **Gold backtest limits:** gold futures rather than broker spot, order inside each minute assumed, rolls partly estimated, no swap or margin, and the data ends on 13 November 2026.
 - **Myfxbook import limits:** closed trades only, the stop is estimated if unknown, it can't tell a grid history from a fixed-stop one, and strategies mixed on one account are blended together.
 - **Not:** a profit predictor, a trading signal, a test of your discipline under pressure, or financial advice.
 

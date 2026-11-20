@@ -2,7 +2,7 @@
    - the page, expert.js and index.json: network first, so a new version shows up straight away; the saved copy is used offline
    - gold month files, fonts, sprites and icons: from the device once downloaded (they never change), network otherwise
    Nothing here sends data anywhere; it only keeps copies of this site's own files in the browser. */
-const VERSION = 'jn-v4';
+const VERSION = 'jn-v5';
 const PAGE = 'jn-page-' + VERSION;
 const FILES = 'jn-files-' + VERSION;
 
