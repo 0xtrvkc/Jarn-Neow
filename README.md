@@ -13,7 +13,7 @@ Everything runs in your browser from a single HTML file. There is no account, no
 ## Use it
 
 - **Online:** **[0xtrvkc.github.io/Jarn-Neow](https://0xtrvkc.github.io/Jarn-Neow/)**
-- **Offline:** download `index.html` and open it in any modern browser. Everything works without a connection except the gold backtest, which needs the online version. Fonts also need a connection; system fonts are used otherwise.
+- **Offline:** after one visit to the online version, the app keeps working without a connection, including any gold months you already backtested. You can also download `index.html` and open it from disk: everything works except the gold backtest, and system fonts replace the app's fonts.
 
 The interface is in **English and Thai (ไทย)**. Switch with the EN / ไทย buttons at the top.
 
@@ -86,7 +86,8 @@ Every Expert strategy type ends with a **Backtest on real gold** section. It rep
   - **Win rate by time of day (fixed stop):** random-entry win rate by entry hour, plus weekend gaps.
   - **Real losing streaks (fixed stop):** real streaks against what independent trades would produce, which checks whether losses cluster.
 - The available date range is shown as a timeline, with your selected months highlighted.
-- Only the months in your range are downloaded (about 50 KB per month), and the backtest runs in the background, so the page stays responsive. A full 16-year run takes about 1–2 seconds.
+- Only the months in your range are downloaded (about 50 KB per month), and the backtest runs in the background, so the page stays responsive. A full 16-year run takes about 2–4 seconds.
+- On the live site the month files come from the jsDelivr CDN, pinned to a git tag, with this site as the automatic fallback. Each file is checked against its expected bar count; a damaged or missing month stops the run with a clear message instead of being skipped.
 
 **How the replay works:**
 - Contract-roll jumps between futures months are removed.
@@ -134,7 +135,7 @@ Both modes can save the analysis as a Markdown file: **Download report (.md)**, 
 | Survival | Monte Carlo: 10,000 simulated paths, with compounding or fixed risk and an optional de-risk rule after a losing streak |
 | Sizing | Kelly criterion and log-growth curve, plus a ruin-probability sweep across risk levels |
 | Streaks | Exact probability of a run of *k* losses in *N* trades |
-| History | Bootstrap of your own R multiples |
+| History | Bootstrap of your own R multiples (above 10,000 trades, its normal approximation, which gives the same result much faster) |
 | Gold backtest | Minute-by-minute replay of your rules on real 1-minute gold futures, with contract rolls removed |
 | Grid / no stop | 4,000 simulated cycles on 30-minute price steps scaled from the daily range (Gaussian random walk, or Student-t(3) jumps with volatility clustering and short trends), then account paths built by resampling whole cycles |
 
@@ -162,12 +163,20 @@ The in-app briefing has the full list. In short:
 
 ## Privacy
 
-- No accounts, cookies, analytics or server.
+- No accounts, cookies or server.
 - Your inputs and files stay in your browser.
 - Only your language, layout and explanation settings are saved, in your browser's local storage.
-- The gold backtest downloads data files from the same site; nothing is sent anywhere.
+- Fonts are served from this site, so no visitor data goes to a font service.
+- Gold data comes from this site or from the jsDelivr CDN (a copy of this repository's files); nothing is sent anywhere.
+- A service worker keeps copies of the page, fonts and downloaded gold months in your browser, so the app loads instantly and works offline. Clearing site data removes them.
 - Reports are generated in the browser and saved straight to your device. They hold summaries of a Myfxbook file, not the trade list (the action plan may name a few ticket numbers).
-- The only outside request is to Google Fonts for the typefaces.
+- **Optional visit counter:** a cookie-free [GoatCounter](https://www.goatcounter.com) pixel, off by default. It is switched on by putting a GoatCounter site code in `COUNTER` near the end of `index.html`. When on, it sends only the page path, and it respects the browser's Do Not Track setting.
+
+---
+
+## Licence
+
+The code is released under the [MIT License](LICENSE). The gold data in `data/gold/` is not covered by it; see [data/gold/README.md](data/gold/README.md) for its source and terms.
 
 ---
 
@@ -175,10 +184,16 @@ The in-app briefing has the full list. In short:
 
 ```
 index.html                   the whole app: HTML, CSS and JavaScript in one file
+sw.js                        service worker: offline use and instant return visits
+fonts/                       the app's fonts (SIL Open Font License; licences included)
+icon.svg, icon-180.png       site icons
+og.png                       link-preview image (1200 × 630)
 data/gold/index.json         available months, bar counts and the contract-roll table
 data/gold/YYYY-MM.bin        1-minute gold bars, one compressed file per month
 tools/build_gold_data.py     rebuilds data/gold from a 1-minute OHLC parquet file
 README.md                    this file
+LICENSE                      MIT licence for the code
+data/gold/README.md          where the gold data comes from and its terms
 ```
 
 The app itself has no build step and no dependencies. Edit `index.html` and refresh.
@@ -186,7 +201,11 @@ The app itself has no build step and no dependencies. Edit `index.html` and refr
 To rebuild or extend the gold data (needs Python with `pyarrow` and `numpy`):
 
 ```
-python3 tools/build_gold_data.py GC_v_0_ohlcv-1m.parquet data/gold
+python3 tools/build_gold_data.py GC_v_0_ohlcv-1m.parquet data/gold gold-data-YYYY-MM-DD
+git add data/gold && git commit -m "Update gold data"
+git tag gold-data-YYYY-MM-DD && git push origin main gold-data-YYYY-MM-DD
 ```
+
+The tag name is written into `index.json`; the live site loads the month files from jsDelivr at that tag. Use a new tag name for every data update, because jsDelivr caches a tag's files permanently.
 
 Prices are stored unadjusted in $0.10 ticks. Each month is a gzip-compressed file of variable-length integers (time step, open, high, low, close). The format is documented at the top of the script.

@@ -1,6 +1,11 @@
 """Convert a continuous gold-futures 1-minute OHLC parquet file into compact monthly files for Jarn Neow.
 
-Usage:  python3 tools/build_gold_data.py GC_v_0_ohlcv-1m.parquet data/gold
+Usage:  python3 tools/build_gold_data.py GC_v_0_ohlcv-1m.parquet data/gold [cdn-tag]
+
+cdn-tag (optional): a git tag that will hold exactly these files, e.g. gold-data-2026-11-13.
+The live site then loads the month files from jsDelivr at that tag and falls back to its own copy.
+After committing the new data, create and push the tag:  git tag <cdn-tag> && git push origin <cdn-tag>
+Without a tag the site serves the files itself.
 
 Output
   data/gold/index.json      months, bar counts, date range and contract-roll table
@@ -39,7 +44,7 @@ def zz(a):
     return (a << 1) ^ (a >> 63)
 
 
-def main(src, dst):
+def main(src, dst, cdn_tag=None):
     t = pq.read_table(src, columns=['ts_event', 'open', 'high', 'low', 'close', 'instrument_id']).to_pandas()
     t = t.sort_values('ts_event').drop_duplicates('ts_event')
     ts = t.ts_event.values.astype('datetime64[m]').astype(np.int64)
@@ -88,6 +93,7 @@ def main(src, dst):
     meta = {
         'symbol': 'GC (COMEX gold futures, continuous front contract)',
         'tick': 0.1,
+        **({'cdnTag': cdn_tag} if cdn_tag else {}),
         'bars': int(len(ts)),
         'from': int(ts[0]),
         'to': int(ts[-1]),
@@ -101,4 +107,4 @@ def main(src, dst):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)

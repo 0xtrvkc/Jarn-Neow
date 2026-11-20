@@ -1,13 +1,71 @@
 <!doctype html>
-<html lang="en" data-mode="play" data-lang="en" data-st="fixed">
+<html lang="en" data-mode="play" data-lang="en" data-st="fixed" class="js-wait">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://*.goatcounter.com; connect-src 'self' https://cdn.jsdelivr.net; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Jarn Neow – Will your strategy survive?</title>
 <meta name="description" content="A free risk-management calculator for forex traders: does your strategy have an edge, and will your account survive it?">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Mali:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="canonical" href="https://0xtrvkc.github.io/Jarn-Neow/">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#bde7ff" id="theme-color">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jarn Neow">
+<meta property="og:title" content="Jarn Neow – Will your forex strategy survive?">
+<meta property="og:description" content="Free risk check for forex traders: edge, chance of ruin, drawdowns and safe position size. English and Thai. กลยุทธ์ของคุณจะรอดไหม? เช็กความเสี่ยงฟรี">
+<meta property="og:url" content="https://0xtrvkc.github.io/Jarn-Neow/">
+<meta property="og:image" content="https://0xtrvkc.github.io/Jarn-Neow/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Jarn Neow: Will your forex strategy survive? 100 traders risking 20% per trade, most ending behind.">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+/* fonts are served from this site (SIL Open Font License, see fonts/), so no visitor data goes to a font CDN */
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/fredoka-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/fredoka-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/fredoka-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/fredoka-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/fredoka-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/fredoka-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/fredoka-latin-ext-700-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/fredoka-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Mali';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/mali-thai-400-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:'Mali';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/mali-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Mali';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/mali-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Mali';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/mali-thai-600-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:'Mali';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/mali-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Mali';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/mali-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Mali';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/mali-thai-700-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:'Mali';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/mali-latin-ext-700-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Mali';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/mali-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ibm-plex-sans-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ibm-plex-sans-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-thai-thai-400-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-thai-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-thai-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-thai-thai-500-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-thai-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-thai-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ibm-plex-sans-thai-thai-600-normal.woff2) format('woff2');unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ibm-plex-sans-thai-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Sans Thai';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ibm-plex-sans-thai-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/ibm-plex-mono-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/ibm-plex-mono-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/ibm-plex-mono-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/ibm-plex-mono-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ibm-plex-mono-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ibm-plex-mono-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+/* hidden until the script has filled in the text, so nothing jumps on load; shown after 3 s whatever happens */
+html.js-wait body{visibility:hidden;animation:jsw 0s 3s forwards}@keyframes jsw{to{visibility:visible}}
+</style>
 <style>
 /* ============ tokens ============ */
 :root{
@@ -17,12 +75,12 @@
 html[data-mode=play]{
   --bg:#bde7ff; --ink:#23194f; --card:#ffffff; --line:#23194f; --muted:#5d5594;
   --p1:#7c5cff; --p2:#ff6fb5; --p3:#ffd23f; --p4:#2ed3b7; --p5:#3fa7ff;
-  --bw:3px; --radius:22px; --shadow:0 5px 0 #23194f; --accent:var(--p1); --accent-ink:#fff;
+  --bw:3px; --radius:22px; --shadow:0 5px 0 #23194f; --accent:#7050f5; --accent-ink:#fff;
   --font:'Fredoka','Mali',system-ui,sans-serif; --mono:'Fredoka','Mali',system-ui,sans-serif;
   --c1:#7c5cff; --c2:#ff6fb5; --c3:#2ed3b7; --c4:#ffb400; --grid:rgba(35,25,79,.16); --soft:#f1ecff; --track:#e4dcff;
 }
 html[data-mode=desk]{
-  --bg:#0a0f15; --ink:#d3dce8; --card:#101821; --line:#233142; --muted:#7f8ea1;
+  --bg:#0a0f15; --ink:#d3dce8; --card:#101821; --line:#233142; --muted:#8b9aac;
   --bw:1px; --radius:2px; --shadow:none; --accent:#ffb000; --accent-ink:#161000;
   --font:'IBM Plex Sans','IBM Plex Sans Thai',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
   --c1:#4aa3ff; --c2:#ffb000; --c3:#8aa0b5; --c4:#58c9a0; --grid:#1d2a38; --soft:#0b1219; --track:#233142;
@@ -36,6 +94,7 @@ html[data-mode=play] body{background-image:radial-gradient(circle at 22px 22px,r
 html[data-mode=desk] body{font-size:14.5px}
 button,input,select{font:inherit;color:inherit}
 h1,h2,h3,h4{line-height:1.15;margin:0 0 .45em}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 p{margin:0 0 .7em}
 [hidden]{display:none!important}
 :focus-visible{outline:3px solid var(--p5,#4aa3ff);outline-offset:2px}
@@ -145,13 +204,13 @@ html[data-mode=desk] select,html[data-mode=desk] .txt{border-radius:2px;backgrou
 .vtext{font-size:1.04rem;margin:.8rem 0 0}
 .finding{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.4rem 1.2rem;padding:.9rem 0;border-top:2px dashed var(--grid);align-items:center}
 .finding:first-of-type{border-top:0}
-.finding h4{font-size:1.1rem;margin-bottom:.25rem}
+.finding h3{font-size:1.1rem;margin-bottom:.25rem}
 #deeper .chart{max-width:560px}
 .ex{border-top:1px solid var(--line);margin-top:.7rem;padding:.45rem 0 0}
 .ex>summary{font-size:.8rem;color:var(--accent);font-family:var(--mono);cursor:pointer;font-weight:500}
 .ex p{font-size:.86em;margin:.45rem 0 0;color:var(--ink);line-height:1.5}.ex p b{color:var(--muted);font-weight:600}
 .rp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem 1.6rem;margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--line)}
-.rp h4{font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0 0 .35rem;font-weight:600}
+.rp h3{font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0 0 .35rem;font-weight:600}
 .rp p,.rp li{font-size:.9em;line-height:1.5;margin:0 0 .3rem}.rp ul{margin:0;padding-left:1.05rem}
 @media (max-width:760px){.rp{grid-template-columns:1fr}}
 .split{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:1.4rem;align-items:center}
@@ -177,7 +236,7 @@ html[data-mode=desk] select,html[data-mode=desk] .txt{border-radius:2px;backgrou
 .numwrap.bad,input.txt.bad{outline:2px solid var(--bad);outline-offset:1px}
 .inerr{margin-bottom:1rem;font-weight:600}
 .tip{position:fixed;z-index:80;max-width:calc(100vw - 24px);background:var(--card);border:1px solid var(--accent);box-shadow:0 10px 30px rgba(0,0,0,.55);padding:.8rem .95rem;font-size:.88rem;line-height:1.55;pointer-events:none;color:var(--ink)}
-.tip h4{font-family:var(--mono);color:var(--accent);font-size:.78rem;margin:0 0 .45rem;text-transform:uppercase;letter-spacing:.05em}
+.tip .tth{font-family:var(--mono);color:var(--accent);font-size:.78rem;font-weight:700;margin:0 0 .45rem;text-transform:uppercase;letter-spacing:.05em}
 .tip p{margin:0 0 .5rem}.tip p b{color:var(--muted);font-weight:600}
 .tip .tex{background:var(--soft);border-left:3px solid var(--accent);padding:.45rem .6rem;margin:0}.tip .tex b{color:var(--accent)}
 .formrow[data-tip]{cursor:help;margin-left:-.4rem;margin-right:-.4rem;padding:.15rem .4rem}
@@ -197,7 +256,7 @@ html[data-mode=play] .unsetnote .btn{padding:.35rem .9rem}
 .bpn{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:var(--card);border:2px solid var(--line);font-weight:700}
 .bph{display:flex;flex-wrap:wrap;gap:.25rem .5rem;align-items:center;margin-bottom:.15rem}.bph b{font-size:1.04rem;line-height:1.3}
 .bpl{font-size:.72rem;font-weight:700;padding:.08rem .5rem;border-radius:99px;border:2px solid var(--line);background:var(--p4);color:#23194f;white-space:nowrap}
-.bpl[data-l=must]{background:var(--bad);color:#fff}.bpl[data-l=should]{background:var(--warn);color:#2b1c00}
+.bpl[data-l=must]{background:#d23439;color:#fff}.bpl[data-l=should]{background:var(--warn);color:#2b1c00}
 .bp p{margin:0 0 .3rem;font-size:.95em;line-height:1.45}
 .bres{display:inline-flex;flex-wrap:wrap;gap:.2rem .5rem;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:.25rem .6rem;font-weight:600;font-size:.88em!important;margin:.15rem 0 .35rem!important}
 .bver{display:inline-flex;gap:.25rem;align-items:center;white-space:nowrap}
@@ -567,9 +626,9 @@ html[data-mode=desk] footer{max-width:1600px}
 </section>
 
 <!-- ===================== DESK (expert) ===================== -->
-<section id="desk" aria-label="Expert mode">
+<section id="desk" aria-label="Expert mode"><h1 class="sr-only" data-i18n="desk_h1"></h1>
   <div class="desk-layout">
-    <aside class="d-aside">
+    <aside class="d-aside" aria-labelledby="d-in-h"><h2 class="sr-only" id="d-in-h" data-i18n="desk_in_h"></h2>
       <div class="card" id="p-type">
         <h3 data-i18n="p_type"></h3>
         <div class="stypes" role="radiogroup" aria-label="Strategy type">
@@ -658,6 +717,8 @@ html[data-mode=desk] footer{max-width:1600px}
 </div>
 
 <script type="text/plain" id="s-btw">
+/* min/max over arrays of any length: Math.min(...arr) fails past ~100k items */
+const amin=function(){let m=Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]<m)m=a[i];}else if(a<m)m=a;}return m;},amax=function(){let m=-Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]>m)m=a[i];}else if(a>m)m=a;}return m;};
 /* Jarn Neow backtest worker: loads monthly gold files, removes contract-roll jumps, replays the user's rules on 1-minute bars.
    Prices are integers in ticks of $0.10, and 1 pip = 1 tick. */
 'use strict';
@@ -669,12 +730,26 @@ function decode(buf){
   let tt=t0,pc=p0;
   for(let i=0;i<n;i++){tt+=rv();const oo=pc+zz(rv()),hi=rv(),lo=rv(),cc=oo+zz(rv());t[i]=tt;o[i]=oo;c[i]=cc;h[i]=Math.max(oo,cc)+hi;l[i]=Math.min(oo,cc)-lo;pc=cc;}
   return{n,t,o,h,l,c};}
-async function getMonth(base,m){
-  if(cache.has(m))return cache.get(m);
-  const r=await fetch(base+m+'.bin');if(!r.ok)throw new Error('http '+r.status+' '+m);
-  let buf=new Uint8Array(await r.arrayBuffer());
-  if(buf[0]===0x1f&&buf[1]===0x8b){const ds=new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'));buf=new Uint8Array(await new Response(ds).arrayBuffer());}
-  const d=decode(buf);cache.set(m,d);return d;}
+/* decoded months stay in memory between runs, up to CAP; a full 16-year run would otherwise keep ~115 MB */
+const CAP=60;
+const fail=(kind,m,code)=>{const e=new Error(kind+' '+m);e.kind=kind;e.month=m;e.code=code||0;return e;};
+async function load(url,m,expect,retry){
+  let r;try{r=await fetch(url,retry?{cache:'reload'}:undefined);}catch(e){throw fail('net',m);}
+  if(!r.ok)throw fail('http',m,r.status);
+  let buf=new Uint8Array(await r.arrayBuffer()),d;
+  try{if(buf[0]===0x1f&&buf[1]===0x8b){const ds=new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'));buf=new Uint8Array(await new Response(ds).arrayBuffer());}
+    d=decode(buf);}catch(e){throw fail('bad',m);}
+  /* a wrong or damaged file (an error page, a captive Wi-Fi page, a cut download) must not quietly become a missing month */
+  if(expect&&d.n!==expect)throw fail('bad',m);
+  for(let i=1;i<d.n;i++)if(d.t[i]<=d.t[i-1])throw fail('bad',m);
+  return d;}
+/* bases: a CDN first when there is one, then this site; a failure on one falls through to the next, then one retry */
+async function getMonth(bases,m,expect){
+  if(cache.has(m)){const d=cache.get(m);cache.delete(m);cache.set(m,d);return d;}
+  let d=null,err=null;
+  for(const b of bases){try{d=await load(b+m+'.bin',m,expect,false);break;}catch(e){err=e;}}
+  if(!d){if(err.kind==='http'&&err.code===404)throw err;await new Promise(r=>setTimeout(r,err.code===429?1500:400));d=await load(bases[bases.length-1]+m+'.bin',m,expect,true);}
+  cache.set(m,d);while(cache.size>CAP)cache.delete(cache.keys().next().value);return d;}
 /* join months and remove roll jumps so the last contract in the range keeps its real prices */
 function join(parts,rolls){
   const n=parts.reduce((a,x)=>a+x.n,0),B={n,t:new Int32Array(n),o:new Int32Array(n),h:new Int32Array(n),l:new Int32Array(n),c:new Int32Array(n)};
@@ -701,7 +776,7 @@ function Book(bal0,ruin){
     m.path+=Math.abs(b.dPa-m.last);m.last=b.dPa;m.eq1=b.dEq;m.pa1=b.dPa;};
   b.day=(t,eq,px,pa)=>{const d=Math.floor(t/DAY);if(d!==b.curDay){if(b.curDay>=0)b.closeDay();b.curDay=d;b.dMin=Infinity;}b.dEq=eq;b.dPx=px;b.dPa=pa;b.yr(t).end=eq;};
   b.finish=()=>{if(b.curDay>=0){b.closeDay();b.months.push(b.mo);}
-    const D=b.days,mx=1200;if(D.length>mx){const g=Math.ceil(D.length/mx),o=[];for(let i=0;i<D.length;i+=g){const s=D.slice(i,i+g);o.push([s[0][0],s[s.length-1][1],Math.min(...s.map(x=>x[2])),s[s.length-1][3]]);}b.days=o;}};
+    const D=b.days,mx=1200;if(D.length>mx){const g=Math.ceil(D.length/mx),o=[];for(let i=0;i<D.length;i+=g){const s=D.slice(i,i+g);o.push([s[0][0],s[s.length-1][1],amin(s.map(x=>x[2])),s[s.length-1][3]]);}b.days=o;}};
   return b;}
 function bars(B){let days=0,last=-1;for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d!==last){days++;last=d;}}return days;}
 function avgRange(B){let s=0,k=0,last=-1,hi=-Infinity,lo=Infinity;for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d!==last){if(last>=0){s+=hi-lo;k++;}last=d;hi=-Infinity;lo=Infinity;}if(B.h[i]>hi)hi=B.h[i];if(B.l[i]<lo)lo=B.l[i];}if(last>=0){s+=hi-lo;k++;}return k?s/k:0;}
@@ -772,7 +847,7 @@ function runFixed(B,P){
       if(R!==null){tEnd=B.t[i];break;}}
     if(R===null)continue;R-=cR;smp.push(R);dur.push(tEnd-B.t[i0]);if(R>0)hit++;else{sumLoss+=R;nLoss++;}if(R<-1-cR-1e-9)gapL++;const hr=Math.floor(B.t[i0]/60)%24;hrN[hr]++;if(R>0)hrW[hr]++;}
   return{kind:'fixed',final:bk.dead?0:eq,book:pack(bk),st:{trades:st.trades,wins:st.wins,sumR:st.sumR,worstR:st.worstR,worstAt:st.worstAt,gaps:st.gaps,runs:Array.from(st.runs,x=>x||0),maxRun:st.maxRun,gapN:st.gapN,gapSum:st.gapSum,gapWorst:st.gapWorst,gapWorstAt:st.gapWorstAt},
-    sample:{n:smp.length,wins:hit,meanR:smp.reduce((a,x)=>a+x,0)/Math.max(1,smp.length),worstR:Math.min(0,...smp),gapLoss:gapL,medMin:dur.sort((a,b)=>a-b)[Math.floor(dur.length/2)]||0,q,hrN,hrW,avgLoss:nLoss?sumLoss/nLoss:0}};}
+    sample:{n:smp.length,wins:hit,meanR:smp.reduce((a,x)=>a+x,0)/Math.max(1,smp.length),worstR:amin(0,smp),gapLoss:gapL,medMin:dur.sort((a,b)=>a-b)[Math.floor(dur.length/2)]||0,q,hrN,hrW,avgLoss:nLoss?sumLoss/nLoss:0}};}
 function yearAdr(B){const Y=new Map();let last=-1,hi=-Infinity,lo=Infinity,yr=0;const push=()=>{if(last<0)return;let y=Y.get(yr);if(!y){y={y:yr,s:0,n:0};Y.set(yr,y);}y.s+=hi-lo;y.n++;};
   for(let i=0;i<B.n;i++){const d=Math.floor(B.t[i]/DAY);if(d!==last){push();last=d;hi=-Infinity;lo=Infinity;yr=new Date(d*DAY*60000).getUTCFullYear();}if(B.h[i]>hi)hi=B.h[i];if(B.l[i]<lo)lo=B.l[i];}push();
   return[...Y.values()].map(y=>({y:y.y,adr:y.s/y.n,days:y.n}));}
@@ -796,7 +871,7 @@ if(typeof self!=='undefined'&&typeof window==='undefined'&&typeof importScripts=
   self.onmessage=async ev=>{const m=ev.data;
     try{const parts=[];let done=0;
       const list=m.months,conc=6;let next=0;const res=new Array(list.length);
-      await Promise.all(Array.from({length:Math.min(conc,list.length)},async()=>{while(next<list.length){const i=next++;res[i]=await getMonth(m.base,list[i]);done++;self.postMessage({type:'progress',done,total:list.length});}}));
+      await Promise.all(Array.from({length:Math.min(conc,list.length)},async()=>{while(next<list.length){const i=next++;res[i]=await getMonth(m.bases||[m.base],list[i],m.counts&&m.counts[list[i]]);done++;self.postMessage({type:'progress',done,total:list.length});}}));
       for(const r of res)parts.push(r);
       self.postMessage({type:'progress',done:list.length,total:list.length,stage:'run'});
       const B=join(parts,m.rolls),P=m.params;
@@ -807,10 +882,12 @@ if(typeof self!=='undefined'&&typeof window==='undefined'&&typeof importScripts=
       out.n=B.n;out.from=B.n?B.t[0]:0;out.to=B.n?B.t[B.n-1]:0;out.rolls=B.rolls||0;out.adr=avgRange(B);out.days=bars(B);
       out.px0=B.n?B.o[0]:0;out.px1=B.n?B.c[B.n-1]:0;
       self.postMessage({type:'done',out,id:m.id});
-    }catch(e){self.postMessage({type:'error',msg:String(e&&e.message||e),id:m.id});}};}
+    }catch(e){self.postMessage({type:'error',kind:e&&e.kind||'other',month:e&&e.month||'',code:e&&e.code||0,msg:String(e&&e.message||e),id:m.id});}};}
 if(typeof module!=='undefined')module.exports=API;
 </script>
 <script id="s-engine">
+/* min/max over arrays of any length: Math.min(...arr) fails past ~100k items */
+const amin=function(){let m=Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]<m)m=a[i];}else if(a<m)m=a;}return m;},amax=function(){let m=-Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]>m)m=a[i];}else if(a>m)m=a;}return m;};
 const SFX=(function(){
 'use strict';
 /* ---------- basics ---------- */
@@ -905,20 +982,25 @@ function streaks(R){const loss=[],win=[];let l=0,w=0;
 function tradeStats(R){
   const n=R.length,W=R.filter(r=>r>0),L=R.filter(r=>r<0),m=mean(R),s=sd(R),sw=W.reduce((a,b)=>a+b,0),sl=-L.reduce((a,b)=>a+b,0),st=streaks(R);
   return{n,wins:W.length,losses:L.length,scratch:n-W.length-L.length,winRate:n?W.length/n:0,avgWin:mean(W),avgLoss:mean(L),expectancy:m,sd:s,
-    t:s>0?m/(s/Math.sqrt(n)):0,pf:sl>0?sw/sl:(sw>0?Infinity:0),best:Math.max(...R),worst:Math.min(...R),
-    maxLoseStreak:st.loss.length?Math.max(...st.loss):0,maxWinStreak:st.win.length?Math.max(...st.win):0,streaks:st,
+    t:s>0?m/(s/Math.sqrt(n)):0,pf:sl>0?sw/sl:(sw>0?Infinity:0),best:amax(R),worst:amin(R),
+    maxLoseStreak:st.loss.length?amax(st.loss):0,maxWinStreak:st.win.length?amax(st.win):0,streaks:st,
     nNeeded:m>0&&s>0?Math.ceil(Math.pow(1.96*s/m,2)):null};}
+/* above 10,000 trades a resampled mean is normal to within rounding, so it is drawn directly:
+   same answer, and 110,000 trades take milliseconds instead of 6 s */
 function bootstrapMean(R,B,seed){const rnd=mulberry32(seed||99),n=R.length,means=new Float64Array(B);
-  for(let b=0;b<B;b++){let s=0;for(let i=0;i<n;i++)s+=R[(rnd()*n)|0];means[b]=s/n;}means.sort();
+  if(n>10000){let m=0;for(let i=0;i<n;i++)m+=R[i];m/=n;let v=0;for(let i=0;i<n;i++)v+=(R[i]-m)*(R[i]-m);const se=Math.sqrt(v/(n-1)/n);
+    for(let b=0;b<B;b++){let u=rnd();while(u<=1e-12)u=rnd();means[b]=m+se*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*rnd());}}
+  else for(let b=0;b<B;b++){let s=0;for(let i=0;i<n;i++)s+=R[(rnd()*n)|0];means[b]=s/n;}
+  means.sort();
   return{means,ci:[quantile(means,0.025),quantile(means,0.975)],probPos:means.filter?Array.prototype.filter.call(means,x=>x>0).length/B:0};}
 function cumulative(R){const c=[0];let s=0;for(const r of R){s+=r;c.push(s);}return c;}
 function underwater(cum){let pk=-Infinity;return cum.map(x=>{if(x>pk)pk=x;return x-pk;});}
 function rolling(R,w){const o=[];for(let i=w;i<=R.length;i++)o.push(mean(R.slice(i-w,i)));return o;}
-function hist(vals,nb,lo,hi){if(lo===undefined)lo=Math.min(...vals);if(hi===undefined)hi=Math.max(...vals);if(hi<=lo)hi=lo+1;
+function hist(vals,nb,lo,hi){if(lo===undefined)lo=amin(vals);if(hi===undefined)hi=amax(vals);if(hi<=lo)hi=lo+1;
   const w=(hi-lo)/nb,bins=[];for(let i=0;i<nb;i++)bins.push({x0:lo+i*w,x1:lo+(i+1)*w,count:0});
   for(const v of vals){let i=Math.floor((v-lo)/w);if(i>=nb)i=nb-1;if(i<0)i=0;bins[i].count++;}return bins;}
 function optimalF(R){ // empirical growth-optimal fraction (as fraction of account risked per 1R)
-  const mn=Math.min(...R),fmax=mn<0?Math.min(0.99,0.999/-mn):0.5,steps=200,curve=[];let best={f:0,g:0};
+  const mn=amin(R),fmax=mn<0?Math.min(0.99,0.999/-mn):0.5,steps=200,curve=[];let best={f:0,g:0};
   for(let i=0;i<=steps;i++){const f=fmax*i/steps;let s=0;for(const r of R)s+=Math.log(1+f*r);const g=s/R.length;curve.push({f,g});if(g>best.g)best={f,g};}
   return{f:mean(R)>0?best.f:0,curve,fmax};}
 function sweepRisk(R,grid,o){o=o||{};return grid.map(g=>{const s=simulate({sampler:resampler(R),risk:g/100,n:o.n||200,sims:o.sims||1000,ruin:o.ruin||0.5,seed:7});
@@ -1030,7 +1112,7 @@ let LANG='en';
 const MISSING=[];
 const I18N={
 en:{
-brand:"Jarn Neow",mode_play:"Beginner",mode_desk:"Expert",
+brand:"Jarn Neow",mode_play:"Beginner",mode_desk:"Expert",desk_h1:"Jarn Neow Expert mode: strategy risk analysis",desk_in_h:"Your inputs",
 ex_toggle:"Explanation",ex_all:"Explanations",ex_show:"What it shows.",ex_now:"Right now.",ex_do:"What to do.",d_sims_fixed:"10,000 (fixed)",
 mn_stats:"The closed-form numbers implied by your inputs, before any simulation.",mn_survt:"A summary of all simulated paths.",mn_ddhist:"The worst peak-to-trough drop of each simulated path. The further right the bars reach, the deeper the drawdowns you must be ready for.",
 mn_after:"Account balance after k losing trades in a row, at your risk size and at half of it. Where a line crosses the red line, the account is ruined.",mn_spread:"How the net edge shrinks as the spread widens, with commission held fixed. Where the line crosses zero, costs have consumed the whole edge.",
@@ -1136,7 +1218,7 @@ f_wr:"Win rate",h_wr:"Out of 100 trades, how many closed in profit? Use your for
 f_rr:"Average reward : risk",h_rr:"On average, how much do winners make compared with what a loser costs? If you risk 1 to make 1.5, type 1.5.",
 f_risk:"Risk per trade",h_risk:"The share of your account you lose when the stop loss is hit, per trade.",
 f_n:"Trades in your test",h_n:"How many trades the numbers above are based on. Fewer trades means less certainty.",
-share:"Copy link to share",share_done:"Link copied!",md_dl:"Download report (.md)",md_dl_play:"Download my report (.md)",md_copy:"Copy as text",md_copied:"Copied!",md_saved:"Report downloaded",md_title:"Full report",md_text:"Every card on this page in one Markdown file: inputs, results, the data behind each chart, the action plan, trading rules, method and limits. To include the gold backtest, run it first.",md_play_note:"The report is a Markdown (.md) file with everything on this page plus more detail: a risk ladder, streak odds, how sure you can be and a rules checklist. It opens in any notes app, Notion, Obsidian or GitHub. Nothing is uploaded.",
+share:"Copy link to share",file_reading:"Reading the file…",share_done:"Link copied!",md_dl:"Download report (.md)",md_dl_play:"Download my report (.md)",md_copy:"Copy as text",md_copied:"Copied!",md_saved:"Report downloaded",md_title:"Full report",md_text:"Every card on this page in one Markdown file: inputs, results, the data behind each chart, the action plan, trading rules, method and limits. To include the gold backtest, run it first.",md_play_note:"The report is a Markdown (.md) file with everything on this page plus more detail: a risk ladder, streak odds, how sure you can be and a rules checklist. It opens in any notes app, Notion, Obsidian or GitHub. Nothing is uploaded.",
 nudge_desk:"Want more inputs and more charts? Expert mode adds costs, sizing rules and lot size. Uploading trade history is optional.",nudge_desk_btn:"Open Expert mode",
 vs_noedge:"On average every trade you take is worth {E}. Wins and losses do not balance out, so no position size can save this strategy.",
 vs_risk_bad:"There is an edge, but at {risk}% per trade you would blow the account in about {blow} of simulated futures over the next {H} trades.",
@@ -1516,7 +1598,7 @@ gate_ft_t:"มีแค่ Forward test: คุณอาจกำลังเส
 gate_ft_1:"ถ้าไม่มี Edge ทุกสัปดาห์ของ Forward test คือเวลาที่เสียไป และถ้าเป็นบัญชีจริงก็คือเงินด้วย",gate_ft_2:"Backtest ตรวจไม้ในอดีตได้หลายร้อยไม้ในไม่กี่ชั่วโมง ก่อนที่คุณจะเสี่ยงอะไร",gate_ft_3:"Backtest กฎเดิมอย่างน้อย 100 ไม้ แล้วเทียบผลทั้งสองอย่าง",
 gate_ok_t:"ทดสอบครบทั้งสองอย่างแล้ว",gate_ok_p:"ใช้ตัวเลขจาก Forward test ที่นี่ เพราะใกล้เคียงการเทรดจริงที่สุด",
 flag_nn:"ยังไม่ได้ Backtest และ Forward test: ผลลัพธ์ด้านล่างเป็นเพียงตัวอย่าง ไม่ใช่หลักฐาน",flag_bt:"มีแค่ Backtest: ตัวเลขอาจ Overfit ผลลัพธ์ด้านล่างจึงน่าจะดีเกินจริง",flag_ft:"มีแค่ Forward test: เมื่อไม่มี Backtest ตัวอย่างขนาดเล็กแบบนี้อาจเป็นแค่โชค",
-mode_desk:"ผู้เชี่ยวชาญ",layout_full:"แดชบอร์ดเต็ม",layout_guided:"ทีละขั้น",
+mode_desk:"ผู้เชี่ยวชาญ",desk_h1:"จารย์เหนียว โหมดผู้เชี่ยวชาญ: วิเคราะห์ความเสี่ยงของกลยุทธ์",desk_in_h:"ค่าที่ใส่",layout_full:"แดชบอร์ดเต็ม",layout_guided:"ทีละขั้น",
 gate_title:"ขอเช็กก่อนเริ่มนะ",
 gate_intro:"สองคำถาม เพื่อบอกได้ว่าควรเชื่อผลลัพธ์ของคุณแค่ไหน ตอบแบบไหนก็ไปต่อได้",
 gate_q_bt:"คุณ Backtest กลยุทธ์นี้แล้วหรือยัง?",gate_q_ft:"คุณ Forward test แล้วหรือยัง (บัญชีเดโม่หรือบัญชีจริงเล็กๆ)?",
@@ -1533,7 +1615,7 @@ f_wr:"Win rate (อัตราชนะ)",h_wr:"จากการเทรด 
 f_rr:"Reward : Risk เฉลี่ย",h_rr:"เฉลี่ยแล้วไม้ที่ชนะได้เท่าไรเมื่อเทียบกับที่ไม้แพ้เสีย ถ้าเสี่ยง 1 เพื่อได้ 1.5 ให้ใส่ 1.5",
 f_risk:"ความเสี่ยงต่อไม้",h_risk:"สัดส่วนของพอร์ตที่คุณจะเสียเมื่อโดน Stop loss ในแต่ละไม้",
 f_n:"จำนวนไม้ในการทดสอบ",h_n:"ตัวเลขข้างบนมาจากการเทรดกี่ไม้ ยิ่งน้อยยิ่งไม่แน่นอน",
-share:"คัดลอกลิงก์ไปแชร์",share_done:"คัดลอกแล้ว!",md_dl:"ดาวน์โหลดรายงาน (.md)",md_dl_play:"ดาวน์โหลดรายงานของฉัน (.md)",md_copy:"คัดลอกเป็นข้อความ",md_copied:"คัดลอกแล้ว!",md_saved:"ดาวน์โหลดรายงานแล้ว",md_title:"รายงานฉบับเต็ม",md_text:"ทุกการ์ดในหน้านี้รวมเป็นไฟล์ Markdown ไฟล์เดียว: ค่าที่ใส่ ผลลัพธ์ ข้อมูลเบื้องหลังทุกกราฟ แผนสิ่งที่ต้องทำ กฎการเทรด วิธีคำนวณ และข้อจำกัด ถ้าต้องการรวม Backtest ทองคำ ให้รันก่อน",md_play_note:"รายงานเป็นไฟล์ Markdown (.md) มีทุกอย่างในหน้านี้พร้อมรายละเอียดเพิ่ม: ตารางระดับความเสี่ยง โอกาสแพ้ติดกัน ความมั่นใจในตัวเลข และเช็กลิสต์กฎการเทรด เปิดได้ในแอปโน้ตทั่วไป Notion, Obsidian หรือ GitHub ไม่มีการอัปโหลดข้อมูล",
+share:"คัดลอกลิงก์ไปแชร์",file_reading:"กำลังอ่านไฟล์…",share_done:"คัดลอกแล้ว!",md_dl:"ดาวน์โหลดรายงาน (.md)",md_dl_play:"ดาวน์โหลดรายงานของฉัน (.md)",md_copy:"คัดลอกเป็นข้อความ",md_copied:"คัดลอกแล้ว!",md_saved:"ดาวน์โหลดรายงานแล้ว",md_title:"รายงานฉบับเต็ม",md_text:"ทุกการ์ดในหน้านี้รวมเป็นไฟล์ Markdown ไฟล์เดียว: ค่าที่ใส่ ผลลัพธ์ ข้อมูลเบื้องหลังทุกกราฟ แผนสิ่งที่ต้องทำ กฎการเทรด วิธีคำนวณ และข้อจำกัด ถ้าต้องการรวม Backtest ทองคำ ให้รันก่อน",md_play_note:"รายงานเป็นไฟล์ Markdown (.md) มีทุกอย่างในหน้านี้พร้อมรายละเอียดเพิ่ม: ตารางระดับความเสี่ยง โอกาสแพ้ติดกัน ความมั่นใจในตัวเลข และเช็กลิสต์กฎการเทรด เปิดได้ในแอปโน้ตทั่วไป Notion, Obsidian หรือ GitHub ไม่มีการอัปโหลดข้อมูล",
 nudge_desk:"อยากได้ค่าป้อนและกราฟมากกว่านี้ไหม? โหมดผู้เชี่ยวชาญเพิ่มต้นทุน กฎขนาดไม้ และขนาดล็อต การอัปโหลดประวัติการเทรดไม่บังคับ",nudge_desk_btn:"เปิดโหมดผู้เชี่ยวชาญ",
 vs_noedge:"โดยเฉลี่ยแล้วทุกไม้ที่คุณเทรดมีค่า {E} กำไรกับขาดทุนไม่หักล้างกัน ขนาดไม้เท่าไรก็ช่วยกลยุทธ์นี้ไม่ได้",
 vs_risk_bad:"มี Edge แต่ถ้าเสี่ยง {risk}% ต่อไม้ พอร์ตจะแตกประมาณ {blow} ของอนาคตที่จำลองไว้ ภายใน {H} ไม้ถัดไป",
@@ -1964,7 +2046,7 @@ bt_p12:"Last 12 months",bt_p5:"Last 5 years",bt_pall:"All data",bt_load:"Loading
 bt_file:"The backtest needs the published site (GitHub Pages or any web server). Browsers block data files when index.html is opened straight from disk.",
 bt_nodecomp:"This browser can't unpack the data files. Use a recent Chrome, Edge, Firefox or Safari.",
 bt_need_sl:"Enter an SL distance under Account and costs to run this backtest. For gold, 1 pip = $0.10.",
-bt_stale:"Your inputs or range changed since this run. Run it again to update the results.",bt_err:"Couldn't load the gold data: {msg}",bt_range_bad:"Pick a start month that comes before the end month.",
+bt_stale:"Your inputs or range changed since this run. Run it again to update the results.",bt_err:"Couldn't load the gold data: {msg}",bt_err_busy:"Too many people are running backtests right now. Wait a minute and press Run again.",bt_err_http:"Couldn't download the gold data for {m} (error {code}). Press Run to try again.",bt_err_bad:"The gold data for {m} arrived damaged, so the backtest stopped rather than skip that month. Press Run to try again.",bt_err_net:"Couldn't reach the gold data. Check your connection and press Run again.",bt_range_bad:"Pick a start month that comes before the end month.",
 bt_start:"start",bt_t_final:"Final balance",bt_t_dd:"Deepest fall",bt_t_cyc:"Cycles won",bt_t_out:"Outcome",bt_out_ok:"Survived the whole range",bt_out_ruin:"Fell {x}% or more",bt_out_wipe:"Wiped out",
 bt_t_wr:"Win rate on real gold",bt_t_wr_you:"yours: {x}",bt_t_exp:"Average result per trade",bt_t_be:"break-even win rate {x}",
 bt_v_wiped:"The account was wiped out on {date}, {days} days into the backtest.",
@@ -2000,7 +2082,7 @@ bt_p12:"12 เดือนล่าสุด",bt_p5:"5 ปีล่าสุด"
 bt_file:"Backtest ต้องเปิดผ่านเว็บที่เผยแพร่แล้ว (GitHub Pages หรือเว็บเซิร์ฟเวอร์) เบราว์เซอร์จะไม่ยอมโหลดไฟล์ข้อมูลเมื่อเปิด index.html จากเครื่องโดยตรง",
 bt_nodecomp:"เบราว์เซอร์นี้แตกไฟล์ข้อมูลไม่ได้ ให้ใช้ Chrome, Edge, Firefox หรือ Safari เวอร์ชันล่าสุด",
 bt_need_sl:"ใส่ระยะ SL ในช่องบัญชีและต้นทุนก่อนรัน Backtest นี้ สำหรับทอง 1 pip = $0.10",
-bt_stale:"ค่าที่ใส่หรือช่วงเวลาเปลี่ยนไปหลังจากรันครั้งนี้ ให้รันอีกครั้งเพื่ออัปเดตผล",bt_err:"โหลดข้อมูลทองไม่ได้: {msg}",bt_range_bad:"เลือกเดือนเริ่มต้นให้อยู่ก่อนเดือนสิ้นสุด",
+bt_stale:"ค่าที่ใส่หรือช่วงเวลาเปลี่ยนไปหลังจากรันครั้งนี้ ให้รันอีกครั้งเพื่ออัปเดตผล",bt_err:"โหลดข้อมูลทองไม่ได้: {msg}",bt_err_busy:"ตอนนี้มีคนรัน Backtest พร้อมกันเยอะเกินไป รอสักนาทีแล้วกดรันอีกครั้ง",bt_err_http:"ดาวน์โหลดข้อมูลทองของเดือน {m} ไม่ได้ (เซิร์ฟเวอร์ตอบกลับ {code}) กดรันเพื่อลองใหม่",bt_err_bad:"ข้อมูลทองของเดือน {m} เสียหายระหว่างดาวน์โหลด จึงหยุด Backtest แทนที่จะข้ามเดือนนั้นไป กดรันเพื่อลองใหม่",bt_err_net:"เชื่อมต่อข้อมูลทองไม่ได้ ตรวจสอบอินเทอร์เน็ตแล้วกดรันอีกครั้ง",bt_range_bad:"เลือกเดือนเริ่มต้นให้อยู่ก่อนเดือนสิ้นสุด",
 bt_start:"เริ่ม",bt_t_final:"ยอดเงินสุดท้าย",bt_t_dd:"ลดลงลึกที่สุด",bt_t_cyc:"รอบที่กำไร",bt_t_out:"ผลลัพธ์",bt_out_ok:"รอดตลอดช่วง",bt_out_ruin:"ลดลง {x}% ขึ้นไป",bt_out_wipe:"เสียพอร์ตทั้งหมด",
 bt_t_wr:"Win rate บนทองจริง",bt_t_wr_you:"ของคุณ: {x}",bt_t_exp:"ผลเฉลี่ยต่อไม้",bt_t_be:"Win rate จุดคุ้มทุน {x}",
 bt_v_wiped:"พอร์ตหมดในวันที่ {date} หลังเริ่ม Backtest {days} วัน",
@@ -2126,12 +2208,28 @@ function bounds(o){
   (o.dots||[]).forEach(d=>{xs.push(d.x);ys.push(d.y);});
   (o.markers||[]).forEach(d=>{xs.push(d.x);ys.push(d.y);});
   (o.hlines||[]).forEach(h=>ys.push(h.y));(o.vlines||[]).forEach(v=>xs.push(v.x));
-  let xlo=o.xlo!==undefined?o.xlo:Math.min(...xs),xhi=o.xhi!==undefined?o.xhi:Math.max(...xs);
-  let ylo=o.ylo!==undefined?o.ylo:Math.min(...ys),yhi=o.yhi!==undefined?o.yhi:Math.max(...ys);
+  let xlo=o.xlo!==undefined?o.xlo:amin(xs),xhi=o.xhi!==undefined?o.xhi:amax(xs);
+  let ylo=o.ylo!==undefined?o.ylo:amin(ys),yhi=o.yhi!==undefined?o.yhi:amax(ys);
   if(o.ylo===undefined||o.yhi===undefined){const pad=(yhi-ylo||1)*0.06;if(o.ylo===undefined)ylo-=pad;if(o.yhi===undefined)yhi+=pad;}
   if(xhi===xlo)xhi=xlo+1;return{xlo,xhi,ylo,yhi};}
 /* generic plot: series (lines), areas, dots, hlines, vlines, markers */
+/* a chart can't show more points than it has pixels: past 4,000 points a line keeps the low and high of each of
+   2,000 buckets (peaks and drops stay exact), an area keeps its envelope, and a dot cloud is sampled evenly.
+   Smaller data is drawn untouched. */
+function thinLine(pts,nb){const n=pts.length,out=[pts[0]];for(let k=0;k<nb;k++){const a=Math.floor(k*n/nb),b=Math.max(a+1,Math.floor((k+1)*n/nb));let lo=a,hi=a;
+  for(let i=a+1;i<b;i++){if(pts[i][1]<pts[lo][1])lo=i;if(pts[i][1]>pts[hi][1])hi=i;}if(lo<hi){out.push(pts[lo],pts[hi]);}else if(hi<lo){out.push(pts[hi],pts[lo]);}else out.push(pts[lo]);}
+  out.push(pts[n-1]);return out;}
+function thinArea(a,nb){const n=a.upper.length,up=[],lo=[];for(let k=0;k<nb;k++){const s0=Math.floor(k*n/nb),s1=Math.max(s0+1,Math.floor((k+1)*n/nb));let u=-Infinity,l=Infinity;
+  for(let i=s0;i<s1;i++){if(a.upper[i][1]>u)u=a.upper[i][1];if(a.lower[i][1]<l)l=a.lower[i][1];}const x0=a.upper[s0][0],x1=a.upper[s1-1][0];up.push([x0,u],[x1,u]);lo.push([x0,l],[x1,l]);}
+  return Object.assign({},a,{upper:up,lower:lo});}
+function thin(o){const big=(o.series||[]).some(s=>s.pts.length>4000)||(o.areas||[]).some(a=>a.upper.length>4000)||(o.dots||[]).length>3000;if(!big)return o;
+  o=Object.assign({},o);
+  if(o.series)o.series=o.series.map(s=>s.pts.length>4000?Object.assign({},s,{pts:thinLine(s.pts,2000)}):s);
+  if(o.areas)o.areas=o.areas.map(a=>a.upper.length>4000&&a.lower.length===a.upper.length?thinArea(a,2000):a);
+  if(o.dots&&o.dots.length>3000){const st=o.dots.length/3000;o.dots=Array.from({length:3000},(_,i)=>o.dots[Math.floor(i*st)]);}
+  return o;}
 function plot(o){
+  o=thin(o);
   const b=bounds(o),f=frame(o,b.xlo,b.xhi,b.ylo,b.yhi),id='cp'+(++uid);
   let s=`<defs><clipPath id="${id}"><rect x="${f.m.l}" y="${f.m.t}" width="${f.pw}" height="${f.ph}"/></clipPath></defs>`+axes(f,o)+`<g clip-path="url(#${id})">`;
   (o.areas||[]).forEach(a=>{if(!a.upper.length)return;const up=a.upper.map((p,i)=>(i?'L':'M')+f1(f.X(p[0]))+' '+f1(f.Y(p[1]))).join(''),lo=a.lower.slice().reverse().map(p=>'L'+f1(f.X(p[0]))+' '+f1(f.Y(p[1]))).join('');
@@ -2148,7 +2246,7 @@ function plot(o){
   return wrap(f,s,o.label);}
 /* histogram: bins [{x0,x1,count}] */
 function histo(o){
-  const bins=o.bins,xlo=bins[0].x0,xhi=bins[bins.length-1].x1,ymax=Math.max(1,...bins.map(b=>b.count))*1.1,f=frame(o,xlo,xhi,0,ymax);
+  const bins=o.bins,xlo=bins[0].x0,xhi=bins[bins.length-1].x1,ymax=amax(1,bins.map(b=>b.count))*1.1,f=frame(o,xlo,xhi,0,ymax);
   let s=axes(f,Object.assign({yfmt:v=>Number.isInteger(v)?v:''},o));
   bins.forEach(b=>{const x=f.X(b.x0)+0.5,w=Math.max(1,f.X(b.x1)-f.X(b.x0)-1),y=f.Y(b.count);
     s+=`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(f.Y(0)-y)}" style="fill:${o.colorFn?o.colorFn(b):'var(--c1)'};opacity:.85"/>`;});
@@ -2157,7 +2255,7 @@ function histo(o){
   return wrap(f,s,o.label);}
 /* categorical bars: items [{label,value,color,faint}] */
 function bars(o){
-  const it=o.items,vals=it.map(i=>i.value),lo=Math.min(0,...vals),hi=Math.max(0,...vals),pad=(hi-lo||1)*0.12,f=frame(o,0,it.length,lo<0?lo-pad:0,o.ymax!==undefined?o.ymax:hi+pad);
+  const it=o.items,vals=it.map(i=>i.value),lo=amin(0,vals),hi=amax(0,vals),pad=(hi-lo||1)*0.12,f=frame(o,0,it.length,lo<0?lo-pad:0,o.ymax!==undefined?o.ymax:hi+pad);
   let s=axes(f,Object.assign({noXAxis:true},o)),bw=f.pw/it.length;
   s+=`<line x1="${f.m.l}" x2="${f.W-f.m.r}" y1="${f1(f.Y(0))}" y2="${f1(f.Y(0))}" style="stroke:var(--muted)"/>`;
   it.forEach((b,i)=>{const x=f.m.l+i*bw+bw*0.14,w=bw*0.72,y0=f.Y(0),y=f.Y(b.value);
@@ -2340,15 +2438,15 @@ function finding(id){
   const a=A,o={E:rfmt(a.E),Eabs:Math.abs(a.E).toFixed(2),wr:a.st.wr,be:pct0(a.be),rr:a.b,risk:a.st.risk,n:a.n,K:(a.K*100).toFixed(1),hK:(a.K*50).toFixed(1),Z:(a.Z*100).toFixed(1),Elo:rfmt(a.Elo),Ehi:rfmt(a.Ehi)};
   if(id==='noedge'){
     const svg=CH.wrGauge({p:a.p,be:a.be,beLabel:t('g_be',{x:pct0(a.be)}),pLabel:t('g_you',{x:a.st.wr}),label:t('f_noedge_t')});
-    return`<div class="finding"><div><h4>${esc(t('f_noedge_t'))}</h4><p>${esc(t('f_noedge_p',o))}</p></div><div class="chart">${svg}</div></div>`;}
+    return`<div class="finding"><div><h3>${esc(t('f_noedge_t'))}</h3><p>${esc(t('f_noedge_p',o))}</p></div><div class="chart">${svg}</div></div>`;}
   if(id==='risk'){
     const maxF=Math.max(0.12,Math.min(0.99,Math.max(a.Z*1.3,a.risk*1.08))),curve=SFX.growthCurve(a.p,a.b,maxF,90),gK=SFX.growth(a.K,a.p,a.b)*100,ylo=-Math.max(gK*2.5,0.3),youF=Math.min(a.risk,maxF),youG=Math.max(SFX.growth(Math.min(youF,0.985),a.p,a.b)*100,ylo);
     const svg=CH.growthPlot({curve,kelly:[a.K*100,SFX.growth(a.K,a.p,a.b)*100],you:[youF*100,youG],ylo,kellyLabel:t('g_best'),youLabel:t('g_you_risk'),xlabel:t('g_x_risk'),ylabel:t('g_y_growth'),label:t('f_risk_t')});
-    return`<div class="finding"><div><h4>${esc(t('f_risk_t'))}</h4><p>${esc(t('f_risk_p',o))}</p></div><div class="chart">${svg}</div></div>`;}
+    return`<div class="finding"><div><h3>${esc(t('f_risk_t'))}</h3><p>${esc(t('f_risk_p',o))}</p></div><div class="chart">${svg}</div></div>`;}
   if(id==='sample'){
     const need=a.E>0?(a.nNeeded?t('f_sample_need',{x:a.nNeeded}):t('f_sample_many')):'';
     const svg=CH.rangeBar({lo:a.Elo,hi:a.Ehi,pt:a.E,min:Math.min(-0.2,a.Elo),max:Math.max(0.2,a.Ehi),fmt:v=>rfmt(v,2),label:t('f_sample_t')});
-    return`<div class="finding"><div><h4>${esc(t('f_sample_t'))}</h4><p>${esc(t('f_sample_p',o))} ${esc(need)}</p></div><div class="chart">${svg}</div></div>`;}
+    return`<div class="finding"><div><h3>${esc(t('f_sample_t'))}</h3><p>${esc(t('f_sample_p',o))} ${esc(need)}</p></div><div class="chart">${svg}</div></div>`;}
   return'';}
 function renderWhy(){
   const el=$('why'),list=A.findings;
@@ -2421,7 +2519,7 @@ function renderDeeper(){
   const el=$('deeper'),open=Array.from(el.querySelectorAll('details')).map(d=>d.open),a=A,q=1-a.p;
   const wl=SFX.wilson(a.p,a.n),ks=[3,4,5,6,7,8,9,10],hi=a.streakK;
   const items=ks.map(k=>({label:String(k),value:a.pStreak(k)*100,color:k===hi||k===hi+1?'var(--c2)':'var(--c1)'}));
-  const bar=CH.bars({items,valFmt:v=>v<1?'<1':Math.round(v)+'',yfmt:v=>v+'%',xlabel:t('dp_streak_x'),label:t('dp_streak_t'),h:210,ymax:Math.max(10,Math.min(100,Math.max(...items.map(i=>i.value))*1.18))});
+  const bar=CH.bars({items,valFmt:v=>v<1?'<1':Math.round(v)+'',yfmt:v=>v+'%',xlabel:t('dp_streak_x'),label:t('dp_streak_t'),h:210,ymax:Math.max(10,Math.min(100,amax(items.map(i=>i.value))*1.18))});
   const kel=a.p>=1?t('why_perfect'):a.K>0?t('dp_kelly',{K:(a.K*100).toFixed(1),hK:(a.K*50).toFixed(1),qK:(a.K*25).toFixed(1),Z:(a.Z*100).toFixed(1),risk:a.st.risk}):t('dp_kelly0');
   el.innerHTML=`<h2>🧩 ${esc(t('deeper_title'))}</h2>
   <details><summary>${esc(t('dp_streak_t'))}</summary><div><p>${esc(a.p>=1?t('why_perfect'):t('dp_streak_p',{k:a.streakK,H:a.H,wr:a.st.wr,q:Math.round(q*100),k2:a.streakK+2,p2:blowFmt(a.pStreak(a.streakK+2))}))}</p><div class="chart">${bar}</div></div></details>
@@ -2589,13 +2687,14 @@ function showErr(msg){D.err=msg;$('file-status').innerHTML=msg?`<div class="errn
 function readFile(file){
   if(!file)return;if(file.size>25*1024*1024){showErr(t('err_big'));return;}
   const fr=new FileReader();
-  fr.onload=()=>{
+  $('file-status').innerHTML=`<div class="small">${esc(t('file_reading'))}</div>`;
+  fr.onload=()=>setTimeout(()=>{
     const p=SFX.parseMyfxbook(String(fr.result));
     if(!p.ok){D.parsed=null;D.fileId++;D.res=null;showErr(t('err_'+p.error));$('symwrap').hidden=true;analyze();return;}
     D.parsed=p;D.fileId++;D.fileName=file.name;showErr(null);
     const syms=Object.keys(p.symbols).sort((a,b)=>p.symbols[b]-p.symbols[a]);D.symbol=syms[0];
     const sel=$('symsel');sel.innerHTML=syms.map(s=>`<option value="${esc(s)}">${esc(s)} (${p.symbols[s]})</option>`).join('');sel.value=D.symbol;
-    $('symwrap').hidden=syms.length<2;if(!(D.pv>0)){const v=SFX.toR(p.trades.filter(x=>x.symbol===D.symbol),1,true).vpp;if(isFinite(v)&&v>0){D.pv=+v.toPrecision(4);$('d-pv').value=D.pv;}}autoFill();statusLine();hint();analyze();};
+    $('symwrap').hidden=syms.length<2;if(!(D.pv>0)){const v=SFX.toR(p.trades.filter(x=>x.symbol===D.symbol),1,true).vpp;if(isFinite(v)&&v>0){D.pv=+v.toPrecision(4);$('d-pv').value=D.pv;}}autoFill();statusLine();hint();analyze();},30);
   fr.onerror=()=>showErr(t('err_read'));fr.readAsText(file);}
 function autoFill(){
   const tr=curTrades();D.filled=null;if(tr.length<5)return;
@@ -2670,7 +2769,7 @@ function analyze(){
   const k=sigOf(SIGF);if(k!==lastF||!D.model){computeModel();computeHistory();lastF=k;}$('d-apply').hidden=!D.res;draw();}
 
 /* ---------- model sections ---------- */
-const tbl=(head,rows)=>`<div style="overflow-x:auto"><table class="kv mt"><thead><tr>${head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i?'n':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const tbl=(head,rows)=>`<div style="overflow-x:auto" tabindex="0" role="region" aria-label="${esc(head.join(', '))}"><table class="kv mt"><thead><tr>${head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i?'n':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 const lg=items=>`<div class="legend">${items.map(i=>`<span><i style="background:${i[0]}"></i>${esc(i[1])}</span>`).join('')}</div>`;
 function mHead(i,extra){return`<h2>${esc(SEC[STEPS[i]])}${extra?`<small>${esc(extra)}</small>`:''}</h2>`;}
 function nextBar(i){return i<STEPS.length-1?`<div class="nextbar" hidden><button type="button" class="btn" data-next="${i+1}">${esc(t('next_to',{name:SEC[STEPS[i+1]]}))}</button></div>`:'';}
@@ -2694,11 +2793,11 @@ function mSummary(m){
   <div class="s7">${card('Monte Carlo: '+D.sims.toLocaleString('en-US')+' paths, '+H+' trades',ch(fanSvg)+note('mn_fan'))}</div></div>${nextBar(0)}</section>`;}
 function mEdge(m){
   const p=m.p,lo=Math.max(0,p-0.25),hi=Math.min(1,p+0.25),xs=[];for(let i=0;i<=40;i++)xs.push(lo+(hi-lo)*i/40);
-  const line=xs.map(x=>[x*100,m.eAt(x)]),ymin=Math.min(...line.map(a=>a[1]),0),ymax=Math.max(...line.map(a=>a[1]),0),c0=Math.max(lo,m.ci[0])*100,c1=Math.min(hi,m.ci[1])*100;
+  const line=xs.map(x=>[x*100,m.eAt(x)]),ymin=amin(line.map(a=>a[1]),0),ymax=amax(line.map(a=>a[1]),0),c0=Math.max(lo,m.ci[0])*100,c1=Math.min(hi,m.ci[1])*100;
   const c1v=CH.plot({w:420,h:230,series:[{pts:line,color:'var(--c1)',w:2}],areas:[{upper:[[c0,ymax],[c1,ymax]],lower:[[c0,ymin],[c1,ymin]],color:'var(--c2)',op:0.14}],hlines:[{y:0,color:'var(--bad)'}],vlines:m.be>=lo&&m.be<=hi?[{x:m.be*100,color:'var(--muted)',label:'break-even'}]:[],markers:[{x:p*100,y:m.En,color:'var(--accent)',r:5}],xfmt:v=>v+'%',yfmt:v=>(+v.toFixed(2))+'',xlabel:'win rate',ylabel:'E[R] net',label:'Expectancy by win rate'});
   const bmax=Math.max(5,m.b*1.6),fr=[];for(let i=0;i<=60;i++){const bb=0.2+(bmax-0.2)*i/60,W=bb-m.c;fr.push([bb,W>0?m.L/(W+m.L)*100:100]);}
   const c2v=CH.plot({w:420,h:230,series:[{pts:fr,color:'var(--bad)',w:2}],areas:[{upper:fr.map(a=>[a[0],100]),lower:fr,color:'var(--ok)',op:0.1}],markers:[{x:Math.min(m.b,bmax),y:p*100,color:'var(--accent)',r:5,label:'you'}],ylo:0,yhi:100,xfmt:v=>v+'R',yfmt:v=>v+'%',xlabel:'reward : risk',ylabel:'win rate',label:'Break-even frontier'});
-  const sb=CH.bars({w:420,h:220,items:m.stress.map(s=>({label:s.label,value:s.ruin*100,color:s.p===p?'var(--accent)':'var(--c1)'})),ymax:Math.max(10,Math.min(100,Math.max(...m.stress.map(s=>s.ruin*100))*1.2)),yfmt:v=>v+'%',valFmt:v=>v.toFixed(1)+'%',ylabel:'P(ruin)',label:'Ruin probability across the win-rate confidence interval'});
+  const sb=CH.bars({w:420,h:220,items:m.stress.map(s=>({label:s.label,value:s.ruin*100,color:s.p===p?'var(--accent)':'var(--c1)'})),ymax:Math.max(10,Math.min(100,amax(m.stress.map(s=>s.ruin*100))*1.2)),yfmt:v=>v+'%',valFmt:v=>v.toFixed(1)+'%',ylabel:'P(ruin)',label:'Ruin probability across the win-rate confidence interval'});
   return`<section class="dsec" data-step="2">${mHead(1)}<div class="dgrid">
   <div class="s4">${card('Expectancy vs win rate',ch(c1v)+note('mn_evswr',{lo:pc(m.ci[0],0),hi:pc(m.ci[1],0),n:D.n}))}</div>
   <div class="s4">${card('Break-even frontier',ch(c2v)+note('mn_frontier'))}</div>
@@ -2708,7 +2807,7 @@ function mSurvival(m){
   const ra=Array.from(sim.ruinAt).filter(x=>x>0).sort((a,b)=>a-b),medRuin=ra.length?ra[Math.floor(ra.length/2)]:null;
   const rows=[['Risk per trade',D.risk+'% ('+(D.sizing==='fixed'?'fixed':'compounding')+')'],['De-risk rule',D.dAfter>0?'after '+D.dAfter+' losses: −'+D.dCut+'%':'off'],['Ruin threshold','−'+D.ruin+'% from start'],
     ['P(ruin)','<b>'+pc(sim.ruinProb)+'</b>'],['Median trade # of ruin',medRuin?medRuin:'–'],['Equity p5 / p50 / p95',`${fq(0.05)} / ${fq(0.5)} / ${fq(0.95)}`],['Max DD p50 / p95 / p99',`${dq(0.5)} / ${dq(0.95)} / ${dq(0.99)}`]];
-  const dds=ddA.map(x=>x*100),ddh=CH.histo({w:560,h:230,bins:SFX.hist(dds,24,0,Math.max(20,Math.ceil(Math.max(...dds)/5)*5)),vlines:[{x:SFX.quantile(ddA,0.5)*100,color:'var(--ink)',label:'p50'},{x:SFX.quantile(ddA,0.95)*100,color:'var(--bad)',label:'p95',anchor:'end'}],xfmt:v=>v+'%',xlabel:t('x_maxdd'),ylabel:t('y_count'),label:'Max drawdown distribution'});
+  const dds=ddA.map(x=>x*100),ddh=CH.histo({w:560,h:230,bins:SFX.hist(dds,24,0,Math.max(20,Math.ceil(amax(dds)/5)*5)),vlines:[{x:SFX.quantile(ddA,0.5)*100,color:'var(--ink)',label:'p50'},{x:SFX.quantile(ddA,0.95)*100,color:'var(--bad)',label:'p95',anchor:'end'}],xfmt:v=>v+'%',xlabel:t('x_maxdd'),ylabel:t('y_count'),label:'Max drawdown distribution'});
   const step=Math.max(1,Math.round(H/120)),rc=[];let k=0;for(let i=0;i<=H;i+=step){while(k<ra.length&&ra[k]<=i)k++;rc.push([i,k/N*100]);}
   if(rc[rc.length-1][0]!==H)rc.push([H,ra.length/N*100]);
   const none=!ra.length,half=ra.length?ra[Math.floor(ra.length/2)]:null;
@@ -2778,7 +2877,7 @@ function computeGrid(){
   const pool=SFX.gridPool(mk(1)),po={B0:D.bal,H:D.hor,ruin:D.ruin/100,scale:D.gAuto==='scale'};
   const sim=SFX.gridPaths(pool,Object.assign({sims:2000,seed:41,keep:50,bands:true},po));
   const pn=Array.from(pool.pnl),N=pn.length,w=pn.filter(x=>x>0),l=pn.filter(x=>x<=0),sum=a=>a.reduce((x,y)=>x+y,0);
-  const E=sum(pn)/N,se=SFX.sd(pn)/Math.sqrt(N),avgW=w.length?sum(w)/w.length:0,avgL=l.length?sum(l)/l.length:0,worst=Math.min(...pn);
+  const E=sum(pn)/N,se=SFX.sd(pn)/Math.sqrt(N),avgW=w.length?sum(w)/w.length:0,avgL=l.length?sum(l)/l.length:0,worst=amin(pn);
   const mae=Array.from(pool.mae),pWipe1=mae.filter(x=>x>=D.bal).length/N,pRuin1=mae.filter(x=>x>=D.bal*D.ruin/100).length/N;
   const days=Array.from(pool.days).sort((a,b)=>a-b),dMean=SFX.mean(days),kinds=[0,1,2,3].map(k=>Array.from(pool.kind).filter(x=>x===k).length/N);
   const reach=[];for(let k=1;k<=G.M;k++)reach.push(Array.from(pool.lev).filter(x=>x>=k).length/N);
@@ -2857,8 +2956,19 @@ function drawGrid(){
   $('d-main').innerHTML=gSummary(g)+gExposure(g)+gOutcomes(g)+gSurvival(g)+btSection();rowAlign();applyLayout();}
 
 /* ---------- backtest on real gold (1-minute COMEX futures, loaded month by month in a worker) ---------- */
+function btErrText(m){
+  const mo=m.month?dfmtM(m.month):'';
+  if(m.kind==='http'&&m.code===429)return t('bt_err_busy');
+  if(m.kind==='http')return t('bt_err_http',{code:m.code,m:mo});
+  if(m.kind==='bad')return t('bt_err_bad',{m:mo});
+  if(m.kind==='net')return t('bt_err_net');
+  return t('bt_err',{msg:m.msg});}
+const dfmtM=k=>{const d=new Date(Date.UTC(+k.slice(0,4),+k.slice(5,7)-1,1));return d.toLocaleDateString(LANG==='th'?'th-TH-u-ca-gregory':'en-GB',{month:'short',year:'numeric',timeZone:'UTC'});};
 const BT={idx:null,idxErr:null,from:null,to:null,dir:'buy',res:null,sig:null,kind:null,busy:false,prog:'',err:null,worker:null,id:0};
 const btBase=()=>new URL('data/gold/',location.href).href;
+/* month files are immutable, so on the live site they come from jsDelivr, pinned to a git tag (cached forever, no GitHub Pages bandwidth); this site is the fallback */
+const BT_REPO='0xtrvkc/Jarn-Neow';
+const btBases=()=>{const own=btBase(),tag=BT.idx&&BT.idx.cdnTag;return tag&&location.protocol==='https:'?['https://cdn.jsdelivr.net/gh/'+BT_REPO+'@'+tag+'/data/gold/',own]:[own];};
 const btFile=()=>location.protocol==='file:';
 const btCan=()=>typeof DecompressionStream!=='undefined'&&typeof Worker!=='undefined';
 const ymOf=min=>new Date(min*60000).toISOString().slice(0,7);
@@ -2877,9 +2987,9 @@ function btRun(){
   if(!BT.worker){BT.worker=new Worker(URL.createObjectURL(new Blob([$('s-btw').textContent],{type:'text/javascript'})));
     BT.worker.onmessage=e=>{const m=e.data;if(m.id!==undefined&&m.id!==BT.id)return;
       if(m.type==='progress'){BT.prog=m.stage==='run'?t('bt_running'):m.stage==='starts'?t('bt_starts',{done:m.done,total:m.total}):t('bt_load',{done:m.done,total:m.total});const el=$('bt-status');if(el)el.textContent=BT.prog;return;}
-      BT.busy=false;if(m.type==='error'){BT.err=t('bt_err',{msg:m.msg});}else{BT.res=m.out;BT.err=null;}btRedraw();};}
+      BT.busy=false;if(m.type==='error'){BT.err=btErrText(m);}else{BT.res=m.out;BT.err=null;}btRedraw();};}
   BT.busy=true;BT.err=null;BT.res=null;BT.prog=t('bt_load',{done:0,total:ms.length});BT.sig=btSig();BT.kind=D.stype;BT.id++;
-  BT.worker.postMessage({id:BT.id,base:btBase(),months:ms,rolls:BT.idx.rolls,params:btParams()});btRedraw();}
+  const counts={};BT.idx.months.forEach(x=>{counts[x.m]=x.n;});BT.worker.postMessage({id:BT.id,bases:btBases(),months:ms,counts,rolls:BT.idx.rolls,params:btParams()});btRedraw();}
 function btRedraw(){const el=$('bt-sec');if(!el)return;const tpl=document.createElement('template');tpl.innerHTML=btSection();el.replaceWith(tpl.content.firstElementChild);rowAlign();}
 function btControls(){
   const ms=BT.idx?BT.idx.months.map(x=>x.m):[],a=ms[0],b=ms[ms.length-1],g=D.stype!=='fixed';
@@ -2909,7 +3019,7 @@ function btSection(){
   return`<section class="dsec" data-step="0" id="bt-sec">${head}${body}</section>`;}
 const xDate=v=>{const d=new Date(v*60000);return d.toISOString().slice(0,7);};
 function btEquity(r){
-  const d=r.book.days,b0=D.bal,cl=d.map(x=>[x[0],x[1]]),lo=d.map(x=>[x[0],Math.max(0,x[2])]),ymax=Math.max(b0*1.1,...cl.map(x=>x[1]))*1.05;
+  const d=r.book.days,b0=D.bal,cl=d.map(x=>[x[0],x[1]]),lo=d.map(x=>[x[0],Math.max(0,x[2])]),ymax=amax(b0*1.1,cl.map(x=>x[1]))*1.05;
   const vl=[];if(r.book.wipeAt>0)vl.push({x:r.book.wipeAt,color:'var(--bad)'});
   return CH.plot({w:860,h:260,m:{l:62,r:14},series:[{pts:lo,color:'var(--bad)',w:1,op:0.8},{pts:cl,color:'var(--accent)',w:2}],areas:[{upper:cl,lower:lo,color:'var(--bad)',op:0.12}],
     hlines:[{y:b0,color:'var(--muted)',label:t('bt_start')},{y:b0*(1-D.ruin/100),color:'var(--warn)',label:t('d_ruin_line',{x:D.ruin})}],vlines:vl,xlo:d[0][0],xhi:d[d.length-1][0],ylo:0,yhi:ymax,xfmt:xDate,yfmt:v=>cmpNum(v),ylabel:'equity',label:'Equity on real gold'});}
@@ -2993,8 +3103,8 @@ function btVol(r){
   if(r.kind==='fixed')refs=[[D.sl,'var(--bad)',t('bv_ref_sl')],[D.sl*D.rr,'var(--ok)',t('bv_ref_tp')]];
   else if(D.stype==='grid')refs=[[D.gStep,'var(--warn)',t('bv_ref_step')],[(G.M-1)*D.gStep,'var(--bad)',t('bv_ref_full')]];
   else{const w=gLadder(G).wipeD;refs=[[D.gTp,'var(--ok)',t('bv_ref_tp')]].concat(isFinite(w)?[[w,'var(--bad)',t('bv_ref_wipe')]]:[]);}
-  const mx=Math.max(...Y.map(y=>y.adr)),shown=refs.filter(x=>x[0]>0&&x[0]<=mx*2.5);
-  const chv=CH.bars({w:420,h:220,items:Y.map(y=>({label:String(y.y).slice(2),value:y.adr,color:'var(--c1)'})),ymax:Math.max(mx,...shown.map(x=>x[0]))*1.12,hlines:shown.map(x=>({y:x[0],color:x[1]})),yfmt:v=>cmpNum(v),valFmt:v=>Math.round(v)+'',ylabel:'pips a day',label:'Average daily range by year'});
+  const mx=amax(Y.map(y=>y.adr)),shown=refs.filter(x=>x[0]>0&&x[0]<=mx*2.5);
+  const chv=CH.bars({w:420,h:220,items:Y.map(y=>({label:String(y.y).slice(2),value:y.adr,color:'var(--c1)'})),ymax:amax(mx,shown.map(x=>x[0]))*1.12,hlines:shown.map(x=>({y:x[0],color:x[1]})),yfmt:v=>cmpNum(v),valFmt:v=>Math.round(v)+'',ylabel:'pips a day',label:'Average daily range by year'});
   const f=Y[0],l=Y[Y.length-1],ref=refs[0];
   const line=t('bv_now',{y0:f.y,a:Math.round(f.adr),y1:l.y,b:Math.round(l.adr),x:(l.adr/f.adr).toFixed(1),name:ref[2],v:+ref[0].toFixed(1),r0:(ref[0]/f.adr*100).toFixed(0),r1:(ref[0]/l.adr*100).toFixed(0)});
   return`<div class="s6">${card('Gold volatility by year',ch(chv)+lg([['var(--c1)',t('bv_lg_adr')]].concat(refs.map(x=>[x[1],x[2]+' ('+(+x[0].toFixed(1)).toLocaleString('en-US')+')'])))+`<p class="small" style="margin:.6rem 0 0">${esc(line)}</p>`+note('bv_note'))}</div>`;}
@@ -3002,7 +3112,7 @@ function btTrend(r){
   const M=(r.book.months||[]).filter(m=>m.eq0>0&&m.path>0);if(M.length<3)return'';
   const cls=m=>{const e=Math.abs(m.move)/m.path;return e<0.15?'range':e>=0.35?(m.move>0?'up':'down'):'mixed';};
   const col={range:'var(--c1)',mixed:'var(--muted)',up:'var(--ok)',down:'var(--bad)'},pts=M.map(m=>({x:m.move,y:Math.max(-100,(m.eq1/m.eq0-1)*100),c:cls(m),m}));
-  const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y),xm=Math.max(...xs.map(Math.abs))*1.08,ylo=Math.min(0,...ys),yhi=Math.max(0,...ys);
+  const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y),xm=amax(xs.map(Math.abs))*1.08,ylo=amin(0,ys),yhi=amax(0,ys);
   const chv=CH.plot({w:520,h:250,series:[],dots:pts.map(p=>({x:p.x,y:p.y,r:3.4,color:col[p.c],op:0.9})),hlines:[{y:0,color:'var(--muted)',dash:false}],vlines:[{x:0,color:'var(--muted)'}],xlo:-xm,xhi:xm,ylo:ylo-(yhi-ylo)*0.08,yhi:yhi+(yhi-ylo)*0.08,xfmt:v=>cmpNum(Math.abs(v))===''?'0':(v<0?'−':'+')+cmpNum(Math.abs(v)),yfmt:v=>Math.round(v)+'%',xlabel:t('btr_x'),ylabel:t('btr_y'),label:'Monthly result by gold move'});
   const order=['range','mixed','up','down'],rows=order.map(k=>{const a=pts.filter(p=>p.c===k);if(!a.length)return[t('btr_'+k),'0','–','–','–'];const avg=a.reduce((s,p)=>s+p.y,0)/a.length,w=a.reduce((x,p)=>p.y<x.y?p:x,a[0]);
     return[t('btr_'+k),String(a.length),(avg>=0?'+':'−')+Math.abs(avg).toFixed(1)+'%',pc(a.filter(p=>p.y<0).length/a.length,0),lmon(w.m.m)+' '+(w.y>=0?'+':'−')+Math.abs(w.y).toFixed(1)+'%'];});
@@ -3012,7 +3122,7 @@ function btTrend(r){
 function btTrouble(r){
   const st=r.st,dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],tz=tzLab();let left,right,line;
   const gapRows=[['Weekend and holiday gaps held',String(st.gapN)],['Total effect of those gaps',money(st.gapSum)],['Worst single gap',st.gapWorst<0?money(st.gapWorst)+' ('+dfmt(st.gapWorstAt)+')':'–']];
-  if(r.kind==='grid'){const hr=rot(st.troubleHr),mxh=hr.indexOf(Math.max(...hr));
+  if(r.kind==='grid'){const hr=rot(st.troubleHr),mxh=hr.indexOf(amax(hr));
     left=ch(CH.bars({w:600,h:230,items:hr.map((v,i)=>({label:i%3===0?String(i):'',value:v,color:i===mxh?'var(--bad)':'var(--c2)'})),xlabel:t('bq_hour',{tz}),ylabel:t('bq_count'),label:'Hour of the deepest moments'}));
     const dw=[1,2,3,4,5,6,0].map(i=>st.troubleDw[i]);
     right=ch(CH.bars({w:420,h:200,items:dw.map((v,i)=>({label:dn[[1,2,3,4,5,6,0][i]],value:v,color:'var(--c2)'})),ylabel:t('bq_count'),label:'Weekday of the deepest moments'}));
@@ -3065,12 +3175,12 @@ function secSummary(r){
   <div class="dgrid"><div class="s5">${card('Summary statistics',kv(rows)+note('n_hstats'))}</div>
   <div class="s7">${card('Equity curve (cumulative R)',ch(eq)+note('n_equity'))}${card('Underwater (R below peak)',ch(uwc)+note('n_uw'))}</div></div></section>`;}
 function secEdge(r){
-  const s=r.stats,R=r.R,lo=Math.floor(Math.min(...R)*2)/2,hi=Math.ceil(Math.max(...R)*2)/2;
+  const s=r.stats,R=r.R,lo=Math.floor(amin(R)*2)/2,hi=Math.ceil(amax(R)*2)/2;
   const h1=CH.histo({w:420,h:230,bins:SFX.hist(R,Math.max(8,Math.min(24,Math.round(Math.sqrt(r.n)*2))),lo,hi),colorFn:b=>b.x1<=0?'var(--c2)':(b.x0>=0?'var(--c1)':'var(--c3)'),vlines:[{x:s.expectancy,color:'var(--ink)',label:'E[R]'}],xfmt:v=>(+v.toFixed(1))+'',xlabel:'R',ylabel:t('y_count'),label:'R distribution'});
   const bm=Array.from(r.boot.means),h2=CH.histo({w:420,h:230,bins:SFX.hist(bm,30),colorFn:b=>b.x1<=0?'var(--c2)':'var(--c1)',vlines:[{x:0,color:'var(--bad)',dash:true,label:'0'},{x:r.boot.ci[0],color:'var(--muted)',dash:true},{x:r.boot.ci[1],color:'var(--muted)',dash:true}],xfmt:v=>(+v.toFixed(2))+'',xlabel:'E[R]',label:'Bootstrap distribution of expectancy'});
   const w=Math.max(10,Math.min(30,Math.floor(r.n/3))),roll=r.n>=w+5?SFX.rolling(R,w):null;
   const rl=roll?CH.plot({w:420,h:230,series:[{pts:roll.map((v,i)=>[i+w,v]),color:'var(--c1)',w:1.8}],hlines:[{y:0,color:'var(--bad)'},{y:s.expectancy,color:'var(--c2)',label:'mean'}],xlabel:t('x_trades'),ylabel:'E[R]',yfmt:v=>(+v.toFixed(2))+'',label:'Rolling expectancy'}):null;
-  const ls=s.streaks.loss,maxL=ls.length?Math.max(...ls):0,cnt=[];for(let k=1;k<=Math.max(maxL,4);k++)cnt.push({label:String(k),value:ls.filter(x=>x===k).length,color:'var(--c2)'});
+  const ls=s.streaks.loss,maxL=ls.length?amax(ls):0,cnt=[];for(let k=1;k<=Math.max(maxL,4);k++)cnt.push({label:String(k),value:ls.filter(x=>x===k).length,color:'var(--c2)'});
   const q=s.losses/r.n,sb=CH.bars({w:420,h:200,items:cnt,yfmt:v=>Number.isInteger(v)?v:'',xlabel:t('x_runlen'),label:'Losing run lengths'});
   const pk=[3,5,7,10].map(k=>['P(≥ '+k+' losses in a row, '+r.H+' trades)',(SFX.probStreak(q,k,r.H)*100).toFixed(1)+'%']);
   return`<section class="dsec" data-step="7">${hHead('edge')}<div class="dgrid">
@@ -3160,7 +3270,7 @@ function rpParts(o){
   return{edge,out,risk,H};}
 function report(o){
   const r=rpParts(o),li=a=>`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
-  return`<div class="rp"><div><h4>${esc(t('rp_edge_t'))}</h4><p>${esc(r.edge)}</p></div><div><h4>${esc(t('rp_out_t',{H:r.H}))}</h4>${li(r.out)}</div><div><h4>${esc(t('rp_risk_t'))}</h4>${li(r.risk)}</div></div>`;}
+  return`<div class="rp"><div><h3>${esc(t('rp_edge_t'))}</h3><p>${esc(r.edge)}</p></div><div><h3>${esc(t('rp_out_t',{H:r.H}))}</h3>${li(r.out)}</div><div><h3>${esc(t('rp_risk_t'))}</h3>${li(r.risk)}</div></div>`;}
 function modelRpo(m){
   const se=Math.sqrt(Math.max(1e-12,m.p*(1-m.p)/D.n)),need=t('a_noedge_need',{be:pc(m.be),rr:(m.p>0?((m.q*m.L)/m.p+m.c):0).toFixed(2)});
   return{E:m.En,wr:m.p,be:m.be,pf:m.q>0?(m.p*m.W)/(m.q*m.L):Infinity,n:D.n,lo:m.Elo,hi:m.Ehi,ppos:Phi((m.p-m.be)/se),K:m.K,L:m.L,q:m.q,sim:m.sim,sweep:m.sweep,nNeed:m.nNeed,costShare:m.Eg>0?m.c/m.Eg:0,need};}
@@ -3204,12 +3314,12 @@ function buildHistExpl(r){
   {const m=D.model,a=m.sim,b=r.sim,md=SFX.quantile(a.dd,0.95),rd=SFX.quantile(b.dd,0.95),v={md:dpc(md),rd:dpc(rd),mr:pc(a.ruinProb),rr:pc(b.ruinProb),w:rfmt(r.stats.worst)};
    const worse=rd>md*1.15+0.005||b.ruinProb>a.ruinProb+0.02,better=!worse&&rd<md*0.85;
    X.n_cmp={now:t(worse?'e_cmp_worse':better?'e_cmp_better':'e_cmp_same',v),todo:worse?t('a_cmp_worse'):null};}
-  const minU=Math.min(...r.uw),curU=r.uw[r.uw.length-1],tot=r.cum[r.cum.length-1];
+  const minU=amin(r.uw),curU=r.uw[r.uw.length-1],tot=r.cum[r.cum.length-1];
   X.n_hstats={now:t('e_hstats',{wr:pc(s.winRate,0),aw:rfmt(s.avgWin),al:rfmt(s.avgLoss),E:rfmt(s.expectancy,3),t:s.t.toFixed(2)})+' '+t(Math.abs(s.t)>=1.96?'e_hsig':'e_hnosig')};
   X.n_equity={now:t('e_hequity',{tot:rfmt(tot,1),n:r.n,maxdd:rfmt(minU,1),cur:rfmt(curU,1)})};X.n_uw=X.n_equity;
   X.n_rdist={now:t('e_hrdist',{nw:s.wins,aw:rfmt(s.avgWin),nl:s.losses,al:rfmt(s.avgLoss),worst:rfmt(s.worst),best:rfmt(s.best)})};
   X.n_boot={now:t('e_hboot',{p:pc(r.boot.probPos,0),lo:rfmt(r.boot.ci[0]),hi:rfmt(r.boot.ci[1])}),todo:r.boot.ci[0]<=0?(o.nNeed?t('a_collect',{x:o.nNeed.toLocaleString('en-US')}):t('a_collect_many')):t('a_edge_ok')};
-  const w=Math.max(10,Math.min(30,Math.floor(r.n/3)));if(r.n>=w+5){const ro=SFX.rolling(r.R,w);X.n_roll={now:t('e_hroll',{w,last:rfmt(ro[ro.length-1]),mean:rfmt(s.expectancy),min:rfmt(Math.min(...ro)),max:rfmt(Math.max(...ro))})};}
+  const w=Math.max(10,Math.min(30,Math.floor(r.n/3)));if(r.n>=w+5){const ro=SFX.rolling(r.R,w);X.n_roll={now:t('e_hroll',{w,last:rfmt(ro[ro.length-1]),mean:rfmt(s.expectancy),min:rfmt(amin(ro)),max:rfmt(amax(ro))})};}
   const q=s.losses/r.n,typ=SFX.typicalStreak(q,r.H);X.n_runs={now:t('e_hruns',{maxL:s.maxLoseStreak,k:typ,H:r.H})};
   X.n_kelly={now:t('e_hkelly',{f:pc(r.optF.f,2),hf:pc(r.optF.f/2,2),risk:D.risk}),todo:D.risk/100>r.optF.f?t('a_overkelly'):null};
   const d=r.beh.disc,e={now:t('e_hdisc',{n:d.n,on:d.onStop,worse:d.worse,early:d.early})};X.n_disc=e;X.n_disc_bad=e;
@@ -3245,7 +3355,7 @@ function buildPlan(m,r){
     if(m.K>0&&risk/100>m.K/2){targ.push(m.K*50);why.push(t('pl2_r_kelly',{kx:kx.toFixed(1)}));}
     if(F.dd95>0.3){targ.push(dd20!==null?dd20:sw[0].risk);why.push(t('pl2_r_dd',{dd:dpc(F.dd95)}));}
     if(m.stress[0].ruin>0.05&&m.Klo>0){targ.push(m.Klo*50);why.push(t('pl2_r_stress',{lo:pc(m.ci[0],0),sr:pc(m.stress[0].ruin)}));}
-    if(targ.length){const x=rnd(Math.min(...targ));
+    if(targ.length){const x=rnd(amin(targ));
       if(x<risk*0.97){const s2=runSim(m.p,x);useRisk=x;
         add(m.sim.ruinProb>0.05||(m.K>0&&risk/100>m.K)?'must':'should','lower',{x,risk,reasons:why.join('; ')},t('pl2_res_risk',{a:pc(m.sim.ruinProb),b:pc(s2.ruinProb),c:dpc(F.dd95),d:dpc(dd95(s2))})).c={newRuin:s2.ruinProb};}}
     if(useRisk===risk&&m.Elo>0){const cap=Math.min(safe===null?0:safe,dd20===null?0:dd20,m.K*50);if(cap>risk*2)add('info','room',{x:rnd(cap)});}
@@ -3294,7 +3404,7 @@ function buildPlan(m,r){
 const nf=v=>(+v).toLocaleString('en-US',{maximumFractionDigits:2});
 const pdate=days=>{const d=new Date(Date.now()+days*864e5);return d.toLocaleDateString(LANG==='th'?'th-TH':'en-GB',{day:'numeric',month:'short',year:'numeric'});};
 function hb(rows,max){ /* rows: [label, value, text, tone] */
-  const mx=max||Math.max(...rows.map(r=>Math.abs(r[1])),1e-9);
+  const mx=max||amax(rows.map(r=>Math.abs(r[1])),1e-9);
   return`<div class="pvh">${rows.map(([l,v,txt,tone])=>`<div class="pvr"><span class="pvl">${esc(l)}</span><span class="pvt"><i class="${tone||''}" style="width:${Math.max(2,Math.abs(v)/mx*100)}%"></i></span><b>${esc(txt)}</b></div>`).join('')}</div>`;}
 function stack(parts){const tot=parts.reduce((a,p)=>a+p[1],0)||1;
   return`<div class="pvs">${parts.map(([l,v,tone])=>v?`<i class="${tone}" style="width:${v/tot*100}%" title="${esc(l)}"></i>`:'').join('')}</div><div class="legend">${parts.map(([l,v,tone])=>`<span><i class="pvdot ${tone}"></i>${esc(l)}: ${v}</span>`).join('')}</div>`;}
@@ -3307,7 +3417,7 @@ function sweepVis(m,marks){
 function rerunVis(m){
   const W=440,H=196,l=44,rt=10,tp=14,bt=48,cols=[0,50,100,150,200].map(k=>D.n+k),iw=W-l-rt,ih=H-tp-bt;
   const rows=cols.map(n=>{const ci=SFX.wilson(m.p,n);return{n,lo:m.eAt(ci[0]),hi:m.eAt(ci[1])};});
-  let mn=Math.min(-0.1,...rows.map(r=>r.lo)),mx=Math.max(0.1,...rows.map(r=>r.hi));const pad=(mx-mn)*0.08;mn-=pad;mx+=pad;
+  let mn=amin(-0.1,rows.map(r=>r.lo)),mx=amax(0.1,rows.map(r=>r.hi));const pad=(mx-mn)*0.08;mn-=pad;mx+=pad;
   const y=v=>tp+(mx-v)/(mx-mn)*ih,x=i=>l+iw*(i+0.5)/cols.length,E=m.En,f=v=>(v>=0?'+':'\u2212')+Math.abs(v).toFixed(2)+'R';
   let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="expectancy range at each check">`;
   [mn+pad,0,mx-pad].filter(v=>v===0||Math.abs(y(v)-y(0))>14).forEach(v=>{g+=`<text x="${l-6}" y="${y(v)+3}" text-anchor="end">${f(v)}</text>`;});
@@ -3334,7 +3444,7 @@ function planExtras(it,m,r,c){
   case'lower':vis=sweepVis(m,[[D.risk,m.sim.ruinProb*100,t('pv_you'),'var(--bad)'],[it.v.x,c.newRuin*100,t('pv_target'),'var(--ok)']]);
     ex=t('pl2_lower_x',{bal:nf(bal),r1:D.risk,m1:nf(bal*D.risk/100),r2:it.v.x,m2:nf(bal*it.v.x/100)});break;
   case'room':vis=sweepVis(m,[[D.risk,m.sim.ruinProb*100,t('pv_you'),'var(--accent)']]);ex=t('pl2_room_x',{bal:nf(bal),x:it.v.x,m:nf(bal*it.v.x/100),r:D.risk,m0:nf(bal*D.risk/100)});break;
-  case'worst':{const i=r.R.indexOf(r.stats.worst),x=tr[i],lo=Math.floor(Math.min(...r.R)*2)/2,hi=Math.ceil(Math.max(...r.R)*2)/2;
+  case'worst':{const i=r.R.indexOf(r.stats.worst),x=tr[i],lo=Math.floor(amin(r.R)*2)/2,hi=Math.ceil(amax(r.R)*2)/2;
     vis=pv(CH.histo({w:420,h:150,m:{l:30,b:24},bins:SFX.hist(r.R,16,lo,hi),colorFn:b=>r.stats.worst>=b.x0&&r.stats.worst<=b.x1?'var(--bad)':b.x1<=0?'var(--c2)':'var(--c1)',vlines:[{x:-1,color:'var(--muted)',dash:true,label:'−1R'}],xfmt:v=>(+v.toFixed(1))+'',xlabel:'R',label:'R distribution'}));
     ex=t('pl2_worst_x',{tk:x.ticket||'–',d:new Date(x.close).toISOString().slice(0,10),sym:x.symbol,pips:nf(Math.abs(x.pips)),sl:nf(D.sl),w:R(r.stats.worst)});break;}
   case'discw':case'disce':{const d=r.beh.disc;vis=stack([[t('pv_on'),d.onStop,'ok'],[t('pv_worse'),d.worse,'bad'],[t('pv_early'),d.early,'warn']]);
@@ -3342,7 +3452,7 @@ function planExtras(it,m,r,c){
     ex=t('pl2_'+k+'_x',{list:L.map(o=>'#'+(o.x.ticket||'?')+' ('+R(o.r)+')').join(', ')});break;}
   case'lots':{const ls=tr.map(x=>x.lots),tgt=D.sl>0&&D.pv>0?D.bal*D.risk/100/(D.sl*D.pv):null;
     vis=pv(CH.plot({w:420,h:150,m:{l:36,b:24},dots:ls.map((v,i)=>({x:i+1,y:v,r:3,color:'var(--c1)',op:.9})),hlines:tgt?[{y:tgt,color:'var(--ok)',label:t('pv_target')}]:[],ylo:0,yfmt:v=>(+v.toFixed(2))+'',xlabel:t('x_trades'),ylabel:t('pv_lots'),label:'lot size per trade'}));
-    ex=t('pl2_lots_x',{min:Math.min(...ls),max:Math.max(...ls),risk:D.risk,sl:nf(D.sl),lots:tgt?(Math.floor(tgt*100)/100).toFixed(2):'–'});break;}
+    ex=t('pl2_lots_x',{min:amin(ls),max:amax(ls),risk:D.risk,sl:nf(D.sl),lots:tgt?(Math.floor(tgt*100)/100).toFixed(2):'–'});break;}
   case'decay':{const w=it.v.w,ro=SFX.rolling(r.R,w),last=r.R.slice(-w);
     vis=pv(CH.plot({w:420,h:150,m:{l:40,b:24},series:[{pts:ro.map((v,i)=>[i+w,v]),color:'var(--c1)',w:2}],hlines:[{y:0,color:'var(--bad)'},{y:r.stats.expectancy,color:'var(--ok)',label:t('pv_avg')}],yfmt:v=>(+v.toFixed(2))+'',xlabel:t('x_trades'),label:'rolling average'}));
     ex=t('pl2_decay_x',{w,wins:last.filter(x=>x>0).length,losses:last.filter(x=>x<0).length});break;}
@@ -3428,10 +3538,10 @@ function mdExtra(title){
     if(title==='Equity on real gold'||title==='Equity: one random-entry run')return mdMonthly(r);
     if(title==='Orders reached'&&st==='grid'){const s=r.st,c=Math.max(1,s.cycles);return cap('Orders reached in the backtest')+MD.table(['Order','Cycles reaching it','Share',''],s.reach.map((x,i)=>[String(i+1),x.toLocaleString('en-US'),pc(x/c,1),MD.bar(x,c)]))+'\n';}
     if(title==='Start-date luck'&&r.starts){const S=r.starts;return cap(tx('Every start month tested (each run lasts '+S.W+' months)','ทุกเดือนเริ่มที่ทดสอบ (แต่ละรอบยาว '+S.W+' เดือน)'))+
-      MD.table(['Start','Result','Outcome',''],S.runs.map(x=>[x.k,pctS(x.ret),x.wipe?'wiped out':x.ruin?'hit −'+D.ruin+'%':'survived',MD.bar(Math.max(0,x.ret+1),Math.max(...S.runs.map(y=>y.ret+1)))]))+'\n';}
-    if(title==='Gold volatility by year'){const Y=r.yAdr||[],ref=fixed?D.sl:st==='grid'?D.gStep:D.gTp,nm=fixed?'Your stop':st==='grid'?'Your spacing':'Your take-profit',mx=Math.max(...Y.map(y=>y.adr));
+      MD.table(['Start','Result','Outcome',''],S.runs.map(x=>[x.k,pctS(x.ret),x.wipe?'wiped out':x.ruin?'hit −'+D.ruin+'%':'survived',MD.bar(Math.max(0,x.ret+1),amax(S.runs.map(y=>y.ret+1)))]))+'\n';}
+    if(title==='Gold volatility by year'){const Y=r.yAdr||[],ref=fixed?D.sl:st==='grid'?D.gStep:D.gTp,nm=fixed?'Your stop':st==='grid'?'Your spacing':'Your take-profit',mx=amax(Y.map(y=>y.adr));
       return MD.table(['Year','Average daily range (pips)',nm+' as % of a day',''],Y.map(y=>[String(y.y),Math.round(y.adr).toLocaleString('en-US'),ref>0?(ref/y.adr*100).toFixed(0)+'%':'–',MD.bar(y.adr,mx)]))+'\n';}
-    if(title==='When the trouble starts'){const s=r.st,hr=rot(s.troubleHr),mx=Math.max(...hr,1),dn=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],dw=[1,2,3,4,5,6,0].map(i=>s.troubleDw[i]),mw=Math.max(...dw,1);
+    if(title==='When the trouble starts'){const s=r.st,hr=rot(s.troubleHr),mx=amax(hr,1),dn=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],dw=[1,2,3,4,5,6,0].map(i=>s.troubleDw[i]),mw=amax(dw,1);
       return cap('Deepest moments by hour ('+tzLab()+')')+MD.table(['Hour','Count',''],hr.map((v,i)=>[String(i).padStart(2,'0')+':00',String(v),MD.bar(v,mx)]))+'\n'+cap('By weekday')+MD.table(['Day','Count',''],dw.map((v,i)=>[dn[i],String(v),MD.bar(v,mw)]))+'\n';}
     if(title==='Win rate by time of day'){const sm=r.sample,hr=rot(sm.hrW.map((w,i)=>sm.hrN[i]?w/sm.hrN[i]:0)),hn=rot(sm.hrN),be=(1+costR())/(D.rr+1);
       return cap('Random-entry win rate by entry hour ('+tzLab()+'); break-even '+pc(be)+'. Hours with fewer than 20 entries are marked *.')+MD.table(['Hour','Entries','Win rate','vs break-even',''],hr.map((v,i)=>[String(i).padStart(2,'0')+':00'+(hn[i]<20?' *':''),String(hn[i]),hn[i]?pc(v):'–',hn[i]?sgn((v-be)*100,1)+' pts':'–',MD.bar(v,1)]))+'\n';}}
@@ -3441,13 +3551,13 @@ function mdExtra(title){
       return MD.table(['Win rate','E[R] net','Per 100 trades','Note'],ws.map(x=>[pc(x),rfmt(m.eAt(x),3),rfmt(m.eAt(x)*100,1),Math.abs(x-m.p)<1e-9?'your input':Math.abs(x-m.be)<1e-9?'break-even':Math.abs(x-m.ci[0])<1e-9?'95% CI low':Math.abs(x-m.ci[1])<1e-9?'95% CI high':'']))+'\n';}
     if(title==='Break-even frontier'){const rs=[0.5,0.75,1,1.25,1.5,2,2.5,3,4,5,D.rr].filter((x,i,a)=>a.indexOf(x)===i).sort((a,b)=>a-b);
       return cap('Win rate needed to break even, after your costs')+MD.table(['Reward : risk','Break-even win rate','Your win rate clears it?'],rs.map(b=>{const W=b-m.c,be=W>0?m.L/(W+m.L):1;return[b+'R'+(b===D.rr?' (yours)':''),W>0?pc(be):'never',m.p>be?'yes, by '+((m.p-be)*100).toFixed(1)+' pts':'no'];}))+'\n';}
-    if(title==='P(ruin) if the true win rate differs')return MD.table(['If the true win rate is','P(ruin) at '+D.risk+'% risk',''],m.stress.map(s=>[s.label,pc(s.ruin),MD.bar(s.ruin,Math.max(0.05,...m.stress.map(x=>x.ruin)))]))+'\n';
+    if(title==='P(ruin) if the true win rate differs')return MD.table(['If the true win rate is','P(ruin) at '+D.risk+'% risk',''],m.stress.map(s=>[s.label,pc(s.ruin),MD.bar(s.ruin,amax(0.05,m.stress.map(x=>x.ruin)))]))+'\n';
     if(title==='Final equity distribution'){const F=simFacts(m.sim),qs=[0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95,0.99];
       return MD.table(['Percentile'].concat(qs.map(q=>'p'+Math.round(q*100))),[['Final equity'].concat(mdQuant(m.sim.fin,qs,eqFmt))])+'\n'+MD.kv([['Finish above the start',pc(F.up)],['At least double',pc(F.dbl)],['Lose 20% or more at some point',pc(F.ge(0.2))]],['Probability','Value'])+'\n';}
     if(title==='Max drawdown distribution'){const qs=[0.25,0.5,0.75,0.9,0.95,0.99];return MD.table(['Percentile'].concat(qs.map(q=>'p'+Math.round(q*100))).concat(['worst']),[['Max drawdown'].concat(mdQuant(m.sim.dd,qs,dpc)).concat([dpc(m.sim.dd[m.sim.dd.length-1])])])+'\n';}
     if(title==='Cumulative P(ruin) by trade')return mdRuinCurve(m.sim,'By trade',false);
     if(title==='P(ruin) vs risk per trade'){const rows=m.sweep.map(x=>[x.risk,x.ruin,x.med,x.dd95,false]);if(!m.sweep.some(x=>Math.abs(x.risk-D.risk)<1e-9))rows.push([D.risk,m.sim.ruinProb,SFX.quantile(m.sim.fin,0.5),SFX.quantile(m.sim.dd,0.95),true]);rows.sort((a,b)=>a[0]-b[0]);
-      const mx=Math.max(0.05,...rows.map(x=>x[1]));return MD.table(['Risk per trade','P(ruin)','Median equity','DD p95',''],rows.map(x=>[x[0]+'%'+(Math.abs(x[0]-D.risk)<1e-9?' (you)':''),pc(x[1]),eqFmt(x[2]),dpc(x[3]),MD.bar(x[1],mx)]));}
+      const mx=amax(0.05,rows.map(x=>x[1]));return MD.table(['Risk per trade','P(ruin)','Median equity','DD p95',''],rows.map(x=>[x[0]+'%'+(Math.abs(x[0]-D.risk)<1e-9?' (you)':''),pc(x[1]),eqFmt(x[2]),dpc(x[3]),MD.bar(x[1],mx)]));}
     if(title==='Kelly growth curve'&&m.K>0){const fs=[[m.K/4,'¼ Kelly'],[m.K/2,'½ Kelly'],[m.K,'Full Kelly'],[m.K*1.5,'1.5× Kelly'],[m.K*2,'2× Kelly'],[m.Z,'Zero-growth point'],[D.risk/100,'Your risk']].filter(x=>x[0]>0&&x[0]*m.L<0.999).sort((a,b)=>a[0]-b[0]);
       return MD.table(['Sizing','Risk per trade','Log growth per trade','Trades to double'],fs.map(([f,n])=>{const g=m.g(f);return[n,pc(f,2),isFinite(g)?sgn(g*100,3).replace('+','')+'%':'−∞',g>1e-6&&isFinite(g)?Math.ceil(Math.log(2)/g).toLocaleString('en-US'):'never'];}))+'\n';}
     if(title.startsWith('P(losing streak')){const ks=[2,3,4,5,6,7,8,9,10,12,15];return MD.table(['Losses in a row (k)','P(at least one run ≥ k in '+D.hor+' trades)',''],ks.map(k=>{const v=SFX.probStreak(m.q,k,D.hor);return[String(k),pc(v),MD.bar(v,1)];}))+'\n';}
@@ -3458,7 +3568,7 @@ function mdExtra(title){
     const r=D.res;if(r){
       if(title==='R-multiple distribution'){const R=r.R.slice().sort((a,b)=>a-b),qs=[0,0.1,0.25,0.5,0.75,0.9,1],bins=[[-Infinity,-1.5,'worse than −1.5R'],[-1.5,-0.85,'−1.5R to −0.85R (about a full stop)'],[-0.85,0,'small loss (−0.85R to 0)'],[0,1,'0 to +1R'],[1,2,'+1R to +2R'],[2,Infinity,'+2R or more']];
         return MD.table(['Percentile'].concat(qs.map(q=>q===0?'min':q===1?'max':'p'+Math.round(q*100))),[['R'].concat(qs.map(q=>rfmt(SFX.quantile(R,q))))])+'\n'+MD.table(['Result band','Trades','Share',''],bins.map(b=>{const c=R.filter(x=>x>b[0]&&x<=b[1]).length;return[b[2],String(c),pc(c/R.length),MD.bar(c,R.length)];}))+'\n';}
-      if(title==='Losing runs'){const ls=r.stats.streaks.loss,mx=Math.max(4,...ls);const rows=[];for(let k=1;k<=mx;k++){const c=ls.filter(x=>x===k).length;rows.push([String(k),String(c)]);}return MD.table(['Run length','Times it happened'],rows)+'\n';}
+      if(title==='Losing runs'){const ls=r.stats.streaks.loss,mx=amax(4,ls);const rows=[];for(let k=1;k<=mx;k++){const c=ls.filter(x=>x===k).length;rows.push([String(k),String(c)]);}return MD.table(['Run length','Times it happened'],rows)+'\n';}
       if(title.startsWith('Average R by weekday')){const dw=r.beh.dw;return MD.table(['Day','Trades','Average R','Total R'],[1,2,3,4,5,6,0].filter(i=>dw[i].n>0).map(i=>[DAYS[i],String(dw[i].n),rfmt(dw[i].s/dw[i].n),rfmt(dw[i].s,1)]))+'\n';}
       if(title.startsWith('Average R by hour')){const hr=r.beh.hr;return MD.table(['Hour (server)','Trades','Average R','Total R'],hr.map((h,i)=>[i,h]).filter(x=>x[1].n>0).map(([i,h])=>[String(i).padStart(2,'0')+':00',String(h.n),rfmt(h.s/h.n),rfmt(h.s,1)]))+'\n';}}}
   if(!fixed&&D.gm){const g=D.gm,G=g.G,lad=g.lad;
@@ -3539,7 +3649,7 @@ function mdMethod(){
       ['Kelly','f* = p/L − q/W. Zero-growth point found by bisection on g(f) = p·ln(1 + fW) + q·ln(1 − fL).'],
       ['Streaks','Exact probability of at least one run of k losses in N trades (recursion on run length).'],
       ['Sample size','Smallest n where the Wilson lower bound still gives positive expectancy.']);
-    if(D.res)rows.push(['Trade history','R = pips ÷ SL ('+(D.res.conv.usedNet?'net of swap and commission':'gross')+'). Bootstrap of the mean, 4,000 resamples. Monte Carlo resamples your real R values, '+D.sims.toLocaleString('en-US')+' paths, seed 11.']);}
+    if(D.res)rows.push(['Trade history','R = pips ÷ SL ('+(D.res.conv.usedNet?'net of swap and commission':'gross')+'). Bootstrap of the mean, 4,000 resamples'+(D.res.n>10000?' (normal approximation, exact at this sample size)':'')+'. Monte Carlo resamples your real R values, '+D.sims.toLocaleString('en-US')+' paths, seed 11.']);}
   else rows.push(['Price model','48 steps a day. Daily σ = average daily range ÷ 1.596. '+(D.gMkt==='real'?'Fat tails + trends: Student-t(3) steps, AR(1) log-volatility and AR(1) drift.':'Random walk: Gaussian steps.')],
       ['Cycles','4,000 simulated cycles, fills at the simulated price, cut off after 120 days or a loss of 40× the balance. Seed 31.'],
       ['Account paths','2,000 paths × '+D.hor+' cycles, built by resampling whole cycles, '+(D.gAuto==='scale'?'lots scaled with the balance':'fixed lots')+'. Seed 41.'],
@@ -3767,7 +3877,7 @@ function crGroup(F,k,tipk){
     <div class="crstat"><span>${esc(t('il_cr_mid'))}</span><b>${sp(md-1)}</b><span>${esc(t('il_cr_best'))}</span><b>${crMult(F[0])}</b><span>${esc(t('il_cr_worst'))}</span><b>${sp(F[F.length-1]-1)}</b></div>`,'crg')};}
 function crowd(){
   const S=crowdSim(crSeed),A=crGroup(S.A,'il_cr_hi','il_cr_a_tip'),B=crGroup(S.B,'il_cr_lo','il_cr_b_tip');
-  const eA=S.mA[S.mA.length-1],eB=S.mB[S.mB.length-1],top=Math.max(150,...S.mA.map(x=>x[1]),...S.mB.map(x=>x[1]));
+  const eA=S.mA[S.mA.length-1],eB=S.mB[S.mB.length-1],top=amax(150,S.mA.map(x=>x[1]),S.mB.map(x=>x[1]));
   const svg=CH.plot({w:560,h:240,series:[{pts:S.mA,color:'var(--bad)',w:3},{pts:S.mB,color:'var(--ok)',w:3}],hlines:[{y:100,color:'var(--muted)'}],
     markers:[{x:eA[0],y:eA[1],color:'var(--bad)',r:6,label:sp(eA[1]/100-1),anchor:'end',dx:-9,dy:-13},{x:eB[0],y:eB[1],color:'var(--ok)',r:6,label:sp(eB[1]/100-1),anchor:'end',dx:-9,dy:-13}],
     ylo:0,yhi:top,yfmt:v=>v+'%',xlabel:t('il_cr_x'),label:t('il_cr_t')});
@@ -3876,8 +3986,11 @@ function stepRender(){
   const sk=$('gate-skip');sk.hidden=!(gstep>0&&gstep<=ILL.NQ);sk.textContent=t('gw_skip');
   gate.setAttribute('aria-labelledby',q?'gate-qt':'gate-title');}
 function goStep(n){gstep=n;stepRender();gate.scrollTop=0;const h=gate.querySelector(gstep?'#gate-qt':'#gate-title');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}}
-function openGate(){answers.bt=answers.ft=null;gstep=0;ILL.reset();gateRender();document.body.classList.add('locked');gate.hidden=false;const b=gate.querySelector('.yn button');if(b)b.focus();}
-function closeGate(){ILL.hide();gate.hidden=true;document.body.classList.remove('locked');window.__sfxGate=gateKey();flagRender();if(root.dataset.mode==='desk')DESK.analyze();else PLAY.render();}
+/* while a popup is open, everything behind it is inert: no keyboard focus, hidden from screen readers */
+function syncInert(){const sc=$('scope'),g=$('gate'),top=!sc.hidden?sc:!g.hidden?g:null;
+  [...document.body.children].forEach(el=>{if(el.tagName==='SCRIPT'||el.id==='tip')return;const on=!!top&&el!==top&&!el.contains(top);if(on)el.setAttribute('inert','');else el.removeAttribute('inert');});}
+function openGate(){answers.bt=answers.ft=null;gstep=0;ILL.reset();gateRender();document.body.classList.add('locked');gate.hidden=false;syncInert();const b=gate.querySelector('.yn button');if(b)b.focus();}
+function closeGate(){ILL.hide();gate.hidden=true;document.body.classList.remove('locked');syncInert();window.__sfxGate=gateKey();flagRender();if(root.dataset.mode==='desk')DESK.analyze();else PLAY.render();}
 gate.querySelectorAll('.q').forEach(q=>q.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;answers[q.dataset.q]=b.dataset.a;gateRender();}));
 $('gate-go').addEventListener('click',()=>{if(!gateKey())return;if(gstep<GN-1){if(gstep>0&&!ILL.answered(gstep))return;goStep(gstep+1);}else closeGate();});
 $('gate-back').addEventListener('click',()=>{if(gstep>0)goStep(gstep-1);});
@@ -3903,8 +4016,8 @@ function renderScope(){
     `<h3>${esc(t('sc_type_h'))}</h3>${li(tl('sc_types'),'›','typ')}`+
     `<h3 class="can">${esc(t('sc_can_h'))}</h3>${li(tl('sc_can').concat([tl('sc_bt_can')]),'✓','can')}`+
     `<h3 class="cant">${esc(t('sc_cant_h'))}</h3>`+(()=>{const a=tl('sc_cant').slice();a.splice(a.length-1,0,tl('sc_bt_cant'));return a;})().map(g=>`<h4>${esc(g[0])}</h4>${li(g[1],'✕','cant')}`).join('');}
-function openScope(after){scopeBack=document.activeElement;scopeAfter=after||null;renderScope();const sc=$('scope');sc.hidden=false;sc.scrollTop=0;document.body.classList.add('locked');$('scope-ok').focus({preventScroll:true});}
-function closeScope(){const sc=$('scope');if(sc.hidden)return;sc.hidden=true;if($('gate').hidden)document.body.classList.remove('locked');
+function openScope(after){scopeBack=document.activeElement;scopeAfter=after||null;renderScope();const sc=$('scope');sc.hidden=false;sc.scrollTop=0;document.body.classList.add('locked');syncInert();$('scope-ok').focus({preventScroll:true});}
+function closeScope(){const sc=$('scope');if(sc.hidden)return;sc.hidden=true;if($('gate').hidden)document.body.classList.remove('locked');syncInert();
   if(scopeBack&&scopeBack.focus&&document.contains(scopeBack))scopeBack.focus({preventScroll:true});const f=scopeAfter;scopeAfter=null;if(f)f();}
 $('scope-ok').addEventListener('click',closeScope);
 $('open-scope').addEventListener('click',()=>openScope());
@@ -3946,7 +4059,7 @@ PLAY.init();DESK.init();ILL.init();
   Object.keys(map).forEach(id=>{const el=$(id);if(!el)return;const row=el.closest('.formrow');row.dataset.tip=map[id];el.setAttribute('aria-describedby','tip');rows.push(row);});
   const sr=document.querySelector('#p-sim [data-i18n=d_sims]');if(sr){const row=sr.closest('.formrow');row.dataset.tip='sims';row.tabIndex=0;rows.push(row);}
   function fill(row){const k=row.dataset.tip,lab=row.querySelector('label,span');
-    tip.innerHTML=`<h4>${esc(lab?lab.textContent.trim():'')}</h4><p>${esc(t('tip_'+k+'_w'))}</p><p><b>${esc(t('tip_why'))}</b> ${esc(t('tip_'+k+'_y'))}</p><p class="tex"><b>${esc(t('tip_ex'))}</b> ${esc(t('tip_'+k+'_e'))}</p>`;}
+    tip.innerHTML=`<p class="tth">${esc(lab?lab.textContent.trim():'')}</p><p>${esc(t('tip_'+k+'_w'))}</p><p><b>${esc(t('tip_why'))}</b> ${esc(t('tip_'+k+'_y'))}</p><p class="tex"><b>${esc(t('tip_ex'))}</b> ${esc(t('tip_'+k+'_e'))}</p>`;}
   function place(row){
     const r=row.getBoundingClientRect(),aside=row.closest('.d-aside').getBoundingClientRect(),vw=window.innerWidth,vh=window.innerHeight;
     tip.hidden=false;const wide=vw>=1024;
@@ -3975,12 +4088,21 @@ if(layout==='guided'||layout==='full'){document.querySelectorAll('#seg-layout bu
 let mode=h.m==='desk'?'desk':'play';store.del('sfx_mode');
 if(h.m){try{const q=new URLSearchParams(location.hash.slice(1));q.delete('m');const rest=q.toString();history.replaceState(null,'',location.href.split('#')[0]+(rest?'#'+rest:''));}catch(e){}}
 root.dataset.mode=mode;
+/* phone browser bar follows the theme */
+{const tc=$('theme-color'),sync=()=>{if(tc)tc.content=root.dataset.mode==='desk'?'#0a0f15':'#bde7ff';};new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-mode']});sync();}
 toDesk();
 document.querySelectorAll('#seg-mode button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
 setLang(lang,false);
 if(mode==='desk')DESK.analyze();else PLAY.render();
 openGate();
 window.__sfx={PLAY,DESK,setLang,setMode,MISSING};
+root.classList.remove('js-wait');
+/* optional visit counter: GoatCounter, no cookies. Off while empty; to switch on, create a free site at goatcounter.com
+   and put its code here (for https://jarnneow.goatcounter.com the code is 'jarnneow'). Only the page path is sent. */
+const COUNTER='';
+if(COUNTER&&/^https:$/.test(location.protocol)&&navigator.doNotTrack!=='1'){try{new Image().src='https://'+COUNTER+'.goatcounter.com/count?p='+encodeURIComponent(location.pathname)+'&rnd='+Math.random().toString(36).slice(2);}catch(e){}}
+/* offline copy and instant return visits (see sw.js); not on file:// */
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
 })();
 </script>
 </body>
