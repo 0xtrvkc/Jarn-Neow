@@ -64,7 +64,7 @@ Pick the type that matches how you really trade. An EA isn't a type by itself; w
 - **Cycle outcomes:** how often each order gets filled, how deep floating losses go, and where the money goes per 1,000 cycles.
 - **Survival and sizing:** cumulative ruin and wipe-out by cycle, and ruin probability against first-order size.
 
-Inputs: first order size, distance between orders, lot multiplier, maximum orders, take-profit from the average price, an optional stop after the last order, the pair's average daily range, fixed or balance-scaled lots, and the market model (*random walk* or *fat tails + trends*).
+Inputs: first order size, distance between orders, how lots grow (a multiplier, or a fixed number of lots added per order), maximum orders, take-profit from the average price, an optional stop after the last order, the pair's average daily range, fixed or balance-scaled lots, and the market model (*random walk* or *fat tails + trends*).
 
 ---
 
@@ -98,13 +98,20 @@ The backtest needs the site to be served (GitHub Pages or any web server). Brows
 
 ---
 
-## Myfxbook import (optional, Expert, fixed-stop type)
+## Myfxbook import (optional, Expert, every strategy type)
 
 1. On Myfxbook, open your account page.
 2. Click **Export** at the top right of the chart and choose **CSV**.
 3. Drop the file into the **Trade history** panel.
 
 The file is read locally and never uploaded. Jarn Neow converts closed trades into R multiples using your stop distance, fills in the inputs, resamples your real trades, and checks behaviour: losses larger than the stop, lot-size consistency, and hour and weekday patterns. Only Myfxbook CSV files are accepted.
+
+**Strategy detection.** After upload, the app says which type made the history and switches to it, with the evidence in one line and buttons to pick another type:
+- **Fixed stop:** most trades carry a stop loss, or trades close one at a time with losses near a typical size.
+- **Grid / martingale:** no stops, many trades close together in the same minute (one cycle), and lots grow inside a cycle.
+- **No hard stop:** no stops, trades close one at a time, and the worst losses are far bigger than a typical one.
+
+**Grid and no-stop import.** For the chosen symbol the app rebuilds the settings from the cycles and says where each value came from: first order size, how lots grow (multiplied or a fixed amount added), the average spacing across the ladder (single gaps can vary), the most orders seen, take-profit from the average price, commission, value per pip and balance. The daily range isn't in a Myfxbook file and stays as entered. A **Your history vs the simulation** section then puts the real cycles next to the simulated ones (cycles won, average win and loss, worst cycle, deepest floating loss, how often cycles reached deeper orders), with money rescaled to the same first order size. If the account ran grids on several pairs, a warning says how many had cycles open at once and suggests entering one pair's share of the balance, since the page analyses one pair at a time.
 
 ---
 
@@ -155,7 +162,7 @@ The in-app briefing has the full list. In short:
   - The grid price model isn't fitted to real history and has no edge in either direction.
   - Rare events may not appear in the simulation.
 - **Gold backtest limits:** gold futures rather than broker spot, order inside each minute assumed, rolls partly estimated, no swap or margin, and the data ends on 13 November 2026.
-- **Myfxbook import limits:** closed trades only, the stop is estimated if unknown, it can't tell a grid history from a fixed-stop one, and strategies mixed on one account are blended together.
+- **Myfxbook import limits:** closed trades only, the stop is estimated if unknown, strategy detection is a best guess, grid spacing becomes one average, one pair is analysed at a time, and strategies mixed on one account are blended together.
 - **Not:** a profit predictor, a trading signal, a test of your discipline under pressure, or financial advice.
 
 ---
