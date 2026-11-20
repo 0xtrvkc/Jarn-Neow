@@ -655,14 +655,14 @@ html[data-mode=desk] .shake,html[data-mode=desk] .pop{animation:none}
   <div class="hero">
     <div><h1 data-i18n="play_h1"></h1>
     <p data-i18n="play_sub"></p></div>
-    <div class="altar" aria-hidden="true"><span class="spr" data-s="ritual_candle" style="--s:2" aria-hidden="true"></span><span class="spr" data-s="spirit_house" style="--s:3" aria-hidden="true"></span><span class="spr" data-s="ritual_incense" style="--s:2" aria-hidden="true"></span></div>
+    <div class="altar" aria-hidden="true"><span class="spr" data-slot="altarL" data-s="ritual_candle" style="--s:2" aria-hidden="true"></span><span class="spr" data-slot="altarC" data-s="spirit_house" style="--s:3" aria-hidden="true"></span><span class="spr" data-slot="altarR" data-s="ritual_incense" style="--s:2" aria-hidden="true"></span></div>
   </div>
   <p class="warnnote testflag" hidden style="margin-bottom:1rem"></p>
   <div id="vbar" class="vbar" aria-live="polite"><span class="light" data-v="none">…</span><b></b></div>
   <div class="play-grid">
     <div class="col-in">
       <div class="card" id="inputs">
-        <h2 class="hh"><span class="spr" data-s="ritual_cauldron" aria-hidden="true"></span><span data-i18n="inputs_title"></span></h2>
+        <h2 class="hh"><span class="spr" data-slot="inputs" data-s="ritual_cauldron" aria-hidden="true"></span><span data-i18n="inputs_title"></span></h2>
         <p id="example-badge" class="small"><span class="badge" data-i18n="example_badge"></span></p>
 
         <div class="field" data-f="wr">
@@ -702,7 +702,7 @@ html[data-mode=desk] .shake,html[data-mode=desk] .pop{animation:none}
   <div class="card" id="fix"></div>
   <div class="card" id="deeper"></div>
   <div class="card nudge">
-    <span class="spr" data-s="spirit_hand" aria-hidden="true"></span><p data-i18n="nudge_desk"></p>
+    <span class="spr" data-slot="nudge" data-s="spirit_hand" aria-hidden="true"></span><p data-i18n="nudge_desk"></p>
     <button type="button" class="btn alt" id="goto-desk" data-i18n="nudge_desk_btn"></button>
   </div>
 </section>
@@ -781,7 +781,7 @@ html[data-mode=desk] .shake,html[data-mode=desk] .pop{animation:none}
 </main>
 
 <footer>
-  <div class="fspr" aria-hidden="true"><span class="spr" data-s="prayer_beads" aria-hidden="true"></span><span class="spr" data-s="voodoo_doll" aria-hidden="true"></span><span class="spr" data-s="amulet_cursed" aria-hidden="true"></span></div>
+  <div class="fspr" aria-hidden="true"><span class="spr" data-slot="foot1" data-s="prayer_beads" aria-hidden="true"></span><span class="spr" data-slot="foot2" data-s="voodoo_doll" aria-hidden="true"></span><span class="spr" data-slot="foot3" data-s="amulet_cursed" aria-hidden="true"></span></div>
   <p data-i18n="disclaimer"></p>
   <p><button type="button" class="link" id="regate" data-i18n="regate"></button></p>
 </footer>
@@ -972,6 +972,20 @@ if(typeof module!=='undefined')module.exports=API;
 <script id="s-engine">
 /* an animated pixel sprite (beginner mode only; CSS hides them in Expert). n = file in sprites/, sc = whole-number scale */
 function SPR(n,sc,c){return'<span class="spr'+(c?' '+c:'')+'" data-s="'+n+'"'+(sc&&sc!==1?' style="--s:'+sc+'"':'')+' aria-hidden="true"></span>';}
+/* a fresh set of decorations on every visit: the 12 charms shuffle across the 12 decoration spots, and no spot repeats the
+   charm it had last visit. The shaman's moods, the risk signs, the logo and the slime ("no edge") always mean the same thing. */
+const DECO=(function(){
+  const pool=['spirit_eye','spirit_hand','spirit_house','amulet_cursed','talisman_floating','prayer_beads','ritual_candle','ritual_cauldron','ritual_incense','voodoo_doll','cursed_mask','spirit_flame'];
+  const slots=['altarL','altarC','altarR','inputs','fan','why','fix','deeper','nudge','foot1','foot2','foot3'];
+  const ghosts=['ghost_krasue','ghost_phi_pop','ghost_mae_nak','ghost_child','ghost_skull','ghost_shadow'];
+  const mix=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  let last=[];try{last=JSON.parse(localStorage.getItem('jn_deco')||'[]');}catch(e){}
+  let pick=mix(pool);for(let k=0;k<200&&pick.some((n,i)=>n===last[i]);k++)pick=mix(pool);
+  try{localStorage.setItem('jn_deco',JSON.stringify(pick));}catch(e){}
+  const o={};slots.forEach((sl,i)=>o[sl]=pick[i]);
+  const g=mix(ghosts);o.ghosts=g;o.roastGhost=g[5];
+  document.querySelectorAll('[data-slot]').forEach(e=>{e.dataset.s=o[e.dataset.slot];});
+  return o;})();
 /* min/max over arrays of any length: Math.min(...arr) fails past ~100k items */
 const amin=function(){let m=Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]<m)m=a[i];}else if(a<m)m=a;}return m;},amax=function(){let m=-Infinity;for(let j=0;j<arguments.length;j++){const a=arguments[j];if(a!==null&&typeof a==='object'){for(let i=0;i<a.length;i++)if(a[i]>m)m=a[i];}else if(a>m)m=a;}return m;};
 const SFX=(function(){
@@ -2468,7 +2482,7 @@ const DEF={wr:45,rr:1.5,risk:5,n:40};
 const ICON={ok:'✓',warn:'!',bad:'✕',none:'…'};
 /* spirits: the shaman's mood, the risk sign, a visitor when the verdict changes, and the ghosts in the margins all follow the verdict */
 const MOOD={ok:'shaman_happy',warn:'shaman_angry',bad:'shaman_sobbing',none:'shaman_thinking'},RISKS={ok:'risk_safe',warn:'risk_warning',bad:'risk_danger',none:'risk_loading'};
-const HAUNT={ok:['spirit_flame','','','spirit_flame'],warn:['ghost_shadow','spirit_eye','',''],bad:['ghost_krasue','ghost_mae_nak','ghost_skull','ghost_phi_pop'],none:['','ghost_child','','']};
+const HAUNT={ok:['spirit_flame','','','spirit_flame'],warn:['ghost_shadow','spirit_eye','',''],bad:DECO.ghosts.slice(0,4),none:['','ghost_child','','']};
 const GHOSTS=['ghost_krasue','ghost_phi_pop','ghost_mae_nak','ghost_child','ghost_skull','ghost_shadow'];
 let lastSp=null,spN=0;
 function spirits(a){
@@ -2534,7 +2548,7 @@ function renderVerdict(){
   vb.querySelector('b').textContent=t('v_'+a.v)+' · '+t('vbar_blow',{x:blowFmt(a.ruinP)});spirits(a);}
 function fanSvg(sim,o){return CH.fan(sim,Object.assign({floorLabel:t('fan_floor'),xlabel:t('fan_x',{H:A.H}),label:t('fan_alt'),medColor:'var(--ink)'},o||{}));}
 function legend(){return`<div class="legend"><span><i style="background:var(--c1);opacity:.5"></i>${esc(t('lg_future'))}</span><span><i style="background:var(--bad)"></i>${esc(t('lg_blown'))}</span><span><i style="background:var(--ink)"></i>${esc(t('lg_typical'))}</span></div>`;}
-function renderFan(){$('fan-card').innerHTML=`<h2 class="hh">${SPR('spirit_eye')}<span>${esc(t('fan_title',{H:A.H}))}</span></h2><div class="chart">${fanSvg(A.sim)}</div>${legend()}<p class="small muted" style="margin:.6rem 0 0">${esc(t('fan_note'))}</p>`;}
+function renderFan(){$('fan-card').innerHTML=`<h2 class="hh">${SPR(DECO.fan)}<span>${esc(t('fan_title',{H:A.H}))}</span></h2><div class="chart">${fanSvg(A.sim)}</div>${legend()}<p class="small muted" style="margin:.6rem 0 0">${esc(t('fan_note'))}</p>`;}
 function findingText(id){
   const a=A,o={E:rfmt(a.E),Eabs:Math.abs(a.E).toFixed(2),wr:a.st.wr,be:pct0(a.be),rr:a.b,risk:a.st.risk,n:a.n,K:(a.K*100).toFixed(1),hK:(a.K*50).toFixed(1),Z:(a.Z*100).toFixed(1),Elo:rfmt(a.Elo),Ehi:rfmt(a.Ehi)};
   let body=t('f_'+id+'_p',o);if(id==='sample')body+=' '+(a.E>0?(a.nNeeded?t('f_sample_need',{x:a.nNeeded}):t('f_sample_many')):'');
@@ -2555,7 +2569,7 @@ function finding(id){
   return'';}
 function renderWhy(){
   const el=$('why'),list=A.findings;
-  el.innerHTML=`<h2 class="hh">${SPR('voodoo_doll')}<span>${esc(t('why_title'))}</span></h2>`+(A.p>=1?`<p class="warnnote">${esc(t('why_perfect'))}</p>`:'')+(list.length?list.map(finding).join(''):(A.p>=1?'':`<p>${esc(t('why_none'))}</p>`));}
+  el.innerHTML=`<h2 class="hh">${SPR(DECO.why)}<span>${esc(t('why_title'))}</span></h2>`+(A.p>=1?`<p class="warnnote">${esc(t('why_perfect'))}</p>`:'')+(list.length?list.map(finding).join(''):(A.p>=1?'':`<p>${esc(t('why_none'))}</p>`));}
 const ml=v=>`<span class="ml" data-v="${v}" aria-hidden="true">${ICON[v]}</span>`;
 function mergeSt(chg){return Object.assign({},st,chg);}
 function plan(){
@@ -2609,7 +2623,7 @@ function stepHtml(x,i){
   if(x.changes)btn=`<button type="button" class="btn" data-fix="${x.id}">${esc(t('pl_try'))}</button>`;
   return`<li class="bp" data-l="${x.lvl}"><span class="bpn">${i+1}</span><div><div class="bph"><span class="bpl" data-l="${x.lvl}">${esc(lab)}</span><b>${esc(title)}</b></div><p>${esc(body)}</p>${chip(x)}${btn?`<div class="bpb">${btn}</div>`:''}</div></li>`;}
 function renderFix(){
-  const el=$('fix'),P=plan();let h=`<h2 class="hh">${SPR('talisman_floating')}<span>${esc(t('fix_title'))}</span></h2>`;
+  const el=$('fix'),P=plan();let h=`<h2 class="hh">${SPR(DECO.fix)}<span>${esc(t('fix_title'))}</span></h2>`;
   h+=`<p class="small">${esc(P.fixes?t('pl3_intro',{n:P.acts.length}):t('pl3_intro_ok',{n:P.acts.length}))}</p><ol class="bplan">`+P.acts.map(stepHtml).join('')+`</ol>`;
   if(P.fin)h+=`<div class="finalrow"><span>${esc(t(P.alt?'pl3_final_alt':'pl_final'))}</span>${ml(P.fin.v)}<b>${esc(t('v_'+P.fin.v))}</b></div>`;
   else h+=`<div class="finalrow"><span>${esc(t('pl3_now'))}</span>${ml(A.v)}<b>${esc(t('v_'+A.v))}</b></div>`;
@@ -2626,7 +2640,7 @@ function renderDeeper(){
   const items=ks.map(k=>({label:String(k),value:a.pStreak(k)*100,color:k===hi||k===hi+1?'var(--c2)':'var(--c1)'}));
   const bar=CH.bars({items,valFmt:v=>v<1?'<1':Math.round(v)+'',yfmt:v=>v+'%',xlabel:t('dp_streak_x'),label:t('dp_streak_t'),h:210,ymax:Math.max(10,Math.min(100,amax(items.map(i=>i.value))*1.18))});
   const kel=a.p>=1?t('why_perfect'):a.K>0?t('dp_kelly',{K:(a.K*100).toFixed(1),hK:(a.K*50).toFixed(1),qK:(a.K*25).toFixed(1),Z:(a.Z*100).toFixed(1),risk:a.st.risk}):t('dp_kelly0');
-  el.innerHTML=`<h2 class="hh">${SPR('cursed_mask')}<span>${esc(t('deeper_title'))}</h2>
+  el.innerHTML=`<h2 class="hh">${SPR(DECO.deeper)}<span>${esc(t('deeper_title'))}</span></h2>
   <details><summary>${esc(t('dp_streak_t'))}</summary><div><p>${esc(a.p>=1?t('why_perfect'):t('dp_streak_p',{k:a.streakK,H:a.H,wr:a.st.wr,q:Math.round(q*100),k2:a.streakK+2,p2:blowFmt(a.pStreak(a.streakK+2))}))}</p><div class="chart">${bar}</div></div></details>
   <details><summary>${esc(t('dp_conf_t'))}</summary><div><p>${esc(t('dp_conf_p',{n:a.n,lo:pct0(wl[0]),hi:pct0(wl[1]),Elo:rfmt(a.Elo),Ehi:rfmt(a.Ehi)}))}</p></div></details>
   <details><summary>${esc(t('dp_kelly_t'))}</summary><div><p>${esc(kel)}</p></div></details>
@@ -4099,7 +4113,7 @@ let intro=0;
 function renderIntro(){
   const el=$('gate-intro');gate.querySelector('.gate-box').classList.toggle('intro',!!intro);el.hidden=!intro;
   if(!intro){el.innerHTML='';return;}
-  if(intro===1)el.innerHTML=`<div class="rst">${SPR('shaman_angry',3,'rsh')}${SPR('ghost_phi_pop',2,'rgh')}</div><p class="rk">${esc(t('ro_kick'))}</p><h2 id="ro-t" class="rt shake">${esc(t('ro_t'))}</h2><p class="rq">${esc(t('ro_p'))}</p><ul class="rl">${[1,2,3].map(i=>`<li>${esc(t('ro_'+i))}</li>`).join('')}</ul><div class="rob"><button type="button" class="btn alt" data-ro="pro">${esc(t('ro_yes'))}</button><button type="button" class="btn" data-ro="help">${esc(t('ro_no'))}</button></div>`;
+  if(intro===1)el.innerHTML=`<div class="rst">${SPR('shaman_angry',3,'rsh')}${SPR(DECO.roastGhost,2,'rgh')}</div><p class="rk">${esc(t('ro_kick'))}</p><h2 id="ro-t" class="rt shake">${esc(t('ro_t'))}</h2><p class="rq">${esc(t('ro_p'))}</p><ul class="rl">${[1,2,3].map(i=>`<li>${esc(t('ro_'+i))}</li>`).join('')}</ul><div class="rob"><button type="button" class="btn alt" data-ro="pro">${esc(t('ro_yes'))}</button><button type="button" class="btn" data-ro="help">${esc(t('ro_no'))}</button></div>`;
   else el.innerHTML=`<div class="rst">${SPR('shaman_happy',3,'rsh')}${SPR('spirit_flame',2,'rgh')}</div>${intro===3?`<p class="rk">${esc(t('ro_sure'))}</p>`:''}<h2 id="ro-t" class="rt pop">${esc(t('ro_jk'))}</h2><p class="rq">${esc(t('ro_jk_p'))}</p><div class="rob"><button type="button" class="btn" data-ro="go">${esc(t('ro_go'))}</button></div>`;
   gate.setAttribute('aria-labelledby','ro-t');}
 $('gate-intro').addEventListener('click',e=>{const b=e.target.closest('[data-ro]');if(!b)return;const k=b.dataset.ro;
