@@ -2897,7 +2897,7 @@ function toDesk(){if(!deskReady())return;if(pv()!==lastPlay){const v=JSON.parse(
 function toPlay(){if(!deskReady())return;if(dv()!==lastDesk){const v=JSON.parse(dv());PLAY.setState(v,v.t);}lastDesk=dv();lastPlay=pv();}
 
 /* ----- Expert mode code lives in expert.js and loads the first time Expert opens ----- */
-const EXPERT_V='cb4fb323';
+const EXPERT_V='27755ab4';
 const deskReady=()=>typeof DESK!=='undefined';
 let deskLoading=null;
 function loadDesk(){

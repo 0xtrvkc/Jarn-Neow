@@ -344,7 +344,7 @@ function btControls(){
     <span class="small muted" id="bt-status" aria-live="polite">${BT.busy?esc(BT.prog):''}</span></div>`;}
 function btSection(){
   const g=D.stype!=='fixed',I=BT.idx;let body='';
-  const head=`<h2>Test on real gold<small>${esc(I?t('bt_src',{a:dfmt(I.from),b:dfmt(I.to)}):t('bt_src0'))}</small></h2>`;
+  const head=`<h2>${D.stype==='fixed'?'Your stop and target on real gold':'Test on real gold'}<small>${esc(I?t('bt_src',{a:dfmt(I.from),b:dfmt(I.to)}):t('bt_src0'))}</small></h2>`;
   if(btFile())body=`<div class="card"><p class="warnnote" style="margin:0">${esc(t('bt_file'))}</p></div>`;
   else if(!btCan())body=`<div class="card"><p class="warnnote" style="margin:0">${esc(t('bt_nodecomp'))}</p></div>`;
   else if(BT.idxErr)body=`<div class="card"><p class="errnote" style="margin:0">${esc(t('bt_err',{msg:BT.idxErr}))}</p></div>`;
@@ -1023,7 +1023,7 @@ function mdReport(){
   md+=MD.h(2,tx('Inputs','ค่าที่ใส่'))+mdInputs()+'\n';
   if(gk)md+=MD.h(2,tx('Testing status','สถานะการทดสอบ'))+MD.p('**'+t('gate_'+gk+'_t')+'** '+t('gate_'+gk+'_p'))+(gk!=='ok'?MD.list([1,2,3].map(i=>t('gate_'+gk+'_'+i))):'');
   md+=mdWalk(tpl.content,false);
-  if(!btOn)md+=MD.h(2,'Test on real gold')+MD.p(tx('Not included: the gold test hasn\'t been run for these inputs. Run it at the bottom of the Expert page (any range from 7 Jun 2010 to 13 Nov 2026), then export again.','ไม่ได้รวมไว้: ยังไม่ได้รันการทดสอบกับทองจริง สำหรับค่าชุดนี้ รันได้ที่ท้ายหน้าโหมดผู้เชี่ยวชาญ (ช่วงใดก็ได้ตั้งแต่ 7 มิ.ย. 2010 ถึง 13 พ.ย. 2026) แล้วออกรายงานใหม่'));
+  if(!btOn)md+=MD.h(2,D.stype==='fixed'?'Your stop and target on real gold':'Test on real gold')+MD.p(tx('Not included: the gold test hasn\'t been run for these inputs. Run it at the bottom of the Expert page (any range from 7 Jun 2010 to 13 Nov 2026), then export again.','ไม่ได้รวมไว้: ยังไม่ได้รันการทดสอบกับทองจริง สำหรับค่าชุดนี้ รันได้ที่ท้ายหน้าโหมดผู้เชี่ยวชาญ (ช่วงใดก็ได้ตั้งแต่ 7 มิ.ย. 2010 ถึง 13 พ.ย. 2026) แล้วออกรายงานใหม่'));
   md+=MD.h(2,tx('Trading rules to commit to','กฎการเทรดที่ตั้งใจจะทำตาม'))+MD.p(tx('Derived from the numbers above. Print it, sign it, keep it next to the screen.','สรุปจากตัวเลขด้านบน พิมพ์ออกมา เซ็นชื่อ แล้ววางไว้ข้างจอ'))+mdRules();
   md+=MD.h(2,tx('Method and reproducibility','วิธีคำนวณและการทำซ้ำ'))+mdMethod();
   md+=MD.h(2,tx('What this report can\'t tell you','สิ่งที่รายงานนี้บอกไม่ได้'))+mdLimits(btOn);
