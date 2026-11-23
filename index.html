@@ -629,6 +629,73 @@ html[data-mode=desk] .rl li{border-width:1px;border-radius:2px}
 .phide{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .pmsg{border:2px solid var(--bad);border-radius:12px;padding:.45rem .7rem;background:#fff0f0;color:#4d0d10;font-weight:600}
 .pasap{font-style:italic;margin-bottom:1rem}
+/* readiness check (Beginner) */
+.rd-box{max-width:640px}
+.rd-box.in{animation:pin .55s cubic-bezier(.2,1.4,.4,1) both}
+.rdtop{display:flex;justify-content:space-between;align-items:center;gap:.6rem;margin-bottom:.4rem}.rdtop .gkick{margin:0}
+.rdx{flex:none;border:var(--bw) solid var(--line);background:var(--card);color:var(--ink);border-radius:50%;width:2.3rem;height:2.3rem;font-weight:700;cursor:pointer}
+.gprog i{transition:background .3s}.gprog i.miss{background:var(--bad)}
+.rdintro,.rdv{text-align:center}
+.rdst{position:relative;display:flex;justify-content:center;align-items:flex-end;min-height:120px;margin-bottom:.3rem}
+.rdopts{display:grid;gap:.5rem;margin:.7rem 0}
+.rdopts .qopt[aria-disabled=true]{cursor:default}.rdopts .qopt[aria-disabled=true]:hover{background:var(--card)}
+.rdopts .qopt[aria-disabled=true][data-r=y]:hover{background:#d6f5e4}
+.rdopts .qopt.pop{animation:rdyes .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes rdyes{40%{transform:scale(1.05)}}
+.rdfb{animation:rdin .4s ease-out both}
+@keyframes rdin{from{opacity:0;transform:translateY(12px)}}
+.rdmore summary{cursor:pointer;font-weight:700;margin:.3rem 0}
+.rdlesson{margin-top:.5rem}
+.rdf{font-weight:700;background:var(--soft);border:2px dashed var(--line);border-radius:12px;padding:.5rem .7rem}
+.rdctl{display:grid;gap:.7rem;margin:.8rem 0}
+.rdsl{display:grid;gap:.25rem;font-weight:600}.rdsl>span:first-child{display:flex;justify-content:space-between;gap:.5rem}
+.rdsl .numwrap{max-width:12rem}
+.rdres{display:flex;justify-content:space-between;align-items:baseline;gap:.4rem .8rem;flex-wrap:wrap;background:var(--soft);border:2px solid var(--line);border-radius:14px;padding:.6rem .8rem;margin:.4rem 0 .6rem;font-weight:600}
+.rdbig{font-size:1.7rem}
+.rdpair{display:flex;justify-content:space-between;gap:.6rem;margin-top:.6rem;font-weight:600}
+.rdpair b{white-space:nowrap;text-align:right}.rdpair b.neg{color:var(--bad)}
+.rdbar{height:12px;border:2px solid var(--line);border-radius:99px;background:var(--card);overflow:hidden;margin:.25rem 0}
+.rdbar i{display:block;height:100%;border-radius:99px;transition:width .35s cubic-bezier(.2,1.2,.4,1)}
+.rdbar i.ok{background:var(--ok)}.rdbar i.warn{background:var(--warn)}.rdbar i.bad{background:var(--bad)}
+.rdkey{font-weight:700;margin-top:.7rem}.rdwarn{color:var(--bad);font-weight:700}.rdlab{font-weight:600}
+.rdlev{display:flex;flex-wrap:wrap;justify-self:start}
+.rdflips{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:.25rem;margin:.8rem 0 .3rem;perspective:400px}
+.rdflips i{font-style:normal;font-weight:700;text-align:center;border:2px solid var(--line);border-radius:8px;padding:.3rem 0;font-size:.8rem}
+.rdflips i.w{background:#d6f5e4;color:#0f4a2a}.rdflips i.l{background:#ffdcdc;color:#5b1013}
+.rdflips.fresh i{animation:flipin .35s cubic-bezier(.2,1.5,.4,1) both;animation-delay:calc(var(--i)*70ms)}
+@keyframes flipin{from{transform:rotateX(90deg) scale(.6);opacity:0}}
+.rdrange{position:relative;height:14px;border:2px solid var(--line);border-radius:99px;background:var(--card);margin:.4rem 0}
+.rdrange i{position:absolute;top:0;bottom:0;background:var(--warn);border-radius:99px;transition:left .3s,width .3s}
+.rdrange span{position:absolute;top:-5px;bottom:-5px;width:3px;margin-left:-1px;background:var(--ink);border-radius:2px}
+.rdcards{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.7rem 0;perspective:900px}
+.rdcard{position:relative;min-height:9rem;border:0;background:none;padding:0;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,1.3,.5,1);font:inherit;color:inherit;text-align:left}
+.rdcard[aria-pressed=true]{transform:rotateY(180deg)}
+.rdc-f,.rdc-b{position:absolute;inset:0;border:var(--bw) solid var(--line);border-radius:14px;padding:.7rem;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:center;gap:.3rem}
+.rdc-f{background:var(--soft)}.rdc-f small{color:var(--muted)}
+.rdc-b{background:var(--card);transform:rotateY(180deg);font-size:.88rem;line-height:1.35}
+.rdstamp{position:absolute;left:calc(50% + 40px);top:6px;border:4px solid currentColor;border-radius:10px;padding:.15rem .55rem;font-weight:800;font-size:1.25rem;letter-spacing:.04em;background:var(--card);transform:rotate(-12deg);animation:stamp .5s .35s cubic-bezier(.3,1.6,.5,1) both;white-space:nowrap}
+.rdstamp[data-l=ready]{color:var(--ok)}.rdstamp[data-l=almost]{color:#b57900}.rdstamp[data-l=not]{color:var(--bad)}
+@media (max-width:420px){.rdstamp{left:auto;right:0;font-size:1.05rem}}
+@keyframes stamp{from{transform:rotate(-12deg) scale(2.6);opacity:0}}
+.rdscore{font-size:1.7rem;font-weight:800;margin:.1rem 0 .4rem}
+.rdlist{list-style:none;padding:0;margin:.8rem auto;display:grid;gap:.35rem;max-width:22rem;text-align:left}
+.rdlist li{display:flex;align-items:center;gap:.5rem;background:var(--soft);border:2px solid var(--line);border-radius:12px;padding:.4rem .6rem;animation:rdin .35s ease-out both;animation-delay:calc(.5s + var(--i)*80ms)}
+.rdlist li>span:not(.ml){flex:1}.rdlist .ml{flex:none}
+#ready-card{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+#ready-card h2{font-size:1.15rem;margin:0 0 .2rem}#ready-card p{margin:0}
+#ready-card>div:nth-child(2){flex:1;min-width:0}
+#ready-card .rdc-art{flex:none}
+#ready-card[data-l=none]{animation:rdglow 1.8s ease-in-out .8s 2}
+@keyframes rdglow{50%{box-shadow:0 0 0 7px rgba(255,176,0,.45)}}
+#ready-card[data-l=ready]{padding:.6rem 1rem}
+@media (max-width:560px){#ready-card{flex-wrap:wrap}#ready-card .btn{width:100%}}
+.rdbadge{display:inline-flex;align-items:center;gap:.3rem;border:2px solid var(--line);border-radius:999px;padding:.25rem .75rem;font:inherit;font-weight:700;font-size:.85rem;cursor:pointer;margin-bottom:.7rem;background:#fff6df;border-color:var(--warn);color:#4a3300}
+.rdbadge::after{content:"›";font-size:1.1em}
+.rdbadge[data-l=ready]{background:#e6f8ee;border-color:var(--ok);color:#0f4a2a}
+.rdnudge{border:2px solid var(--accent);border-radius:14px;padding:.7rem .9rem;margin:.9rem 0;background:var(--soft)}
+.rdnudge p{margin:0 0 .5rem;font-weight:600}
+html.noanim .rd-box.in,html.noanim .rdfb,html.noanim .rdflips.fresh i,html.noanim .rdstamp,html.noanim .rdlist li,html.noanim .rdopts .qopt,html.noanim #ready-card{animation:none!important}
+html.noanim .rdcard,html.noanim .rdbar i,html.noanim .rdrange i,html.noanim .gprog i{transition:none}
 .pf .txt{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
 .pf .txt:focus{outline:none;border-color:var(--p3,#ffb000);box-shadow:0 4px 0 var(--line);transform:translateY(-2px)}
 .pitch-box.in{animation:pin .55s cubic-bezier(.2,1.4,.4,1) both}
@@ -755,6 +822,7 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
     <p data-i18n="play_sub"></p></div>
     <div class="altar" aria-hidden="true"><span class="spr" data-slot="altarL" data-s="ritual_candle" style="--s:2" aria-hidden="true"></span><span class="spr" data-slot="altarC" data-s="spirit_house" style="--s:3" aria-hidden="true"></span><span class="spr" data-slot="altarR" data-s="ritual_incense" style="--s:2" aria-hidden="true"></span></div>
   </div>
+  <div class="card" id="ready-card" data-l="none"></div>
   <p class="warnnote testflag" hidden style="margin-bottom:1rem"></p>
   <div id="vbar" class="vbar" aria-live="polite"><span class="light" data-v="none">…</span><b></b></div>
   <div class="play-grid">
@@ -789,7 +857,7 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
 
     <div class="col-out">
       <div class="errnote inerr" id="play-err" role="alert" hidden></div>
-      <div class="card" id="verdict-card"><div id="v-body" aria-live="polite"></div></div>
+      <div class="card" id="verdict-card"><button type="button" class="rdbadge" id="ready-badge" data-l="none"></button><div id="v-body" aria-live="polite"></div></div>
       <div class="card" id="fan-card"></div>
     </div>
   </div>
@@ -931,6 +999,14 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
       <p data-i18n="pi_done_p"></p>
       <div class="rob"><button type="button" class="btn" id="pi-cont" data-i18n="pi_cont"></button></div>
     </div>
+  </div>
+</div>
+<div id="ready" class="gate" role="dialog" aria-modal="true" aria-labelledby="rd-qt" hidden>
+  <div class="gate-box rd-box">
+    <div class="rdtop"><p class="gkick" id="rd-step"></p><button type="button" class="rdx" id="rd-x" aria-label="Close">✕</button></div>
+    <div class="gprog rdprog" id="rd-prog" aria-hidden="true"></div>
+    <div id="rd-body"></div>
+    <div class="gnav"><button type="button" class="btn alt" id="rd-back"></button><button type="button" class="btn" id="rd-next"></button></div>
   </div>
 </div>
 <div class="haunt" id="haunt" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
@@ -1291,7 +1367,7 @@ gate_ok_t:"Both tests done.",gate_ok_p:"Use your forward-test numbers here. They
 flag_nn:"No backtest and no forward test: treat every result below as an illustration, not evidence.",flag_bt:"Backtest only: these numbers may be overfit, so the results below are probably optimistic.",flag_ft:"Forward test only: without a backtest, a small sample like this may be luck.",
 layout_full:"Full dashboard",layout_guided:"Step by step",
 gate_title:"Quick check first",
-ro_kick:"I'm Jarn Neow, spirit doctor for dying trading accounts.",ro_t:"So you know how to trade?",ro_p:"Then why does the margin call keep calling you? 📞",ro_1:"Win rate 90%. Balance: 0.",ro_2:"\"One more trade and I'll win it all back.\"",ro_3:"Stop loss? Never heard of her.",ro_no:"…okay, help me",ro_jk:"Breathe. Your account can still be saved.",ro_jk_p:"Every trader who lasts learned this the hard way. Answer 2 quick questions and 5 tiny quizzes (about a minute) and you'll know how to keep yours alive.",ro_go:"Let's go",pi_kick:"One more thing before you start.",pi_t:"Got a strategy that actually works?",pi_p:"Fast money, steady every month, a high win rate: the kind everyone talks about and nobody shows. If you really have one, send me the stats. I want to run the numbers and check it myself.",pi_l_link:"Link to your stats",pi_h_link:"Myfxbook, FX Blue, a broker statement, a spreadsheet: anything I can open.",pi_l_contact:"How do I reach you?",pi_h_contact:"Email, LINE or Telegram.",pi_l_note:"Questions or comments? (optional)",pi_priv:"Only I see this. Nothing gets posted.",pi_asap:"I'll send you a report ASAP. (As Slow As Possible. Kidding. Mostly.)",pi_send:"Send it",pi_later:"Not now",pi_need_link:"Add a link or describe where your stats are.",pi_need_contact:"Add a way to reach you.",pi_err:"Couldn't send. Check your connection and try again.",pi_off:"Sending isn't switched on yet.",pi_sending:"Sending…",pi_done_t:"Got it.",pi_done_p:"I'll check the numbers and get back to you with a report.",pi_cont:"Continue",
+ro_kick:"I'm Jarn Neow, spirit doctor for dying trading accounts.",ro_t:"So you know how to trade?",ro_p:"Then why does the margin call keep calling you? 📞",ro_1:"Win rate 90%. Balance: 0.",ro_2:"\"One more trade and I'll win it all back.\"",ro_3:"Stop loss? Never heard of her.",ro_no:"…okay, help me",ro_jk:"Breathe. Your account can still be saved.",ro_jk_p:"Every trader who lasts learned this the hard way. Answer 2 quick questions and 5 tiny quizzes (about a minute) and you'll know how to keep yours alive.",ro_go:"Let's go",pi_kick:"One more thing before you start.",pi_t:"Got a strategy that actually works?",pi_p:"Fast money, steady every month, a high win rate: the kind everyone talks about and nobody shows. If you really have one, send me the stats. I want to run the numbers and check it myself.",pi_l_link:"Link to your stats",pi_h_link:"Myfxbook, FX Blue, a broker statement, a spreadsheet: anything I can open.",pi_l_contact:"How do I reach you?",pi_h_contact:"Email, LINE or Telegram.",pi_l_note:"Questions or comments? (optional)",pi_priv:"Only I see this. Nothing gets posted.",pi_asap:"I'll send you a report ASAP. (As Slow As Possible. Kidding. Mostly.)",pi_send:"Send it",pi_later:"Not now",pi_need_link:"Add a link or describe where your stats are.",pi_need_contact:"Add a way to reach you.",pi_err:"Couldn't send. Check your connection and try again.",pi_off:"Sending isn't switched on yet.",pi_sending:"Sending…",pi_done_t:"Got it.",pi_done_p:"I'll check the numbers and get back to you with a report.",pi_cont:"Continue",rd_kick:"Readiness check",rd_intro_t:"Ready to trade real money?",rd_intro_p:"6 questions on what blows up beginner accounts: lot size, stop loss, leverage, losing streaks, backtesting and forward testing. Get one wrong and you'll see a short lesson right away. About 2 minutes.",rd_intro_s:"Better to find out here than with real money.",rd_start:"Start",rd_n:"Question {i} of {n}",rd_next:"Next",rd_back:"Back",rd_see:"See my result",rd_toresult:"Back to result",rd_done:"Done",rd_retry:"Try again",rd_close:"Close",rd_anyway:"Show the lesson anyway",rd_k1:"Lot size",rd_k2:"Stop loss",rd_k3:"Leverage and margin",rd_k4:"Losing streaks",rd_k5:"Backtesting",rd_k6:"Forward testing",rd_q1:"Your account is $1,000. You want to risk 1% ($10) on a EURUSD trade with a 20-pip stop loss. What lot size do you open?",rd_q1_a:"0.05 lot",rd_q1_b:"0.50 lot",rd_q1_c:"1.00 lot",rd_q1_r:"Right. $10 ÷ (20 pips × $10 per pip for 1 lot) = 0.05 lot.",rd_q1_w:"Too big. At the stop, 0.50 lot loses $100 (10% of the account) and 1.00 lot loses $200 (20%).",rd_l1_p:"Lot size comes from how much you're willing to lose, not from a feeling. On EURUSD, 1.00 lot moves about $10 per pip, 0.10 lot $1, and 0.01 lot 10 cents.",rd_l1_f:"Lot size = money you risk ÷ (stop in pips × $10)",rd_acc:"Account",rd_riskp:"Risk per trade",rd_stop:"Stop loss",rd_pips:"{n} pips",rd_l1_o:"Risk {r}, so open",rd_l1_o2:"With 1.00 lot instead, this stop would cost {m}: {p} of the account.",rd_l1_tiny:"Under 0.01 lot: this stop is too wide for the account. Use a tighter stop or skip the trade.",rd_l1_note:"$10 per pip for 1 lot holds for pairs like EURUSD and GBPUSD on a USD account. Other pairs differ; Expert mode works them out.",rd_q2:"Price is 3 pips from your stop loss. You feel sure it will turn around. What do you do?",rd_q2_a:"Move the stop further away to give it room",rd_q2_b:"Remove the stop until price comes back",rd_q2_c:"Leave the stop where it is",rd_q2_r:"Right. The stop is where you decided, calmly, that the idea is wrong. Let it do its job.",rd_q2_w:"That's how a 1% loss turns into 10%. The market doesn't care where you got in.",rd_l2_p:"You set the stop before the trade, while you were calm. Moving it once makes the next time easier, and one trade without a real stop can wipe out weeks of wins.",rd_l2_ctl:"Pips you move the stop away",rd_l2_plan:"Planned loss",rd_l2_now:"Loss after moving it",rd_l2_n:"That one trade now costs as much as {n} normal losses.",rd_l2_0:"Stop left alone: the loss stays at $10.",rd_l2_note:"Example: $1,000 account, 0.05 lot EURUSD, 20-pip stop.",rd_q3:"$1,000 account, 0.05 lot on EURUSD. Your broker offers 1:50 or 1:500 leverage. What changes between them?",rd_q3_a:"1:500 makes 10 times more per pip",rd_q3_b:"Only the margin the broker holds. Profit and loss per pip stay the same",rd_q3_c:"1:500 is safer because it uses less margin",rd_q3_r:"Right. Leverage doesn't change the risk of a trade. It changes how big a trade you're allowed to open.",rd_q3_w:"Not quite. At 0.05 lot you make or lose $0.50 per pip at any leverage.",rd_l3_p:"Leverage is a borrowing limit. Higher leverage holds less margin per trade, so it lets you open far bigger trades than the account can survive. When losses eat up your free margin, the broker closes your trades for you: that's the margin call and stop out.",rd_l3_ctl:"Leverage",rd_l3_m:"Your 0.05 lot trade: the broker holds {m} as margin. You still make or lose $0.50 per pip.",rd_l3_max:"Biggest trade the broker lets you open",rd_l3_zero:"That trade wipes out the account in about",rd_l3_note:"EURUSD near 1.10. Real brokers close trades before zero, so it happens even sooner.",rd_q4:"Your strategy wins 45% of its trades. Over the next 200 trades, what's the longest losing streak you should be ready for?",rd_q4_a:"2 or 3 in a row",rd_q4_b:"5 at most",rd_q4_c:"8 or more in a row",rd_q4_r:"Right. At 45%, about 8 losses in a row is typical somewhere in 200 trades, and 11 or more happens about 1 time in 10.",rd_q4_w:"Not quite. Long streaks are normal even for good strategies. At 45%, about 8 in a row is typical over 200 trades.",rd_l4_p:"A losing streak doesn't mean the strategy broke. Whether you survive it depends on your risk per trade.",rd_l4_ctl:"Win rate",rd_l4_s:"Typical longest losing streak in 200 trades: {s} in a row. 1 time in 10 it's {p} or more.",rd_l4_b:"How far the account falls after {s} losses in a row, risking:",rd_l4_per:"{r} per trade",rd_q5:"You checked your strategy on 10 past trades and 7 were winners. What does that tell you?",rd_q5_a:"It works: a 70% win rate",rd_q5_b:"Not much yet. 10 trades can easily be luck",rd_q5_c:"It's good enough to trade with a bigger size",rd_q5_r:"Right. A strategy with no edge at all, like a coin flip, gets 7 or more out of 10 about 1 time in 6.",rd_q5_w:"Not quite. Even a coin flip, with no edge at all, gets 7 or more out of 10 about 1 time in 6.",rd_l5_p:"A backtest means applying your exact rules to past charts, trade by trade, and writing down every result, wins and losses. Aim for 100 trades or more.",rd_l5_roll:"Roll 10 trades of a no-edge strategy",rd_l5_res:"{w} of 10 won ({p})",rd_l5_tally:"Rolls so far: {r}. Showed 70% or better: {h}.",rd_l5_n:"Trades in the test",rd_l5_range:"With {n} trades, a no-edge strategy lands between {a} and {b} in 19 tests out of 20.",rd_l5_note:"No edge here means winning half the time, with wins and losses the same size.",rd_q6:"Your backtest of 150 trades looks good. What's the next step?",rd_q6_a:"Go live with your normal size",rd_q6_b:"Trade the same rules on demo or a small live account for a few weeks",rd_q6_c:"Tweak the rules until the backtest looks even better",rd_q6_r:"Right. A forward test shows what a backtest can't: real costs, real fills, and you under pressure.",rd_q6_w:"Not quite. Skipping the forward test, or tuning rules to fit the past, is how good-looking backtests fail with real money.",rd_l6_p:"Tap each card to see what a backtest can't show you.",rd_c1_t:"Spread and commission",rd_c1_b:"Paid on every trade, win or lose. A small edge can disappear after costs.",rd_c2_t:"Slippage",rd_c2_b:"In fast markets you get filled at worse prices than the chart showed.",rd_c3_t:"Your nerves",rd_c3_b:"Clicking with real money feels different. Skipped trades and early exits change the results.",rd_c4_t:"Hindsight",rd_c4_b:"On a past chart you can see what happened next. Live, you can't.",rd_l6_fit:"Tweaking rules until the past looks perfect is called overfitting. It fits old charts, not the future.",rd_tap:"Tap to flip",rd_v_ready_t:"You're ready.",rd_v_ready_p:"You know what keeps an account alive. Next: test your strategy and type its numbers below.",rd_v_almost_t:"Almost there.",rd_v_almost_p:"Learn the ones marked ✕ before you risk real money.",rd_v_not_t:"Not ready yet.",rd_v_not_p:"Better to find out here than with real money. Go through the lessons marked ✕, then try again.",rd_stamp_ready:"READY",rd_stamp_almost:"ALMOST",rd_stamp_not:"NOT YET",rd_score:"{x} of 6 right",rd_review:"Review",rd_card_t:"Ready to trade real money?",rd_card_p:"6 quick questions, about 2 minutes. Find out before the market does.",rd_card_go:"Take the check",rd_card_not_t:"Not ready yet: {x} of 6",rd_card_almost_t:"Almost: {x} of 6",rd_card_learn:"Still to learn: {list}.",rd_card_ok:"Ready ✓ You passed the readiness check.",rd_card_retake:"Retake",rd_b_none:"Readiness: not checked yet",rd_b_not:"Readiness: not ready yet ({x}/6)",rd_b_ok:"Readiness: ready ✓",rd_nudge:"You haven't tested anything yet, so start with the basics: the 2-minute readiness check.",rd_nudge_go:"Take the readiness check",
 gate_intro:"Two questions, so we can tell you how far to trust your result. You can continue either way.",
 gate_q_bt:"Have you backtested this strategy?",gate_q_ft:"Have you forward tested it (demo or a small live account)?",
 yes:"Yes, done",no:"Not yet",gate_continue:"Continue",
@@ -1689,7 +1765,7 @@ gate_ok_t:"ทดสอบครบทั้งสองอย่างแล้
 flag_nn:"ยังไม่ได้ Backtest และ Forward test: ผลลัพธ์ด้านล่างเป็นเพียงตัวอย่าง ไม่ใช่หลักฐาน",flag_bt:"มีแค่ Backtest: ตัวเลขอาจ Overfit ผลลัพธ์ด้านล่างจึงน่าจะดีเกินจริง",flag_ft:"มีแค่ Forward test: เมื่อไม่มี Backtest ตัวอย่างขนาดเล็กแบบนี้อาจเป็นแค่โชค",
 mode_desk:"ผู้เชี่ยวชาญ",desk_h1:"จารย์เหนียว โหมดผู้เชี่ยวชาญ: วิเคราะห์ความเสี่ยงของกลยุทธ์",desk_in_h:"ค่าที่ใส่",layout_full:"แดชบอร์ดเต็ม",layout_guided:"ทีละขั้น",
 gate_title:"ขอเช็กก่อนเริ่มนะ",
-ro_kick:"ข้าคือจารย์เหนียว หมอผีประจำพอร์ตแตก",ro_t:"เทรดเป็นจริงเหรอ?",ro_p:"ถ้าเป็นจริง ทำไม Margin call โทรหาเจ้าทุกวันล่ะ 📞",ro_1:"Win rate 90% แต่พอร์ตเหลือ 0",ro_2:"\"อีกไม้เดียว เดี๋ยวได้คืน\"",ro_3:"Stop loss? ไม่รู้จัก",ro_no:"…ช่วยหน่อย",ro_jk:"หายใจลึกๆ พอร์ตเจ้ายังรักษาได้",ro_jk_p:"เทรดเดอร์ที่อยู่รอดทุกคนก็เคยเจ็บมาก่อน ตอบ 2 คำถามกับควิซสั้นๆ 5 ข้อ ใช้เวลาราวนาทีเดียว แล้วเจ้าจะรู้วิธีทำให้พอร์ตอยู่รอด",ro_go:"เริ่มเลย",pi_kick:"ก่อนเริ่ม ขอถามอีกเรื่อง",pi_t:"มีกลยุทธ์ที่ได้ผลจริงไหม?",pi_p:"รวยเร็ว กำไรสม่ำเสมอทุกเดือน win rate สูง แบบที่ใครๆ ก็พูดถึงแต่ไม่มีใครเอามาให้ดู ถ้าเจ้ามีจริง ส่งสถิติมาให้ข้า ข้าอยากคำนวณและตรวจสอบเอง",pi_l_link:"ลิงก์สถิติของเจ้า",pi_h_link:"Myfxbook, FX Blue, statement จากโบรกเกอร์, สเปรดชีต อะไรก็ได้ที่ข้าเปิดดูได้",pi_l_contact:"ติดต่อเจ้าทางไหน?",pi_h_contact:"อีเมล, LINE หรือ Telegram",pi_l_note:"อยากถามหรืออยากบอกอะไรข้าไหม (ไม่บังคับ)",pi_priv:"ข้าเห็นคนเดียว ไม่มีการโพสต์ที่ไหน",pi_asap:"ข้าจะส่งรายงานให้ ASAP (As Slow As Possible ล้อเล่น… นิดหน่อย)",pi_send:"ส่งเลย",pi_later:"ไว้ก่อน",pi_need_link:"ใส่ลิงก์ หรือบอกว่าสถิติอยู่ที่ไหน",pi_need_contact:"ใส่ช่องทางติดต่อ",pi_err:"ส่งไม่สำเร็จ ลองเช็กอินเทอร์เน็ตแล้วส่งใหม่",pi_off:"ยังไม่ได้เปิดระบบส่ง",pi_sending:"กำลังส่ง…",pi_done_t:"ได้รับแล้ว",pi_done_p:"ข้าจะตรวจตัวเลขแล้วส่งรายงานกลับไปให้",pi_cont:"ไปต่อ",
+ro_kick:"ข้าคือจารย์เหนียว หมอผีประจำพอร์ตแตก",ro_t:"เทรดเป็นจริงเหรอ?",ro_p:"ถ้าเป็นจริง ทำไม Margin call โทรหาเจ้าทุกวันล่ะ 📞",ro_1:"Win rate 90% แต่พอร์ตเหลือ 0",ro_2:"\"อีกไม้เดียว เดี๋ยวได้คืน\"",ro_3:"Stop loss? ไม่รู้จัก",ro_no:"…ช่วยหน่อย",ro_jk:"หายใจลึกๆ พอร์ตเจ้ายังรักษาได้",ro_jk_p:"เทรดเดอร์ที่อยู่รอดทุกคนก็เคยเจ็บมาก่อน ตอบ 2 คำถามกับควิซสั้นๆ 5 ข้อ ใช้เวลาราวนาทีเดียว แล้วเจ้าจะรู้วิธีทำให้พอร์ตอยู่รอด",ro_go:"เริ่มเลย",pi_kick:"ก่อนเริ่ม ขอถามอีกเรื่อง",pi_t:"มีกลยุทธ์ที่ได้ผลจริงไหม?",pi_p:"รวยเร็ว กำไรสม่ำเสมอทุกเดือน win rate สูง แบบที่ใครๆ ก็พูดถึงแต่ไม่มีใครเอามาให้ดู ถ้าเจ้ามีจริง ส่งสถิติมาให้ข้า ข้าอยากคำนวณและตรวจสอบเอง",pi_l_link:"ลิงก์สถิติของเจ้า",pi_h_link:"Myfxbook, FX Blue, statement จากโบรกเกอร์, สเปรดชีต อะไรก็ได้ที่ข้าเปิดดูได้",pi_l_contact:"ติดต่อเจ้าทางไหน?",pi_h_contact:"อีเมล, LINE หรือ Telegram",pi_l_note:"อยากถามหรืออยากบอกอะไรข้าไหม (ไม่บังคับ)",pi_priv:"ข้าเห็นคนเดียว ไม่มีการโพสต์ที่ไหน",pi_asap:"ข้าจะส่งรายงานให้ ASAP (As Slow As Possible ล้อเล่น… นิดหน่อย)",pi_send:"ส่งเลย",pi_later:"ไว้ก่อน",pi_need_link:"ใส่ลิงก์ หรือบอกว่าสถิติอยู่ที่ไหน",pi_need_contact:"ใส่ช่องทางติดต่อ",pi_err:"ส่งไม่สำเร็จ ลองเช็กอินเทอร์เน็ตแล้วส่งใหม่",pi_off:"ยังไม่ได้เปิดระบบส่ง",pi_sending:"กำลังส่ง…",pi_done_t:"ได้รับแล้ว",pi_done_p:"ข้าจะตรวจตัวเลขแล้วส่งรายงานกลับไปให้",pi_cont:"ไปต่อ",rd_kick:"เช็กความพร้อม",rd_intro_t:"พร้อมเทรดเงินจริงหรือยัง?",rd_intro_p:"6 คำถามเรื่องที่ทำพอร์ตมือใหม่แตก: ขนาด lot, stop loss, leverage, การแพ้ติดกัน, backtest และ forward test ตอบผิดข้อไหน จะมีบทเรียนสั้นๆ ให้ทันที ใช้เวลาราว 2 นาที",rd_intro_s:"รู้ตัวตรงนี้ ดีกว่ารู้ตอนเสียเงินจริง",rd_start:"เริ่มเลย",rd_n:"ข้อ {i} จาก {n}",rd_next:"ถัดไป",rd_back:"ย้อนกลับ",rd_see:"ดูผล",rd_toresult:"กลับไปที่ผล",rd_done:"เสร็จแล้ว",rd_retry:"ทำใหม่",rd_close:"ปิด",rd_anyway:"ดูบทเรียนอยู่ดี",rd_k1:"ขนาด lot",rd_k2:"Stop loss",rd_k3:"Leverage และ margin",rd_k4:"การแพ้ติดกัน",rd_k5:"Backtest",rd_k6:"Forward test",rd_q1:"พอร์ต $1,000 อยากเสี่ยง 1% ($10) กับไม้ EURUSD ที่ตั้ง stop loss 20 pips ต้องเปิดกี่ lot?",rd_q1_a:"0.05 lot",rd_q1_b:"0.50 lot",rd_q1_c:"1.00 lot",rd_q1_r:"ถูกต้อง $10 ÷ (20 pips × $10 ต่อ pip ต่อ 1 lot) = 0.05 lot",rd_q1_w:"ใหญ่เกินไป ถ้าโดน stop, 0.50 lot เสีย $100 (10% ของพอร์ต) ส่วน 1.00 lot เสีย $200 (20%)",rd_l1_p:"ขนาด lot ต้องคิดจากเงินที่ยอมเสียได้ ไม่ใช่จากความรู้สึก บน EURUSD, 1.00 lot ขยับราว $10 ต่อ pip, 0.10 lot $1 และ 0.01 lot 10 เซนต์",rd_l1_f:"ขนาด lot = เงินที่ยอมเสีย ÷ (stop เป็น pips × $10)",rd_acc:"เงินในพอร์ต",rd_riskp:"เสี่ยงต่อไม้",rd_stop:"Stop loss",rd_pips:"{n} pips",rd_l1_o:"เสี่ยง {r} จึงเปิด",rd_l1_o2:"ถ้าเปิด 1.00 lot แทน ไม้นี้จะเสีย {m} คิดเป็น {p} ของพอร์ต",rd_l1_tiny:"ต่ำกว่า 0.01 lot: stop กว้างเกินไปสำหรับพอร์ตนี้ ใช้ stop ที่แคบลง หรือข้ามไม้นี้ไป",rd_l1_note:"$10 ต่อ pip ต่อ 1 lot ใช้กับคู่อย่าง EURUSD และ GBPUSD ในบัญชี USD คู่อื่นจะต่างออกไป โหมดผู้เชี่ยวชาญคำนวณให้ได้",rd_q2:"ราคาห่างจาก stop loss แค่ 3 pips เจ้ามั่นใจว่ามันจะกลับตัว จะทำอย่างไร?",rd_q2_a:"เลื่อน stop ออกไปให้มีที่หายใจ",rd_q2_b:"เอา stop ออกก่อน รอราคากลับมา",rd_q2_c:"ปล่อย stop ไว้ที่เดิม",rd_q2_r:"ถูกต้อง stop คือจุดที่เจ้าตัดสินใจไว้ตอนใจเย็นว่าไอเดียนี้ผิด ปล่อยให้มันทำหน้าที่",rd_q2_w:"นี่แหละวิธีที่ขาดทุน 1% กลายเป็น 10% ตลาดไม่สนว่าเจ้าเข้าที่ราคาไหน",rd_l2_p:"เจ้าตั้ง stop ไว้ก่อนเข้าเทรด ตอนที่ใจยังเย็น เลื่อนครั้งแรกแล้วครั้งต่อไปจะง่ายขึ้น และไม้เดียวที่ไม่มี stop จริงๆ ล้างกำไรหลายสัปดาห์ได้",rd_l2_ctl:"เลื่อน stop ออกไปกี่ pips",rd_l2_plan:"ขาดทุนตามแผน",rd_l2_now:"ขาดทุนหลังเลื่อน",rd_l2_n:"ไม้เดียวนี้เสียเท่ากับแพ้ปกติ {n} ไม้",rd_l2_0:"ไม่เลื่อน stop: ขาดทุนอยู่ที่ $10 ตามแผน",rd_l2_note:"ตัวอย่าง: พอร์ต $1,000, EURUSD 0.05 lot, stop 20 pips",rd_q3:"พอร์ต $1,000 เปิด EURUSD 0.05 lot โบรกให้เลือก leverage 1:50 หรือ 1:500 อะไรต่างกัน?",rd_q3_a:"1:500 ได้เงินต่อ pip มากกว่า 10 เท่า",rd_q3_b:"ต่างแค่ margin ที่โบรกกันไว้ กำไรขาดทุนต่อ pip เท่าเดิม",rd_q3_c:"1:500 ปลอดภัยกว่า เพราะใช้ margin น้อยกว่า",rd_q3_r:"ถูกต้อง leverage ไม่ได้เปลี่ยนความเสี่ยงของไม้นั้น แต่เปลี่ยนว่าเจ้าเปิดไม้ได้ใหญ่แค่ไหน",rd_q3_w:"ยังไม่ใช่ ที่ 0.05 lot ได้หรือเสีย $0.50 ต่อ pip ไม่ว่าจะใช้ leverage เท่าไหร่",rd_l3_p:"leverage คือวงเงินยืม ยิ่งสูง โบรกยิ่งกัน margin ต่อไม้น้อยลง เจ้าจึงเปิดไม้ใหญ่เกินกว่าที่พอร์ตจะรับไหวได้ พอขาดทุนกิน free margin จนหมด โบรกจะปิดไม้ให้เอง นั่นคือ margin call และ stop out",rd_l3_ctl:"Leverage",rd_l3_m:"ไม้ 0.05 lot ของเจ้า: โบรกกัน margin ไว้ {m} ได้หรือเสียยังเป็น $0.50 ต่อ pip เท่าเดิม",rd_l3_max:"ไม้ใหญ่สุดที่โบรกให้เปิด",rd_l3_zero:"ไม้นั้นล้างพอร์ตหมดในราว",rd_l3_note:"คิดที่ EURUSD ราว 1.10 ของจริงโบรกจะปิดไม้ก่อนถึงศูนย์ จึงเกิดเร็วกว่านี้อีก",rd_q4:"กลยุทธ์ของเจ้าชนะ 45% ของไม้ทั้งหมด ใน 200 ไม้ข้างหน้า ควรเตรียมใจกับการแพ้ติดกันยาวสุดกี่ไม้?",rd_q4_a:"2–3 ไม้ติด",rd_q4_b:"ไม่เกิน 5 ไม้",rd_q4_c:"8 ไม้ติดขึ้นไป",rd_q4_r:"ถูกต้อง ที่ 45% แพ้ติดกันราว 8 ไม้เป็นเรื่องปกติใน 200 ไม้ และ 11 ไม้ขึ้นไปเกิดได้ราว 1 ใน 10",rd_q4_w:"ยังไม่ใช่ แพ้ติดกันยาวๆ เป็นเรื่องปกติแม้กลยุทธ์ดี ที่ 45% แพ้ติดราว 8 ไม้ใน 200 ไม้ถือว่าปกติ",rd_l4_p:"แพ้ติดกันไม่ได้แปลว่ากลยุทธ์พัง จะรอดหรือไม่ขึ้นอยู่กับความเสี่ยงต่อไม้",rd_l4_ctl:"Win rate",rd_l4_s:"แพ้ติดกันยาวสุดโดยทั่วไปใน 200 ไม้: {s} ไม้ และ 1 ใน 10 ครั้งจะยาว {p} ไม้ขึ้นไป",rd_l4_b:"พอร์ตลดลงเท่าไหร่หลังแพ้ติด {s} ไม้ ถ้าเสี่ยง:",rd_l4_per:"{r} ต่อไม้",rd_q5:"เจ้าลองกลยุทธ์ย้อนหลัง 10 ไม้ ชนะ 7 ไม้ บอกอะไรได้บ้าง?",rd_q5_a:"ใช้ได้แล้ว win rate 70%",rd_q5_b:"ยังบอกอะไรไม่ได้มาก 10 ไม้อาจเป็นแค่ดวง",rd_q5_c:"ดีพอจะเพิ่มขนาดไม้แล้ว",rd_q5_r:"ถูกต้อง กลยุทธ์ที่ไม่มีความได้เปรียบเลย อย่างการโยนเหรียญ ก็ชนะ 7 ใน 10 ขึ้นไปได้ราว 1 ใน 6 ครั้ง",rd_q5_w:"ยังไม่ใช่ แม้แต่การโยนเหรียญที่ไม่มีความได้เปรียบเลย ก็ชนะ 7 ใน 10 ขึ้นไปได้ราว 1 ใน 6 ครั้ง",rd_l5_p:"backtest คือเอากฎของเจ้าไปใช้กับกราฟย้อนหลังทีละไม้ตามกฎเป๊ะๆ แล้วจดผลทุกไม้ ทั้งชนะและแพ้ ตั้งเป้าอย่างน้อย 100 ไม้",rd_l5_roll:"สุ่ม 10 ไม้ของกลยุทธ์ที่ไม่มีความได้เปรียบ",rd_l5_res:"ชนะ {w} จาก 10 ไม้ ({p})",rd_l5_tally:"สุ่มไปแล้ว {r} ครั้ง ได้ 70% ขึ้นไป {h} ครั้ง",rd_l5_n:"จำนวนไม้ที่ทดสอบ",rd_l5_range:"ถ้าทดสอบ {n} ไม้ กลยุทธ์ที่ไม่มีความได้เปรียบจะได้ win rate ระหว่าง {a} ถึง {b} ใน 19 จาก 20 ครั้ง",rd_l5_note:"ไม่มีความได้เปรียบ ในที่นี้คือชนะครึ่งหนึ่ง และกำไรกับขาดทุนต่อไม้เท่ากัน",rd_q6:"backtest 150 ไม้ผลออกมาดี ขั้นต่อไปคืออะไร?",rd_q6_a:"เข้าบัญชีจริงด้วยขนาดไม้ปกติ",rd_q6_b:"เทรดด้วยกฎเดิมในบัญชี demo หรือบัญชีจริงเล็กๆ สักสองสามสัปดาห์",rd_q6_c:"ปรับกฎจน backtest ออกมาสวยขึ้นอีก",rd_q6_r:"ถูกต้อง forward test จะเห็นสิ่งที่ backtest มองไม่เห็น: ต้นทุนจริง การได้ราคาจริง และตัวเจ้าเองตอนกดดัน",rd_q6_w:"ยังไม่ใช่ ข้าม forward test หรือปรับกฎให้เข้ากับอดีต คือเหตุที่ backtest สวยๆ พังตอนใช้เงินจริง",rd_l6_p:"แตะแต่ละการ์ด ดูว่า backtest มองไม่เห็นอะไรบ้าง",rd_c1_t:"Spread และค่าคอมมิชชัน",rd_c1_b:"จ่ายทุกไม้ ไม่ว่าชนะหรือแพ้ ความได้เปรียบเล็กๆ อาจหายไปหลังหักต้นทุน",rd_c2_t:"Slippage",rd_c2_b:"ตอนตลาดวิ่งเร็ว ออเดอร์จะได้ราคาแย่กว่าที่เห็นบนกราฟ",rd_c3_t:"ใจของเจ้าเอง",rd_c3_b:"กดด้วยเงินจริงความรู้สึกต่างกัน การข้ามไม้หรือปิดก่อนกำหนดทำให้ผลเปลี่ยน",rd_c4_t:"การรู้ผลล่วงหน้า",rd_c4_b:"บนกราฟย้อนหลัง เจ้าเห็นว่าอะไรเกิดต่อ แต่ตอนเทรดจริงไม่เห็น",rd_l6_fit:"การปรับกฎจนอดีตดูสมบูรณ์แบบ เรียกว่า overfitting มันเข้ากับกราฟเก่า ไม่ใช่อนาคต",rd_tap:"แตะเพื่อพลิก",rd_v_ready_t:"เจ้าพร้อมแล้ว",rd_v_ready_p:"เจ้ารู้แล้วว่าอะไรทำให้พอร์ตรอด ต่อไป: ทดสอบกลยุทธ์แล้วใส่ตัวเลขด้านล่าง",rd_v_almost_t:"อีกนิดเดียว",rd_v_almost_p:"เรียนข้อที่มี ✕ ให้เข้าใจก่อนใช้เงินจริง",rd_v_not_t:"ยังไม่พร้อม",rd_v_not_p:"รู้ตรงนี้ดีกว่ารู้ตอนเสียเงินจริง ไล่ดูบทเรียนข้อที่มี ✕ แล้วลองใหม่",rd_stamp_ready:"พร้อม",rd_stamp_almost:"อีกนิด",rd_stamp_not:"ยังไม่พร้อม",rd_score:"ถูก {x} จาก 6 ข้อ",rd_review:"ทบทวน",rd_card_t:"พร้อมเทรดเงินจริงหรือยัง?",rd_card_p:"6 คำถามสั้นๆ ราว 2 นาที รู้ตัวก่อนตลาดจะสอน",rd_card_go:"เริ่มเช็ก",rd_card_not_t:"ยังไม่พร้อม: ถูก {x} จาก 6",rd_card_almost_t:"อีกนิด: ถูก {x} จาก 6",rd_card_learn:"ยังต้องเรียน: {list}",rd_card_ok:"พร้อมแล้ว ✓ ผ่านการเช็กความพร้อม",rd_card_retake:"ทำอีกครั้ง",rd_b_none:"ความพร้อม: ยังไม่ได้เช็ก",rd_b_not:"ความพร้อม: ยังไม่พร้อม ({x}/6)",rd_b_ok:"ความพร้อม: พร้อมแล้ว ✓",rd_nudge:"เจ้ายังไม่ได้ทดสอบอะไรเลย เริ่มจากพื้นฐานก่อน: เช็กความพร้อม 2 นาที",rd_nudge_go:"เช็กความพร้อม",
 gate_intro:"สองคำถาม เพื่อบอกได้ว่าควรเชื่อผลลัพธ์ของคุณแค่ไหน ตอบแบบไหนก็ไปต่อได้",
 gate_q_bt:"คุณ Backtest กลยุทธ์นี้แล้วหรือยัง?",gate_q_ft:"คุณ Forward test แล้วหรือยัง (บัญชีเดโม่หรือบัญชีจริงเล็กๆ)?",
 yes:"ทำแล้ว",no:"ยังไม่ได้ทำ",gate_continue:"ไปต่อ",
@@ -2831,7 +2907,7 @@ function summaryHtml(gk){
   <p class="gstest" data-l="${lvl}">${ml(lvl)} ${esc(t('gs_test_'+gk))}</p>
   ${done.length?`<p class="gsscore"><b>${esc(t('gs_score',{x:score,y:done.length}))}</b></p>`:''}
   <h4>${esc(t('gs_your'))}</h4><ul class="gslist">${[1,2,3,4,5].map(i=>{const ok=ans[i]===RIGHT;return`<li>${ans[i]?ml(ok?'ok':'bad'):'<span class="ml" aria-hidden="true">\u2022</span>'}<span>${esc(t('gq'+i+'_k'))}</span></li>`;}).join('')}</ul>
-  <h4>${esc(t('gs_rules'))}</h4>${rules()}<p class="small muted">${esc(t('gs_review'))}</p>`;}
+  ${gk==='nn'?`<div class="rdnudge"><p>${esc(t('rd_nudge'))}</p><button type="button" class="btn" data-rdgo>${esc(t('rd_nudge_go'))}</button></div>`:''}<h4>${esc(t('gs_rules'))}</h4>${rules()}<p class="small muted">${esc(t('gs_review'))}</p>`;}
 /* tooltip */
 let cur=null,host=null;
 function place(node){const tp=$('itip'),r=node.getBoundingClientRect(),vw=innerWidth,vh=innerHeight,w=Math.min(340,vw-24);tp.style.width=w+'px';
@@ -2930,7 +3006,7 @@ function stepRender(){
   gate.setAttribute('aria-labelledby',q?'gate-qt':'gate-title');}
 function goStep(n){gstep=n;stepRender();gate.scrollTop=0;const h=gate.querySelector(gstep?'#gate-qt':'#gate-title');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}}
 /* while a popup is open, everything behind it is inert: no keyboard focus, hidden from screen readers */
-function syncInert(){const sc=$('scope'),g=$('gate'),pi=$('pitch'),top=!sc.hidden?sc:!g.hidden?g:!pi.hidden?pi:null;
+function syncInert(){const sc=$('scope'),g=$('gate'),pi=$('pitch'),rd=$('ready'),top=!sc.hidden?sc:!g.hidden?g:!pi.hidden?pi:!rd.hidden?rd:null;
   [...document.body.children].forEach(el=>{if(el.tagName==='SCRIPT'||el.id==='tip')return;const on=!!top&&el!==top&&!el.contains(top);if(on)el.setAttribute('inert','');else el.removeAttribute('inert');});}
 /* the roast: a cheeky first screen on page load, before the real questions */
 let intro=0;
@@ -2944,7 +3020,7 @@ $('gate-intro').addEventListener('click',e=>{const b=e.target.closest('[data-ro]
   intro=k==='help'?2:0;gateRender();gate.scrollTop=0;
   const f=intro?gate.querySelector('#gate-intro [data-ro]'):gate.querySelector('.yn button');if(f)f.focus();});
 function openGate(first){answers.bt=answers.ft=null;gstep=0;intro=first===true?1:0;ILL.reset();gateRender();document.body.classList.add('locked');gate.hidden=false;syncInert();const b=gate.querySelector(intro?'#gate-intro [data-ro]':'.yn button');if(b)b.focus();}
-function closeGate(){ILL.hide();gate.hidden=true;document.body.classList.remove('locked');syncInert();window.__sfxGate=gateKey();if(gateKey())store.set('jn_gate',JSON.stringify({bt:answers.bt,ft:answers.ft}));flagRender();if(root.dataset.mode==='desk'){if(deskReady())DESK.analyze();}else if((pitchOn()||location.hash==='#pitch')&&store.get('jn_pitch')!=='sent')openPitch();else PLAY.render();}
+function closeGate(o){ILL.hide();gate.hidden=true;document.body.classList.remove('locked');syncInert();window.__sfxGate=gateKey();if(gateKey())store.set('jn_gate',JSON.stringify({bt:answers.bt,ft:answers.ft}));flagRender();if(root.dataset.mode==='desk'){if(deskReady())DESK.analyze();}else if(o&&o.ready){PLAY.render();RD.open();}else if((pitchOn()||location.hash==='#pitch')&&store.get('jn_pitch')!=='sent'&&gateKey()!=='nn')openPitch();else PLAY.render();}
 /* the strategy pitch: after the quiz in Beginner, until someone has sent one from this browser.
    Answers go to a Google Form you own (they land in its Google Sheet); it stays off while PITCH.form is empty.
    form: the long id in the form's share link .../forms/d/e/<id>/viewform
@@ -2969,11 +3045,137 @@ $('pitch-f').addEventListener('submit',async e=>{e.preventDefault();
   finally{go.disabled=false;go.classList.remove('busy');go.textContent=t('pi_send');}});
 $('pi-later').addEventListener('click',closePitch);$('pi-cont').addEventListener('click',closePitch);
 $('pitch').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();closePitch();}});
+/* ----- readiness check (Beginner): 6 questions on what blows up beginner accounts; a short lesson after each wrong answer.
+   Optional. The result is remembered in this browser (jn_ready) and shown on the card above the inputs and on the result. ----- */
+const RD=(function(){
+const N=6,RIGHT={1:'a',2:'c',3:'b',4:'c',5:'b',6:'b'},ans={},ICN={ok:'✓',bad:'✕'};
+const st={acc:1000,risk:1,pips:20,mv:40,lev:500,wr:45,flips:null,fresh:false,hits:0,rolls:0,nt:10};
+let step=0,review=false,saved=false,back=null;
+const calm=()=>root.classList.contains('noanim')||matchMedia('(prefers-reduced-motion:reduce)').matches;
+const ml=v=>`<span class="ml" data-v="${v}" aria-hidden="true">${ICN[v]}</span>`;
+const usd=v=>'$'+(Math.round(v*100)/100).toLocaleString('en-US',{maximumFractionDigits:v<100?2:0});
+const pc=(v,d)=>(+v).toFixed(d==null?(v<10?1:0):d).replace(/\.0$/,'')+'%';
+const rng=s=>()=>{s=s+0x6D2B79F5|0;let x=Math.imul(s^s>>>15,1|s);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296;};
+function load(){try{const r=JSON.parse(store.get('jn_ready')||'null');return r&&typeof r.s==='number'?r:null;}catch(e){return null;}}
+const lvl=s=>s>=N?'ready':s>=4?'almost':'not';
+const slider=(k,min,max,stp,lab,val)=>`<label class="rdsl"><span>${esc(lab)}<b>${esc(val)}</b></span><input type="range" data-rd="${k}" min="${min}" max="${max}" step="${stp}" value="${st[k]}"></label>`;
+
+/* lessons: controls once, output redrawn on input */
+const OUT={
+  1(){const r$=st.acc*st.risk/100,lot=r$/(st.pips*10),one=st.pips*10,p=Math.min(100,one/st.acc*100);
+    return`<div class="rdres"><span>${esc(t('rd_l1_o',{r:usd(r$)}))}</span><b class="rdbig">${lot<0.01?'&lt; 0.01':lot.toFixed(2)} lot</b></div>
+    ${lot<0.01?`<p class="rdwarn">${esc(t('rd_l1_tiny'))}</p>`:''}
+    <p class="small">${esc(t('rd_l1_o2',{m:usd(one),p:pc(one/st.acc*100)}))}</p><div class="rdbar"><i class="bad" style="width:${Math.max(p,1)}%"></i></div>`;},
+  2(){const loss=(20+st.mv)*0.5,p=loss/10,n=(20+st.mv)/20;
+    return`<div class="rdpair"><span>${esc(t('rd_l2_plan'))}</span><b>$10 (1%)</b></div><div class="rdbar"><i class="ok" style="width:1%"></i></div>
+    <div class="rdpair"><span>${esc(t('rd_l2_now'))}</span><b class="${st.mv?'neg':''}">${usd(loss)} (${pc(p)})</b></div><div class="rdbar"><i class="${st.mv?'bad':'ok'}" style="width:${Math.max(Math.min(p,100),1)}%"></i></div>
+    <p class="rdkey">${esc(st.mv?t('rd_l2_n',{n:(Math.round(n*10)/10).toString()}):t('rd_l2_0'))}</p>`;},
+  3(){const m=5500/st.lev,mx=Math.floor(1000/(110000/st.lev)*100)/100,z=Math.round(1000/(mx*10)),c=z<60?'bad':z<200?'warn':'ok';
+    return`<p>${esc(t('rd_l3_m',{m:usd(m)}))}</p>
+    <div class="rdpair"><span>${esc(t('rd_l3_max'))}</span><b>${mx.toFixed(2)} lot</b></div>
+    <div class="rdpair"><span>${esc(t('rd_l3_zero'))}</span><b class="${c==='bad'?'neg':''}">${esc(t('rd_pips',{n:z}))}</b></div><div class="rdbar"><i class="${c}" style="width:${Math.max(2,Math.min(100,z/4))}%"></i></div>
+    <p class="small muted">${esc(t('rd_l3_note'))}</p>`;},
+  4(){const s=streak(st.wr);
+    return`<p class="rdkey">${esc(t('rd_l4_s',{s:s.m,p:s.p}))}</p><p class="small">${esc(t('rd_l4_b',{s:s.m}))}</p>`+
+    [1,2,5].map(r=>{const d=(1-Math.pow(1-r/100,s.m))*100;return`<div class="rdpair"><span>${esc(t('rd_l4_per',{r:r+'%'}))}</span><b class="${r>=5?'neg':''}">${MINUS}${pc(d)}</b></div><div class="rdbar"><i class="${r===1?'ok':r===2?'warn':'bad'}" style="width:${Math.max(d,1)}%"></i></div>`;}).join('');},
+  5(){let h='';
+    if(st.flips){const w=st.flips.filter(Boolean).length;
+      h+=`<div class="rdflips${st.fresh?' fresh':''}" aria-hidden="true">${st.flips.map((x,i)=>`<i class="${x?'w':'l'}" style="--i:${i}">${x?'W':'L'}</i>`).join('')}</div>
+      <p class="rdkey">${esc(t('rd_l5_res',{w,p:w*10+'%'}))}</p><p class="small">${esc(t('rd_l5_tally',{r:st.rolls,h:st.hits}))}</p>`;}
+    st.fresh=false;
+    const e=1.96*Math.sqrt(.25/st.nt)*100,a=Math.max(0,50-e),b=Math.min(100,50+e);
+    return h+`<p class="small" style="margin-top:.8rem">${esc(t('rd_l5_range',{n:st.nt,a:pc(a,0),b:pc(b,0)}))}</p>
+    <div class="rdrange"><i style="left:${a}%;width:${b-a}%"></i><span style="left:50%"></span></div><p class="small muted">${esc(t('rd_l5_note'))}</p>`;},
+};
+const memo={};
+function streak(wr){if(memo[wr])return memo[wr];const R=rng(wr*7919),q=1-wr/100,runs=[];
+  for(let j=0;j<2000;j++){let m=0,c=0;for(let k=0;k<200;k++){if(R()<q){c++;if(c>m)m=c;}else c=0;}runs.push(m);}
+  runs.sort((x,y)=>x-y);return memo[wr]={m:runs[1000],p:runs[1800]};}
+function lesson(i){
+  const ctl={
+    1:()=>`<p>${esc(t('rd_l1_p'))}</p><p class="rdf">${esc(t('rd_l1_f'))}</p><div class="rdctl">
+      <label class="rdsl"><span>${esc(t('rd_acc'))}</span><span class="numwrap"><i>$</i><input type="number" inputmode="decimal" data-rd="acc" min="50" step="any" value="${st.acc}"></span></label>
+      ${slider('risk',0.25,5,0.25,t('rd_riskp'),st.risk+'%')}${slider('pips',5,100,1,t('rd_stop'),t('rd_pips',{n:st.pips}))}</div>`,
+    2:()=>`<p>${esc(t('rd_l2_p'))}</p><div class="rdctl">${slider('mv',0,200,5,t('rd_l2_ctl'),t('rd_pips',{n:st.mv}))}</div><p class="small muted">${esc(t('rd_l2_note'))}</p>`,
+    3:()=>`<p>${esc(t('rd_l3_p'))}</p><div class="rdctl"><span class="rdlab">${esc(t('rd_l3_ctl'))}</span><div class="seg rdlev" role="group">${[30,100,500,1000].map(v=>`<button type="button" data-lev="${v}" aria-pressed="${st.lev===v}">1:${v}</button>`).join('')}</div></div>`,
+    4:()=>`<p>${esc(t('rd_l4_p'))}</p><div class="rdctl">${slider('wr',30,70,1,t('rd_l4_ctl'),st.wr+'%')}</div>`,
+    5:()=>`<p>${esc(t('rd_l5_p'))}</p><button type="button" class="btn alt" id="rd-roll">🎲 ${esc(t('rd_l5_roll'))}</button><div class="rdctl">${slider('nt',10,300,10,t('rd_l5_n'),st.nt)}</div>`,
+    6:()=>`<p>${esc(t('rd_l6_p'))}</p><div class="rdcards">${[1,2,3,4].map(k=>`<button type="button" class="rdcard" aria-pressed="false"><span class="rdc-f"><b>${esc(t('rd_c'+k+'_t'))}</b><small>${esc(t('rd_tap'))}</small></span><span class="rdc-b">${esc(t('rd_c'+k+'_b'))}</span></button>`).join('')}</div><p class="rdkey">${esc(t('rd_l6_fit'))}</p>`};
+  return`<div class="rdlesson">${ctl[i]()}${OUT[i]?`<div id="rd-out" aria-live="polite">${OUT[i]()}</div>`:''}</div>`;}
+function qHtml(i){
+  const a=ans[i],ok=a===RIGHT[i];
+  let h=`<p class="rk">${esc(t('rd_k'+i))}</p><h2 id="rd-qt" tabindex="-1">${esc(t('rd_q'+i))}</h2><div class="rdopts" role="group">`+
+    ['a','b','c'].map(o=>`<button type="button" class="qopt" data-ra="${o}" aria-pressed="${a===o}"${a?` data-r="${o===RIGHT[i]?'y':'n'}" aria-disabled="true"`:''}>${esc(t('rd_q'+i+'_'+o))}</button>`).join('')+`</div>`;
+  if(a)h+=`<div class="qfb rdfb" data-ok="${ok}"><p class="qv">${ml(ok?'ok':'bad')}${SPR(ok?'shaman_happy':'shaman_angry')}<b>${esc(t('rd_q'+i+(ok?'_r':'_w')))}</b></p>`+
+    (ok?`<details class="rdmore"><summary>${esc(t('rd_anyway'))}</summary>${lesson(i)}</details>`:lesson(i))+`</div>`;
+  return h;}
+function score(){return[1,2,3,4,5,6].filter(i=>ans[i]===RIGHT[i]).length;}
+function vHtml(){
+  const s=score(),l=lvl(s);
+  return`<div class="rdv" data-l="${l}"><div class="rdst">${SPR(l==='ready'?'shaman_happy':l==='almost'?'shaman_thinking':'shaman_angry',3)}<span class="rdstamp" data-l="${l}">${esc(t('rd_stamp_'+l))}</span></div>
+    <h2 id="rd-qt" tabindex="-1">${esc(t('rd_v_'+l+'_t'))}</h2><p class="rdscore"><b id="rd-count">${calm()?s:0}</b> / ${N}</p><p>${esc(t('rd_v_'+l+'_p'))}</p>
+    <ul class="rdlist">${[1,2,3,4,5,6].map((i,k)=>{const ok=ans[i]===RIGHT[i];return`<li style="--i:${k}">${ml(ok?'ok':'bad')}<span>${esc(t('rd_k'+i))}</span>${ok?'':`<button type="button" class="link" data-rv="${i}">${esc(t('rd_review'))}</button>`}</li>`;}).join('')}</ul>
+    ${l!=='ready'?`<p><button type="button" class="btn alt" id="rd-retry">${esc(t('rd_retry'))}</button></p>`:''}</div>`;}
+function introHtml(){return`<div class="rdintro"><div class="rdst">${SPR('shaman_thinking',3)}</div><h2 id="rd-qt" tabindex="-1">${esc(t('rd_intro_t'))}</h2><p>${esc(t('rd_intro_p'))}</p><p class="rq">${esc(t('rd_intro_s'))}</p></div>`;}
+function render(focus){
+  const body=$('rd-body'),q=step>=1&&step<=N;
+  const keep=body.querySelector('details.rdmore');const wasOpen=keep&&keep.open;
+  body.innerHTML=step===0?introHtml():q?qHtml(step):vHtml();
+  if(wasOpen&&body.querySelector('details.rdmore'))body.querySelector('details.rdmore').open=true;
+  $('rd-step').textContent=step===0?t('rd_kick'):q?t('rd_n',{i:step,n:N}):t('rd_score',{x:score()});
+  $('rd-prog').innerHTML=Array.from({length:N},(_,i)=>{const k=i+1,a=ans[k];return`<i class="${a?(a===RIGHT[k]?'done':'miss'):k===step?'now':''}"></i>`;}).join('');
+  const bk=$('rd-back'),nx=$('rd-next');
+  bk.hidden=review||step===0||step>N;bk.textContent=t('rd_back');
+  nx.textContent=step===0?t('rd_start'):step>N?t('rd_done'):review?t('rd_toresult'):step===N?t('rd_see'):t('rd_next');
+  nx.disabled=q&&!ans[step];
+  if(step>N){const s=score();if(!saved){saved=true;store.set('jn_ready',JSON.stringify({s,w:[1,2,3,4,5,6].filter(i=>ans[i]!==RIGHT[i])}));refresh();}
+    if(!calm()){const c=$('rd-count');let k=0;const tick=()=>{if(!c.isConnected)return;c.textContent=k;if(k<s){k++;setTimeout(tick,110);}};setTimeout(tick,350);}}
+  if(focus){const h=$('rd-qt');if(h)h.focus({preventScroll:true});}}
+function go(n){step=n;$('ready').scrollTop=0;render(true);}
+function open(){back=document.activeElement;for(const k in ans)delete ans[k];step=0;review=false;saved=false;
+  const d=$('ready');d.hidden=false;document.body.classList.add('locked');const box=d.querySelector('.rd-box');box.classList.remove('in');void box.offsetWidth;box.classList.add('in');syncInert();render(true);}
+function close(){const d=$('ready');if(d.hidden)return;d.hidden=true;if($('gate').hidden&&$('pitch').hidden)document.body.classList.remove('locked');syncInert();
+  if(back&&back.focus&&document.contains(back))back.focus({preventScroll:true});}
+/* the card above the inputs and the badge on the result */
+function refresh(){
+  const r=load(),card=$('ready-card'),bd=$('ready-badge');if(!card||!bd)return;const l=r?lvl(r.s):null;
+  card.dataset.l=l||'none';
+  if(!r)card.innerHTML=`<div class="rdc-art">${SPR('shaman_thinking',2)}</div><div><h2>${esc(t('rd_card_t'))}</h2><p>${esc(t('rd_card_p'))}</p></div><button type="button" class="btn" data-rdgo>${esc(t('rd_card_go'))}</button>`;
+  else if(l==='ready')card.innerHTML=`<p class="rdc-ok"><b>${esc(t('rd_card_ok'))}</b> <button type="button" class="link" data-rdgo>${esc(t('rd_card_retake'))}</button></p>`;
+  else card.innerHTML=`<div class="rdc-art">${SPR(l==='almost'?'shaman_thinking':'shaman_angry',2)}</div><div><h2>${esc(t(l==='almost'?'rd_card_almost_t':'rd_card_not_t',{x:r.s}))}</h2><p>${esc(t('rd_card_learn',{list:(r.w||[]).map(i=>t('rd_k'+i)).join(', ')}))}</p></div><button type="button" class="btn" data-rdgo>${esc(t('rd_retry'))}</button>`;
+  bd.dataset.l=l||'none';bd.textContent=!r?t('rd_b_none'):l==='ready'?t('rd_b_ok'):t('rd_b_not',{x:r.s});}
+function init(){
+  const d=$('ready'),body=$('rd-body');
+  $('rd-x').setAttribute('aria-label',t('rd_close'));
+  $('rd-x').addEventListener('click',close);
+  d.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close();}});
+  $('rd-back').addEventListener('click',()=>{if(step>0)go(step-1);});
+  $('rd-next').addEventListener('click',()=>{if(step===0)go(1);else if(step>N)close();else if(review){review=false;go(N+1);}else if(ans[step])go(step+1);});
+  body.addEventListener('click',e=>{
+    const o=e.target.closest('[data-ra]');
+    if(o&&step>=1&&step<=N&&!ans[step]){ans[step]=o.dataset.ra;render(false);
+      const ok=ans[step]===RIGHT[step],b=body.querySelector(`[data-ra="${o.dataset.ra}"]`);if(b){b.classList.add(ok?'pop':'shake');b.focus({preventScroll:true});}
+      const fb=body.querySelector('.rdfb');if(fb)fb.scrollIntoView({block:'nearest',behavior:calm()?'auto':'smooth'});return;}
+    const lv=e.target.closest('[data-lev]');if(lv){st.lev=+lv.dataset.lev;body.querySelectorAll('[data-lev]').forEach(x=>x.setAttribute('aria-pressed',String(x===lv)));$('rd-out').innerHTML=OUT[3]();return;}
+    if(e.target.closest('#rd-roll')){const R=rng((Date.now()^(st.rolls*2654435761))|0);st.flips=Array.from({length:10},()=>R()<0.5);st.rolls++;if(st.flips.filter(Boolean).length>=7)st.hits++;st.fresh=true;$('rd-out').innerHTML=OUT[5]();return;}
+    const cd=e.target.closest('.rdcard');if(cd){cd.setAttribute('aria-pressed',String(cd.getAttribute('aria-pressed')!=='true'));return;}
+    const rv=e.target.closest('[data-rv]');if(rv){review=true;go(+rv.dataset.rv);return;}
+    if(e.target.closest('#rd-retry')){for(const k in ans)delete ans[k];saved=false;review=false;go(1);}});
+  body.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.rd;if(!k)return;const v=parseFloat(e.target.value);if(!(v>0)&&k!=='mv')return;st[k]=isNaN(v)?0:v;
+    const lab=e.target.closest('.rdsl');const b=lab&&lab.querySelector('b');
+    if(b)b.textContent=k==='risk'||k==='wr'?st[k]+'%':k==='pips'||k==='mv'?t('rd_pips',{n:st[k]}):String(st[k]);
+    const out=$('rd-out');if(out)out.innerHTML=OUT[step]();});
+  document.addEventListener('click',e=>{const g=e.target.closest('[data-rdgo]');if(g&&!e.target.closest('#gate'))open();});
+  $('ready-badge').addEventListener('click',open);
+  refresh();}
+return{init,open,close,refresh,rerender:()=>{if(!$('ready').hidden)render(false);}};
+})();
+RD.init();
 gate.querySelectorAll('.q').forEach(q=>q.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;answers[q.dataset.q]=b.dataset.a;gateRender();}));
 $('gate-go').addEventListener('click',()=>{if(!gateKey())return;if(gstep<GN-1){if(gstep>0&&!ILL.answered(gstep))return;goStep(gstep+1);}else closeGate();});
 $('gate-back').addEventListener('click',()=>{if(gstep>0)goStep(gstep-1);});
 $('gate-skip').addEventListener('click',()=>goStep(GN-1));
-$('gate-sq').addEventListener('click',e=>{const b=e.target.closest('[data-qa]');if(!b)return;ILL.answer(gstep,b.dataset.qa);stepRender();const fb=gate.querySelector('.qfb');if(fb)fb.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});});
+$('gate-sq').addEventListener('click',e=>{if(e.target.closest('[data-rdgo]')){closeGate({ready:true});return;}const b=e.target.closest('[data-qa]');if(!b)return;ILL.answer(gstep,b.dataset.qa);stepRender();const fb=gate.querySelector('.qfb');if(fb)fb.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});});
 $('regate').addEventListener('click',openGate);
 
 /* ----- animations: on by default, off by default for people who asked their device for less motion; the choice is remembered ----- */
@@ -2989,7 +3191,7 @@ function setLang(l,save){
   LANG=l==='th'?'th':'en';root.lang=LANG;root.dataset.lang=LANG;
   document.querySelectorAll('.langseg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===LANG)));
   document.title=LANG==='th'?'จารย์เหนียว – กลยุทธ์ของคุณจะรอดไหม?':'Jarn Neow – Will your strategy survive?';
-  applyI18n();gateRender();if(!$('scope').hidden)renderScope();if(window.__sfxTip)window.__sfxTip.refresh();
+  applyI18n();gateRender();RD.refresh();RD.rerender();if(!$('scope').hidden)renderScope();if(window.__sfxTip)window.__sfxTip.refresh();
   if(save)store.set('sfx_lang',LANG);
   renderActive();updateShareHash();}
 
