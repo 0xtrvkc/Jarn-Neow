@@ -2949,7 +2949,7 @@ function closeGate(){ILL.hide();gate.hidden=true;document.body.classList.remove(
    Answers go to a Google Form you own (they land in its Google Sheet); it stays off while PITCH.form is empty.
    form: the long id in the form's share link .../forms/d/e/<id>/viewform
    link/contact/note: the entry numbers from the form's "Get pre-filled link" (entry.123456 -> '123456'). Add #pitch to the page address to preview it. */
-const PITCH={form:'',link:'',contact:'',note:''},pitchOn=()=>!!(PITCH.form&&PITCH.link&&PITCH.contact);
+const PITCH={form:'1FAIpQLSezRZKXPqcmXMt8k7ZAqiVMuc0ZAVoS0riFBTX-7M7bfmPYkw',link:'1000057',contact:'1000027',note:'1000023'},pitchOn=()=>!!(PITCH.form&&PITCH.link&&PITCH.contact);
 function openPitch(){const p=$('pitch');$('pitch-f').hidden=false;$('pitch-done').hidden=true;$('pi-msg').hidden=true;
   p.querySelectorAll('.txt').forEach(x=>x.classList.remove('bad'));document.body.classList.add('locked');p.hidden=false;p.scrollTop=0;replay(p.querySelector('.pitch-box'),'in');syncInert();$('pitch-t').focus({preventScroll:true});}
 function closePitch(){const p=$('pitch');if(p.hidden)return;p.hidden=true;document.body.classList.remove('locked');syncInert();PLAY.render();window.scrollTo(0,0);}
