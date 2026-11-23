@@ -2,7 +2,7 @@
 <html lang="en" data-mode="play" data-lang="en" data-st="fixed" class="js-wait">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://*.goatcounter.com; connect-src 'self' https://cdn.jsdelivr.net https://api.web3forms.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://*.goatcounter.com; connect-src 'self' https://cdn.jsdelivr.net https://docs.google.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Jarn Neow – Will your strategy survive?</title>
@@ -2946,9 +2946,10 @@ $('gate-intro').addEventListener('click',e=>{const b=e.target.closest('[data-ro]
 function openGate(first){answers.bt=answers.ft=null;gstep=0;intro=first===true?1:0;ILL.reset();gateRender();document.body.classList.add('locked');gate.hidden=false;syncInert();const b=gate.querySelector(intro?'#gate-intro [data-ro]':'.yn button');if(b)b.focus();}
 function closeGate(){ILL.hide();gate.hidden=true;document.body.classList.remove('locked');syncInert();window.__sfxGate=gateKey();if(gateKey())store.set('jn_gate',JSON.stringify({bt:answers.bt,ft:answers.ft}));flagRender();if(root.dataset.mode==='desk'){if(deskReady())DESK.analyze();}else if((pitchOn()||location.hash==='#pitch')&&store.get('jn_pitch')!=='sent')openPitch();else PLAY.render();}
 /* the strategy pitch: after the quiz in Beginner, until someone has sent one from this browser.
-   Answers are emailed to you by Web3Forms (web3forms.com: type your email there, the access key arrives in your inbox).
-   The key is safe to publish: it can only send mail to you. Off while empty. Add #pitch to the page address to preview it. */
-const PITCH_KEY='',pitchOn=()=>!!PITCH_KEY;
+   Answers go to a Google Form you own (they land in its Google Sheet); it stays off while PITCH.form is empty.
+   form: the long id in the form's share link .../forms/d/e/<id>/viewform
+   link/contact/note: the entry numbers from the form's "Get pre-filled link" (entry.123456 -> '123456'). Add #pitch to the page address to preview it. */
+const PITCH={form:'',link:'',contact:'',note:''},pitchOn=()=>!!(PITCH.form&&PITCH.link&&PITCH.contact);
 function openPitch(){const p=$('pitch');$('pitch-f').hidden=false;$('pitch-done').hidden=true;$('pi-msg').hidden=true;
   p.querySelectorAll('.txt').forEach(x=>x.classList.remove('bad'));document.body.classList.add('locked');p.hidden=false;p.scrollTop=0;replay(p.querySelector('.pitch-box'),'in');syncInert();$('pitch-t').focus({preventScroll:true});}
 function closePitch(){const p=$('pitch');if(p.hidden)return;p.hidden=true;document.body.classList.remove('locked');syncInert();PLAY.render();window.scrollTo(0,0);}
@@ -2961,11 +2962,9 @@ $('pitch-f').addEventListener('submit',async e=>{e.preventDefault();
   const done=()=>{store.set('jn_pitch','sent');$('pitch-f').hidden=true;const d=$('pitch-done');d.hidden=false;d.querySelectorAll('.spr,.pop').forEach(x=>{x.style.animation='none';void x.offsetWidth;x.style.animation='';});$('pitch-dt').focus();};
   if($('pi-web').value){done();return;}
   if(!pitchOn()){pitchMsg('pi_off');return;}
+  const fd=new URLSearchParams();fd.set('entry.'+PITCH.link,lv);fd.set('entry.'+PITCH.contact,cv);if(PITCH.note&&N.value.trim())fd.set('entry.'+PITCH.note,N.value.trim());
   go.disabled=true;go.classList.add('busy');go.textContent=t('pi_sending');pitchMsg(null);
-  try{const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
-      body:JSON.stringify({access_key:PITCH_KEY,subject:'Jarn Neow: new strategy',from_name:'Jarn Neow',
-        'Stats link':lv,'Contact':cv,'Questions and comments':N.value.trim()||'-','Language':LANG})});
-    const j=await r.json().catch(()=>({}));if(!r.ok||!j.success)throw 0;done();}
+  try{await fetch('https://docs.google.com/forms/d/e/'+encodeURIComponent(PITCH.form)+'/formResponse',{method:'POST',mode:'no-cors',body:fd});done();}
   catch(err){pitchMsg('pi_err');}
   finally{go.disabled=false;go.classList.remove('busy');go.textContent=t('pi_send');}});
 $('pi-later').addEventListener('click',closePitch);$('pi-cont').addEventListener('click',closePitch);
