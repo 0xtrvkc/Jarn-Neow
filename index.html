@@ -755,15 +755,15 @@ html.noanim .boo{display:none}
 .ttop .spr{flex:none;margin:-.3rem 0 -.5rem}
 .tkick{margin:0;font-size:.78rem;font-weight:700;color:var(--muted)}
 #tour h2{margin:.05rem 0 0;font-size:1.15rem;line-height:1.25}
-.tsteps{display:flex;gap:4px;margin:.55rem 0 0}
-.tsteps i{flex:1;height:5px;border-radius:9px;background:rgba(42,10,69,.15);transition:background .3s}
+.tsteps{display:flex;gap:6px;margin:.55rem 0 0}
+.tsteps b{flex:1;display:flex;gap:2px}
+.tsteps i{flex:1;height:6px;border-radius:9px;background:rgba(42,10,69,.15);transition:background .3s}
 .tsteps i.done{background:var(--accent)}.tsteps i.now{background:#ffb000}
 #tour-p{margin:.45rem 0 0;line-height:1.45}
 #tour-t:focus{outline:none}
 #tour-p.in{animation:rdin .3s ease-out both}
 .tnav{display:flex;align-items:center;gap:.5rem;margin-top:.55rem}
-.tdots{display:flex;gap:5px;margin:0 .3rem 0 auto}
-.tdots i{width:8px;height:8px;border-radius:50%;background:rgba(42,10,69,.2)}.tdots i.now{background:var(--ink)}
+.tgap{margin-left:auto}
 .tnav .btn{min-width:2.8rem}
 .tskip{font-size:.85rem;color:var(--muted);padding:.4rem 0}
 html[data-mode=desk] #tour-again{display:none}
@@ -1052,7 +1052,7 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
   <div class="ttop"><span class="spr" data-s="shaman_happy" style="--s:2" aria-hidden="true"></span><div><p class="tkick" id="tour-k"></p><h2 id="tour-t" tabindex="-1"></h2></div></div>
   <div class="tsteps" id="tour-steps" aria-hidden="true"></div>
   <p id="tour-p" aria-live="polite"></p>
-  <div class="tnav"><button type="button" class="link tskip" id="tour-skip"></button><span class="tdots" id="tour-dots" aria-hidden="true"></span><button type="button" class="btn alt" id="tour-prev"></button><button type="button" class="btn" id="tour-next"></button></div>
+  <div class="tnav"><button type="button" class="link tskip" id="tour-skip"></button><span class="tgap"></span><button type="button" class="btn alt" id="tour-prev"></button><button type="button" class="btn" id="tour-next"></button></div>
 </div>
 <div class="haunt" id="haunt" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 <div id="tip" class="tip" role="tooltip" hidden></div>
@@ -3392,8 +3392,8 @@ function render(anim){
   $('tour-t').textContent=t(st.t,{H:''}).trim();
   const hk=st.s[sl]==='tu_in_3'&&hov()?'tu_in_3h':st.s[sl];demoSet(st.s[sl]==='tu_in_3'?(hov()?'h':'t'):'');
   const p=$('tour-p');p.textContent=t(hk,{ok:t('v_ok'),warn:t('v_warn'),bad:t('v_bad')});if(anim)replay(p,'in');
-  $('tour-steps').innerHTML=STOPS.map((_,i)=>`<i class="${i<si?'done':i===si?'now':''}"></i>`).join('');
-  $('tour-dots').innerHTML=st.s.length>1?st.s.map((_,i)=>`<i class="${i===sl?'now':''}"></i>`).join(''):'';
+  /* one group per section, one small bar per slide: every Next fills a bar */
+  $('tour-steps').innerHTML=STOPS.map((x,i)=>`<b>${x.s.map((_,j)=>`<i class="${i<si||(i===si&&j<sl)?'done':i===si&&j===sl?'now':''}"></i>`).join('')}</b>`).join('');
   const pv=$('tour-prev');pv.textContent='‹';pv.setAttribute('aria-label',t('tu_prev'));pv.disabled=si===0&&sl===0;
   const nx=$('tour-next');nx.textContent=last?t('tu_done'):'›';nx.setAttribute('aria-label',last?t('tu_done'):t('tu_next'));
   const sk=$('tour-skip');sk.textContent=t('tu_skip');sk.style.visibility=last?'hidden':'';}
