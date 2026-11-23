@@ -2,7 +2,7 @@
 <html lang="en" data-mode="play" data-lang="en" data-st="fixed" class="js-wait">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://*.goatcounter.com; connect-src 'self' https://cdn.jsdelivr.net; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://*.goatcounter.com; connect-src 'self' https://cdn.jsdelivr.net https://docs.google.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Jarn Neow – Will your strategy survive?</title>
@@ -617,6 +617,18 @@ html[data-mode=desk] .rst{display:none}
 html[data-mode=desk] .rl li{border-width:1px;border-radius:2px}
 .rob{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
 .rob .btn{min-width:10rem}
+/* the strategy pitch, after the quiz in Beginner */
+.pitch-box{max-width:560px}
+.pst{display:flex;justify-content:center;min-height:120px;align-items:flex-end;margin:-.4rem 0 .3rem}
+.pitch-box .rk,.pt,#pitch-done{text-align:center}
+.pt{font-size:clamp(1.5rem,6vw,2rem);margin:0 0 .5rem}
+.pf{display:grid;gap:.2rem;margin:.8rem 0}
+.pf textarea{resize:vertical;min-height:3.2rem;font:inherit}
+.pf input,.pf textarea{font:inherit}
+.pf .txt.bad{outline:2px solid var(--bad);outline-offset:1px}
+.phide{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.pmsg{border:2px solid var(--bad);border-radius:12px;padding:.45rem .7rem;background:#fff0f0;color:#4d0d10;font-weight:600}
+.pasap{font-style:italic;margin-bottom:1rem}
 .shake{animation:shake .5s .25s both}
 @keyframes shake{0%,100%{transform:none}20%{transform:translateX(-7px) rotate(-2deg)}40%{transform:translateX(7px) rotate(2deg)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
 .pop{animation:popin .45s cubic-bezier(.2,1.6,.4,1) both}
@@ -879,6 +891,33 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
 <div id="scope" class="gate" role="dialog" aria-modal="true" aria-labelledby="scope-title" hidden>
   <div class="gate-box wide scope-box"><div id="scope-body"></div>
     <div class="gnav"><span class="small muted" data-i18n="sc_again"></span><button type="button" class="btn" id="scope-ok" data-i18n="sc_ok"></button></div></div>
+</div>
+<div id="pitch" class="gate" role="dialog" aria-modal="true" aria-labelledby="pitch-t" hidden>
+  <div class="gate-box pitch-box">
+    <form id="pitch-f" novalidate>
+      <div class="pst"><span class="spr" data-s="shaman_thinking" style="--s:3" aria-hidden="true"></span></div>
+      <p class="rk" data-i18n="pi_kick"></p>
+      <h2 id="pitch-t" class="pt" tabindex="-1" data-i18n="pi_t"></h2>
+      <p data-i18n="pi_p"></p>
+      <label class="pf"><b data-i18n="pi_l_link"></b><span class="small muted" id="pi-h-link" data-i18n="pi_h_link"></span>
+        <textarea class="txt" id="pi-link" name="link" rows="2" maxlength="2000" required aria-describedby="pi-h-link"></textarea></label>
+      <label class="pf"><b data-i18n="pi_l_contact"></b><span class="small muted" id="pi-h-contact" data-i18n="pi_h_contact"></span>
+        <input class="txt" id="pi-contact" name="contact" type="text" maxlength="200" autocomplete="email" required aria-describedby="pi-h-contact"></label>
+      <label class="pf"><b data-i18n="pi_l_note"></b>
+        <textarea class="txt" id="pi-note" name="note" rows="2" maxlength="2000"></textarea></label>
+      <label class="phide" aria-hidden="true">Website<input type="text" id="pi-web" tabindex="-1" autocomplete="off"></label>
+      <p class="pmsg" id="pi-msg" role="alert" hidden></p>
+      <p class="small muted" data-i18n="pi_priv"></p>
+      <p class="small pasap" data-i18n="pi_asap"></p>
+      <div class="rob"><button type="submit" class="btn" id="pi-send" data-i18n="pi_send"></button><button type="button" class="btn alt" id="pi-later" data-i18n="pi_later"></button></div>
+    </form>
+    <div id="pitch-done" hidden>
+      <div class="pst"><span class="spr" data-s="shaman_happy" style="--s:3" aria-hidden="true"></span></div>
+      <h2 id="pitch-dt" class="pt" tabindex="-1" data-i18n="pi_done_t"></h2>
+      <p data-i18n="pi_done_p"></p>
+      <div class="rob"><button type="button" class="btn" id="pi-cont" data-i18n="pi_cont"></button></div>
+    </div>
+  </div>
 </div>
 <div class="haunt" id="haunt" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 <div id="tip" class="tip" role="tooltip" hidden></div>
@@ -1238,7 +1277,7 @@ gate_ok_t:"Both tests done.",gate_ok_p:"Use your forward-test numbers here. They
 flag_nn:"No backtest and no forward test: treat every result below as an illustration, not evidence.",flag_bt:"Backtest only: these numbers may be overfit, so the results below are probably optimistic.",flag_ft:"Forward test only: without a backtest, a small sample like this may be luck.",
 layout_full:"Full dashboard",layout_guided:"Step by step",
 gate_title:"Quick check first",
-ro_kick:"I'm Jarn Neow, spirit doctor for dying trading accounts.",ro_t:"So you know how to trade?",ro_p:"Then why does the margin call keep calling you? 📞",ro_1:"Win rate 90%. Balance: 0.",ro_2:"\"One more trade and I'll win it all back.\"",ro_3:"Stop loss? Never heard of her.",ro_no:"…okay, help me",ro_jk:"Breathe. Your account can still be saved.",ro_jk_p:"Every trader who lasts learned this the hard way. Answer 2 quick questions and 5 tiny quizzes (about a minute) and you'll know how to keep yours alive.",ro_go:"Let's go",
+ro_kick:"I'm Jarn Neow, spirit doctor for dying trading accounts.",ro_t:"So you know how to trade?",ro_p:"Then why does the margin call keep calling you? 📞",ro_1:"Win rate 90%. Balance: 0.",ro_2:"\"One more trade and I'll win it all back.\"",ro_3:"Stop loss? Never heard of her.",ro_no:"…okay, help me",ro_jk:"Breathe. Your account can still be saved.",ro_jk_p:"Every trader who lasts learned this the hard way. Answer 2 quick questions and 5 tiny quizzes (about a minute) and you'll know how to keep yours alive.",ro_go:"Let's go",pi_kick:"One more thing before you start.",pi_t:"Got a strategy that actually works?",pi_p:"Fast money, steady every month, a high win rate: the kind everyone talks about and nobody shows. If you really have one, send me the stats. I want to run the numbers and check it myself.",pi_l_link:"Link to your stats",pi_h_link:"Myfxbook, FX Blue, a broker statement, a spreadsheet: anything I can open.",pi_l_contact:"How do I reach you?",pi_h_contact:"Email, LINE or Telegram.",pi_l_note:"Anything else? (optional)",pi_priv:"Only I see this. Nothing gets posted.",pi_asap:"I'll send you a report ASAP. (As Slow As Possible. Kidding. Mostly.)",pi_send:"Send it",pi_later:"Not now",pi_need_link:"Add a link or describe where your stats are.",pi_need_contact:"Add a way to reach you.",pi_err:"Couldn't send. Check your connection and try again.",pi_off:"Sending isn't switched on yet.",pi_sending:"Sending…",pi_done_t:"Got it.",pi_done_p:"I'll check the numbers and get back to you with a report.",pi_cont:"Continue",
 gate_intro:"Two questions, so we can tell you how far to trust your result. You can continue either way.",
 gate_q_bt:"Have you backtested this strategy?",gate_q_ft:"Have you forward tested it (demo or a small live account)?",
 yes:"Yes, done",no:"Not yet",gate_continue:"Continue",
@@ -1636,7 +1675,7 @@ gate_ok_t:"ทดสอบครบทั้งสองอย่างแล้
 flag_nn:"ยังไม่ได้ Backtest และ Forward test: ผลลัพธ์ด้านล่างเป็นเพียงตัวอย่าง ไม่ใช่หลักฐาน",flag_bt:"มีแค่ Backtest: ตัวเลขอาจ Overfit ผลลัพธ์ด้านล่างจึงน่าจะดีเกินจริง",flag_ft:"มีแค่ Forward test: เมื่อไม่มี Backtest ตัวอย่างขนาดเล็กแบบนี้อาจเป็นแค่โชค",
 mode_desk:"ผู้เชี่ยวชาญ",desk_h1:"จารย์เหนียว โหมดผู้เชี่ยวชาญ: วิเคราะห์ความเสี่ยงของกลยุทธ์",desk_in_h:"ค่าที่ใส่",layout_full:"แดชบอร์ดเต็ม",layout_guided:"ทีละขั้น",
 gate_title:"ขอเช็กก่อนเริ่มนะ",
-ro_kick:"ข้าคือจารย์เหนียว หมอผีประจำพอร์ตแตก",ro_t:"เทรดเป็นจริงเหรอ?",ro_p:"ถ้าเป็นจริง ทำไม Margin call โทรหาเจ้าทุกวันล่ะ 📞",ro_1:"Win rate 90% แต่พอร์ตเหลือ 0",ro_2:"\"อีกไม้เดียว เดี๋ยวได้คืน\"",ro_3:"Stop loss? ไม่รู้จัก",ro_no:"…ช่วยหน่อย",ro_jk:"หายใจลึกๆ พอร์ตเจ้ายังรักษาได้",ro_jk_p:"เทรดเดอร์ที่อยู่รอดทุกคนก็เคยเจ็บมาก่อน ตอบ 2 คำถามกับควิซสั้นๆ 5 ข้อ ใช้เวลาราวนาทีเดียว แล้วเจ้าจะรู้วิธีทำให้พอร์ตอยู่รอด",ro_go:"เริ่มเลย",
+ro_kick:"ข้าคือจารย์เหนียว หมอผีประจำพอร์ตแตก",ro_t:"เทรดเป็นจริงเหรอ?",ro_p:"ถ้าเป็นจริง ทำไม Margin call โทรหาเจ้าทุกวันล่ะ 📞",ro_1:"Win rate 90% แต่พอร์ตเหลือ 0",ro_2:"\"อีกไม้เดียว เดี๋ยวได้คืน\"",ro_3:"Stop loss? ไม่รู้จัก",ro_no:"…ช่วยหน่อย",ro_jk:"หายใจลึกๆ พอร์ตเจ้ายังรักษาได้",ro_jk_p:"เทรดเดอร์ที่อยู่รอดทุกคนก็เคยเจ็บมาก่อน ตอบ 2 คำถามกับควิซสั้นๆ 5 ข้อ ใช้เวลาราวนาทีเดียว แล้วเจ้าจะรู้วิธีทำให้พอร์ตอยู่รอด",ro_go:"เริ่มเลย",pi_kick:"ก่อนเริ่ม ขอถามอีกเรื่อง",pi_t:"มีกลยุทธ์ที่ได้ผลจริงไหม?",pi_p:"รวยเร็ว กำไรสม่ำเสมอทุกเดือน win rate สูง แบบที่ใครๆ ก็พูดถึงแต่ไม่มีใครเอามาให้ดู ถ้าเจ้ามีจริง ส่งสถิติมาให้ข้า ข้าอยากคำนวณและตรวจสอบเอง",pi_l_link:"ลิงก์สถิติของเจ้า",pi_h_link:"Myfxbook, FX Blue, statement จากโบรกเกอร์, สเปรดชีต อะไรก็ได้ที่ข้าเปิดดูได้",pi_l_contact:"ติดต่อเจ้าทางไหน?",pi_h_contact:"อีเมล, LINE หรือ Telegram",pi_l_note:"อยากบอกอะไรเพิ่มไหม (ไม่บังคับ)",pi_priv:"ข้าเห็นคนเดียว ไม่มีการโพสต์ที่ไหน",pi_asap:"ข้าจะส่งรายงานให้ ASAP (As Slow As Possible ล้อเล่น… นิดหน่อย)",pi_send:"ส่งเลย",pi_later:"ไว้ก่อน",pi_need_link:"ใส่ลิงก์ หรือบอกว่าสถิติอยู่ที่ไหน",pi_need_contact:"ใส่ช่องทางติดต่อ",pi_err:"ส่งไม่สำเร็จ ลองเช็กอินเทอร์เน็ตแล้วส่งใหม่",pi_off:"ยังไม่ได้เปิดระบบส่ง",pi_sending:"กำลังส่ง…",pi_done_t:"ได้รับแล้ว",pi_done_p:"ข้าจะตรวจตัวเลขแล้วส่งรายงานกลับไปให้",pi_cont:"ไปต่อ",
 gate_intro:"สองคำถาม เพื่อบอกได้ว่าควรเชื่อผลลัพธ์ของคุณแค่ไหน ตอบแบบไหนก็ไปต่อได้",
 gate_q_bt:"คุณ Backtest กลยุทธ์นี้แล้วหรือยัง?",gate_q_ft:"คุณ Forward test แล้วหรือยัง (บัญชีเดโม่หรือบัญชีจริงเล็กๆ)?",
 yes:"ทำแล้ว",no:"ยังไม่ได้ทำ",gate_continue:"ไปต่อ",
@@ -2877,7 +2916,7 @@ function stepRender(){
   gate.setAttribute('aria-labelledby',q?'gate-qt':'gate-title');}
 function goStep(n){gstep=n;stepRender();gate.scrollTop=0;const h=gate.querySelector(gstep?'#gate-qt':'#gate-title');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}}
 /* while a popup is open, everything behind it is inert: no keyboard focus, hidden from screen readers */
-function syncInert(){const sc=$('scope'),g=$('gate'),top=!sc.hidden?sc:!g.hidden?g:null;
+function syncInert(){const sc=$('scope'),g=$('gate'),pi=$('pitch'),top=!sc.hidden?sc:!g.hidden?g:!pi.hidden?pi:null;
   [...document.body.children].forEach(el=>{if(el.tagName==='SCRIPT'||el.id==='tip')return;const on=!!top&&el!==top&&!el.contains(top);if(on)el.setAttribute('inert','');else el.removeAttribute('inert');});}
 /* the roast: a cheeky first screen on page load, before the real questions */
 let intro=0;
@@ -2891,7 +2930,30 @@ $('gate-intro').addEventListener('click',e=>{const b=e.target.closest('[data-ro]
   intro=k==='help'?2:0;gateRender();gate.scrollTop=0;
   const f=intro?gate.querySelector('#gate-intro [data-ro]'):gate.querySelector('.yn button');if(f)f.focus();});
 function openGate(first){answers.bt=answers.ft=null;gstep=0;intro=first===true?1:0;ILL.reset();gateRender();document.body.classList.add('locked');gate.hidden=false;syncInert();const b=gate.querySelector(intro?'#gate-intro [data-ro]':'.yn button');if(b)b.focus();}
-function closeGate(){ILL.hide();gate.hidden=true;document.body.classList.remove('locked');syncInert();window.__sfxGate=gateKey();if(gateKey())store.set('jn_gate',JSON.stringify({bt:answers.bt,ft:answers.ft}));flagRender();if(root.dataset.mode==='desk'){if(deskReady())DESK.analyze();}else PLAY.render();}
+function closeGate(){ILL.hide();gate.hidden=true;document.body.classList.remove('locked');syncInert();window.__sfxGate=gateKey();if(gateKey())store.set('jn_gate',JSON.stringify({bt:answers.bt,ft:answers.ft}));flagRender();if(root.dataset.mode==='desk'){if(deskReady())DESK.analyze();}else if((pitchOn()||location.hash==='#pitch')&&store.get('jn_pitch')!=='sent')openPitch();else PLAY.render();}
+/* the strategy pitch: after the quiz in Beginner, until someone has sent one from this browser.
+   Answers go to a Google Form you own (they land in its Google Sheet); it stays off while PITCH.form is empty.
+   form: the long id in the form's share link .../forms/d/e/<id>/viewform
+   link/contact/note: the entry numbers from the form's "Get pre-filled link" (entry.123456 -> '123456'). Add #pitch to the page address to preview it. */
+const PITCH={form:'',link:'',contact:'',note:''},pitchOn=()=>!!(PITCH.form&&PITCH.link&&PITCH.contact);
+function openPitch(){const p=$('pitch');$('pitch-f').hidden=false;$('pitch-done').hidden=true;$('pi-msg').hidden=true;
+  p.querySelectorAll('.txt').forEach(x=>x.classList.remove('bad'));document.body.classList.add('locked');p.hidden=false;p.scrollTop=0;syncInert();$('pitch-t').focus({preventScroll:true});}
+function closePitch(){const p=$('pitch');if(p.hidden)return;p.hidden=true;document.body.classList.remove('locked');syncInert();PLAY.render();window.scrollTo(0,0);}
+function pitchMsg(k){const m=$('pi-msg');m.hidden=!k;m.textContent=k?t(k):'';}
+$('pitch-f').addEventListener('submit',async e=>{e.preventDefault();
+  const L=$('pi-link'),C=$('pi-contact'),N=$('pi-note'),go=$('pi-send'),lv=L.value.trim(),cv=C.value.trim();
+  L.classList.toggle('bad',!lv);C.classList.toggle('bad',!cv);
+  if(!lv){pitchMsg('pi_need_link');L.focus();return;}if(!cv){pitchMsg('pi_need_contact');C.focus();return;}
+  const done=()=>{store.set('jn_pitch','sent');$('pitch-f').hidden=true;$('pitch-done').hidden=false;$('pitch-dt').focus();};
+  if($('pi-web').value){done();return;}
+  if(!pitchOn()){pitchMsg('pi_off');return;}
+  const fd=new URLSearchParams();fd.set('entry.'+PITCH.link,lv);fd.set('entry.'+PITCH.contact,cv);if(PITCH.note&&N.value.trim())fd.set('entry.'+PITCH.note,N.value.trim());
+  go.disabled=true;go.textContent=t('pi_sending');pitchMsg(null);
+  try{await fetch('https://docs.google.com/forms/d/e/'+encodeURIComponent(PITCH.form)+'/formResponse',{method:'POST',mode:'no-cors',body:fd});done();}
+  catch(err){pitchMsg('pi_err');}
+  finally{go.disabled=false;go.textContent=t('pi_send');}});
+$('pi-later').addEventListener('click',closePitch);$('pi-cont').addEventListener('click',closePitch);
+$('pitch').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();closePitch();}});
 gate.querySelectorAll('.q').forEach(q=>q.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;answers[q.dataset.q]=b.dataset.a;gateRender();}));
 $('gate-go').addEventListener('click',()=>{if(!gateKey())return;if(gstep<GN-1){if(gstep>0&&!ILL.answered(gstep))return;goStep(gstep+1);}else closeGate();});
 $('gate-back').addEventListener('click',()=>{if(gstep>0)goStep(gstep-1);});
@@ -3017,6 +3079,7 @@ window.__sfx={PLAY,get DESK(){return deskReady()?DESK:null;},loadDesk,setLang,se
 addEventListener('load',()=>{const go=()=>{if(deskReady()||!/^https?:$/.test(location.protocol))return;const l=document.createElement('link');l.rel='prefetch';l.href='expert.js?v='+EXPERT_V;document.head.appendChild(l);};if('requestIdleCallback' in window)requestIdleCallback(go,{timeout:4000});else setTimeout(go,2500);});
 root.classList.remove('js-wait');
 {const f=gate.hidden?null:gate.querySelector(intro?'#gate-intro [data-ro]':'.yn button');if(f)f.focus();}
+if(location.hash==='#pitch'&&gate.hidden&&mode!=='desk')openPitch();
 /* optional visit counter: GoatCounter, no cookies. Off while empty; to switch on, create a free site at goatcounter.com
    and put its code here (for https://jarnneow.goatcounter.com the code is 'jarnneow'). Only the page path is sent. */
 const COUNTER='';
