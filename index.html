@@ -629,6 +629,20 @@ html[data-mode=desk] .rl li{border-width:1px;border-radius:2px}
 .phide{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .pmsg{border:2px solid var(--bad);border-radius:12px;padding:.45rem .7rem;background:#fff0f0;color:#4d0d10;font-weight:600}
 .pasap{font-style:italic;margin-bottom:1rem}
+.pf .txt{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.pf .txt:focus{outline:none;border-color:var(--p3,#ffb000);box-shadow:0 4px 0 var(--line);transform:translateY(-2px)}
+.pitch-box.in{animation:pin .55s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pin{from{transform:translateY(60px) scale(.92);opacity:0}}
+.pf .txt.bad.shake{animation:shake .45s both}
+.pdone .pst{position:relative}
+.pdone .pfl{position:absolute;bottom:10px;animation:spr 1.44s steps(16) infinite,rise 1.8s ease-out both}
+.pdone .pfl:nth-child(2){left:calc(50% - 110px)}.pdone .pfl:nth-child(3){left:calc(50% + 60px);animation-delay:0s,.25s}.pdone .pfl:nth-child(4){left:calc(50% - 20px);animation-delay:0s,.5s}
+@keyframes rise{0%{transform:translateY(20px) scale(.5);opacity:0}25%{opacity:1}100%{transform:translateY(-90px) scale(1);opacity:0}}
+#pi-send.busy{animation:wob .6s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+html[data-mode=desk] .pitch-box,html.noanim .pitch-box.in,html.noanim .pfl,html.noanim #pi-send.busy,html.noanim .pf .txt.bad.shake{animation:none!important}
+html.noanim .pf .txt:focus{transform:none}
+html.noanim .pdone .pfl{display:none}
 .shake{animation:shake .5s .25s both}
 @keyframes shake{0%,100%{transform:none}20%{transform:translateX(-7px) rotate(-2deg)}40%{transform:translateX(7px) rotate(2deg)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
 .pop{animation:popin .45s cubic-bezier(.2,1.6,.4,1) both}
@@ -911,9 +925,9 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
       <p class="small pasap" data-i18n="pi_asap"></p>
       <div class="rob"><button type="submit" class="btn" id="pi-send" data-i18n="pi_send"></button><button type="button" class="btn alt" id="pi-later" data-i18n="pi_later"></button></div>
     </form>
-    <div id="pitch-done" hidden>
-      <div class="pst"><span class="spr" data-s="shaman_happy" style="--s:3" aria-hidden="true"></span></div>
-      <h2 id="pitch-dt" class="pt" tabindex="-1" data-i18n="pi_done_t"></h2>
+    <div id="pitch-done" class="pdone" hidden>
+      <div class="pst"><span class="spr swap" data-s="shaman_happy" style="--s:3" aria-hidden="true"></span><span class="spr pfl" data-s="spirit_flame" style="--s:2" aria-hidden="true"></span><span class="spr pfl" data-s="spirit_flame" style="--s:2" aria-hidden="true"></span><span class="spr pfl" data-s="spirit_flame" style="--s:2" aria-hidden="true"></span></div>
+      <h2 id="pitch-dt" class="pt pop" tabindex="-1" data-i18n="pi_done_t"></h2>
       <p data-i18n="pi_done_p"></p>
       <div class="rob"><button type="button" class="btn" id="pi-cont" data-i18n="pi_cont"></button></div>
     </div>
@@ -1277,7 +1291,7 @@ gate_ok_t:"Both tests done.",gate_ok_p:"Use your forward-test numbers here. They
 flag_nn:"No backtest and no forward test: treat every result below as an illustration, not evidence.",flag_bt:"Backtest only: these numbers may be overfit, so the results below are probably optimistic.",flag_ft:"Forward test only: without a backtest, a small sample like this may be luck.",
 layout_full:"Full dashboard",layout_guided:"Step by step",
 gate_title:"Quick check first",
-ro_kick:"I'm Jarn Neow, spirit doctor for dying trading accounts.",ro_t:"So you know how to trade?",ro_p:"Then why does the margin call keep calling you? 📞",ro_1:"Win rate 90%. Balance: 0.",ro_2:"\"One more trade and I'll win it all back.\"",ro_3:"Stop loss? Never heard of her.",ro_no:"…okay, help me",ro_jk:"Breathe. Your account can still be saved.",ro_jk_p:"Every trader who lasts learned this the hard way. Answer 2 quick questions and 5 tiny quizzes (about a minute) and you'll know how to keep yours alive.",ro_go:"Let's go",pi_kick:"One more thing before you start.",pi_t:"Got a strategy that actually works?",pi_p:"Fast money, steady every month, a high win rate: the kind everyone talks about and nobody shows. If you really have one, send me the stats. I want to run the numbers and check it myself.",pi_l_link:"Link to your stats",pi_h_link:"Myfxbook, FX Blue, a broker statement, a spreadsheet: anything I can open.",pi_l_contact:"How do I reach you?",pi_h_contact:"Email, LINE or Telegram.",pi_l_note:"Anything else? (optional)",pi_priv:"Only I see this. Nothing gets posted.",pi_asap:"I'll send you a report ASAP. (As Slow As Possible. Kidding. Mostly.)",pi_send:"Send it",pi_later:"Not now",pi_need_link:"Add a link or describe where your stats are.",pi_need_contact:"Add a way to reach you.",pi_err:"Couldn't send. Check your connection and try again.",pi_off:"Sending isn't switched on yet.",pi_sending:"Sending…",pi_done_t:"Got it.",pi_done_p:"I'll check the numbers and get back to you with a report.",pi_cont:"Continue",
+ro_kick:"I'm Jarn Neow, spirit doctor for dying trading accounts.",ro_t:"So you know how to trade?",ro_p:"Then why does the margin call keep calling you? 📞",ro_1:"Win rate 90%. Balance: 0.",ro_2:"\"One more trade and I'll win it all back.\"",ro_3:"Stop loss? Never heard of her.",ro_no:"…okay, help me",ro_jk:"Breathe. Your account can still be saved.",ro_jk_p:"Every trader who lasts learned this the hard way. Answer 2 quick questions and 5 tiny quizzes (about a minute) and you'll know how to keep yours alive.",ro_go:"Let's go",pi_kick:"One more thing before you start.",pi_t:"Got a strategy that actually works?",pi_p:"Fast money, steady every month, a high win rate: the kind everyone talks about and nobody shows. If you really have one, send me the stats. I want to run the numbers and check it myself.",pi_l_link:"Link to your stats",pi_h_link:"Myfxbook, FX Blue, a broker statement, a spreadsheet: anything I can open.",pi_l_contact:"How do I reach you?",pi_h_contact:"Email, LINE or Telegram.",pi_l_note:"Questions or comments? (optional)",pi_priv:"Only I see this. Nothing gets posted.",pi_asap:"I'll send you a report ASAP. (As Slow As Possible. Kidding. Mostly.)",pi_send:"Send it",pi_later:"Not now",pi_need_link:"Add a link or describe where your stats are.",pi_need_contact:"Add a way to reach you.",pi_err:"Couldn't send. Check your connection and try again.",pi_off:"Sending isn't switched on yet.",pi_sending:"Sending…",pi_done_t:"Got it.",pi_done_p:"I'll check the numbers and get back to you with a report.",pi_cont:"Continue",
 gate_intro:"Two questions, so we can tell you how far to trust your result. You can continue either way.",
 gate_q_bt:"Have you backtested this strategy?",gate_q_ft:"Have you forward tested it (demo or a small live account)?",
 yes:"Yes, done",no:"Not yet",gate_continue:"Continue",
@@ -1675,7 +1689,7 @@ gate_ok_t:"ทดสอบครบทั้งสองอย่างแล้
 flag_nn:"ยังไม่ได้ Backtest และ Forward test: ผลลัพธ์ด้านล่างเป็นเพียงตัวอย่าง ไม่ใช่หลักฐาน",flag_bt:"มีแค่ Backtest: ตัวเลขอาจ Overfit ผลลัพธ์ด้านล่างจึงน่าจะดีเกินจริง",flag_ft:"มีแค่ Forward test: เมื่อไม่มี Backtest ตัวอย่างขนาดเล็กแบบนี้อาจเป็นแค่โชค",
 mode_desk:"ผู้เชี่ยวชาญ",desk_h1:"จารย์เหนียว โหมดผู้เชี่ยวชาญ: วิเคราะห์ความเสี่ยงของกลยุทธ์",desk_in_h:"ค่าที่ใส่",layout_full:"แดชบอร์ดเต็ม",layout_guided:"ทีละขั้น",
 gate_title:"ขอเช็กก่อนเริ่มนะ",
-ro_kick:"ข้าคือจารย์เหนียว หมอผีประจำพอร์ตแตก",ro_t:"เทรดเป็นจริงเหรอ?",ro_p:"ถ้าเป็นจริง ทำไม Margin call โทรหาเจ้าทุกวันล่ะ 📞",ro_1:"Win rate 90% แต่พอร์ตเหลือ 0",ro_2:"\"อีกไม้เดียว เดี๋ยวได้คืน\"",ro_3:"Stop loss? ไม่รู้จัก",ro_no:"…ช่วยหน่อย",ro_jk:"หายใจลึกๆ พอร์ตเจ้ายังรักษาได้",ro_jk_p:"เทรดเดอร์ที่อยู่รอดทุกคนก็เคยเจ็บมาก่อน ตอบ 2 คำถามกับควิซสั้นๆ 5 ข้อ ใช้เวลาราวนาทีเดียว แล้วเจ้าจะรู้วิธีทำให้พอร์ตอยู่รอด",ro_go:"เริ่มเลย",pi_kick:"ก่อนเริ่ม ขอถามอีกเรื่อง",pi_t:"มีกลยุทธ์ที่ได้ผลจริงไหม?",pi_p:"รวยเร็ว กำไรสม่ำเสมอทุกเดือน win rate สูง แบบที่ใครๆ ก็พูดถึงแต่ไม่มีใครเอามาให้ดู ถ้าเจ้ามีจริง ส่งสถิติมาให้ข้า ข้าอยากคำนวณและตรวจสอบเอง",pi_l_link:"ลิงก์สถิติของเจ้า",pi_h_link:"Myfxbook, FX Blue, statement จากโบรกเกอร์, สเปรดชีต อะไรก็ได้ที่ข้าเปิดดูได้",pi_l_contact:"ติดต่อเจ้าทางไหน?",pi_h_contact:"อีเมล, LINE หรือ Telegram",pi_l_note:"อยากบอกอะไรเพิ่มไหม (ไม่บังคับ)",pi_priv:"ข้าเห็นคนเดียว ไม่มีการโพสต์ที่ไหน",pi_asap:"ข้าจะส่งรายงานให้ ASAP (As Slow As Possible ล้อเล่น… นิดหน่อย)",pi_send:"ส่งเลย",pi_later:"ไว้ก่อน",pi_need_link:"ใส่ลิงก์ หรือบอกว่าสถิติอยู่ที่ไหน",pi_need_contact:"ใส่ช่องทางติดต่อ",pi_err:"ส่งไม่สำเร็จ ลองเช็กอินเทอร์เน็ตแล้วส่งใหม่",pi_off:"ยังไม่ได้เปิดระบบส่ง",pi_sending:"กำลังส่ง…",pi_done_t:"ได้รับแล้ว",pi_done_p:"ข้าจะตรวจตัวเลขแล้วส่งรายงานกลับไปให้",pi_cont:"ไปต่อ",
+ro_kick:"ข้าคือจารย์เหนียว หมอผีประจำพอร์ตแตก",ro_t:"เทรดเป็นจริงเหรอ?",ro_p:"ถ้าเป็นจริง ทำไม Margin call โทรหาเจ้าทุกวันล่ะ 📞",ro_1:"Win rate 90% แต่พอร์ตเหลือ 0",ro_2:"\"อีกไม้เดียว เดี๋ยวได้คืน\"",ro_3:"Stop loss? ไม่รู้จัก",ro_no:"…ช่วยหน่อย",ro_jk:"หายใจลึกๆ พอร์ตเจ้ายังรักษาได้",ro_jk_p:"เทรดเดอร์ที่อยู่รอดทุกคนก็เคยเจ็บมาก่อน ตอบ 2 คำถามกับควิซสั้นๆ 5 ข้อ ใช้เวลาราวนาทีเดียว แล้วเจ้าจะรู้วิธีทำให้พอร์ตอยู่รอด",ro_go:"เริ่มเลย",pi_kick:"ก่อนเริ่ม ขอถามอีกเรื่อง",pi_t:"มีกลยุทธ์ที่ได้ผลจริงไหม?",pi_p:"รวยเร็ว กำไรสม่ำเสมอทุกเดือน win rate สูง แบบที่ใครๆ ก็พูดถึงแต่ไม่มีใครเอามาให้ดู ถ้าเจ้ามีจริง ส่งสถิติมาให้ข้า ข้าอยากคำนวณและตรวจสอบเอง",pi_l_link:"ลิงก์สถิติของเจ้า",pi_h_link:"Myfxbook, FX Blue, statement จากโบรกเกอร์, สเปรดชีต อะไรก็ได้ที่ข้าเปิดดูได้",pi_l_contact:"ติดต่อเจ้าทางไหน?",pi_h_contact:"อีเมล, LINE หรือ Telegram",pi_l_note:"อยากถามหรืออยากบอกอะไรข้าไหม (ไม่บังคับ)",pi_priv:"ข้าเห็นคนเดียว ไม่มีการโพสต์ที่ไหน",pi_asap:"ข้าจะส่งรายงานให้ ASAP (As Slow As Possible ล้อเล่น… นิดหน่อย)",pi_send:"ส่งเลย",pi_later:"ไว้ก่อน",pi_need_link:"ใส่ลิงก์ หรือบอกว่าสถิติอยู่ที่ไหน",pi_need_contact:"ใส่ช่องทางติดต่อ",pi_err:"ส่งไม่สำเร็จ ลองเช็กอินเทอร์เน็ตแล้วส่งใหม่",pi_off:"ยังไม่ได้เปิดระบบส่ง",pi_sending:"กำลังส่ง…",pi_done_t:"ได้รับแล้ว",pi_done_p:"ข้าจะตรวจตัวเลขแล้วส่งรายงานกลับไปให้",pi_cont:"ไปต่อ",
 gate_intro:"สองคำถาม เพื่อบอกได้ว่าควรเชื่อผลลัพธ์ของคุณแค่ไหน ตอบแบบไหนก็ไปต่อได้",
 gate_q_bt:"คุณ Backtest กลยุทธ์นี้แล้วหรือยัง?",gate_q_ft:"คุณ Forward test แล้วหรือยัง (บัญชีเดโม่หรือบัญชีจริงเล็กๆ)?",
 yes:"ทำแล้ว",no:"ยังไม่ได้ทำ",gate_continue:"ไปต่อ",
@@ -2937,21 +2951,22 @@ function closeGate(){ILL.hide();gate.hidden=true;document.body.classList.remove(
    link/contact/note: the entry numbers from the form's "Get pre-filled link" (entry.123456 -> '123456'). Add #pitch to the page address to preview it. */
 const PITCH={form:'',link:'',contact:'',note:''},pitchOn=()=>!!(PITCH.form&&PITCH.link&&PITCH.contact);
 function openPitch(){const p=$('pitch');$('pitch-f').hidden=false;$('pitch-done').hidden=true;$('pi-msg').hidden=true;
-  p.querySelectorAll('.txt').forEach(x=>x.classList.remove('bad'));document.body.classList.add('locked');p.hidden=false;p.scrollTop=0;syncInert();$('pitch-t').focus({preventScroll:true});}
+  p.querySelectorAll('.txt').forEach(x=>x.classList.remove('bad'));document.body.classList.add('locked');p.hidden=false;p.scrollTop=0;replay(p.querySelector('.pitch-box'),'in');syncInert();$('pitch-t').focus({preventScroll:true});}
 function closePitch(){const p=$('pitch');if(p.hidden)return;p.hidden=true;document.body.classList.remove('locked');syncInert();PLAY.render();window.scrollTo(0,0);}
+const replay=(el,c)=>{el.classList.remove(c);void el.offsetWidth;el.classList.add(c);};
 function pitchMsg(k){const m=$('pi-msg');m.hidden=!k;m.textContent=k?t(k):'';}
 $('pitch-f').addEventListener('submit',async e=>{e.preventDefault();
   const L=$('pi-link'),C=$('pi-contact'),N=$('pi-note'),go=$('pi-send'),lv=L.value.trim(),cv=C.value.trim();
   L.classList.toggle('bad',!lv);C.classList.toggle('bad',!cv);
-  if(!lv){pitchMsg('pi_need_link');L.focus();return;}if(!cv){pitchMsg('pi_need_contact');C.focus();return;}
-  const done=()=>{store.set('jn_pitch','sent');$('pitch-f').hidden=true;$('pitch-done').hidden=false;$('pitch-dt').focus();};
+  if(!lv){pitchMsg('pi_need_link');replay(L,'shake');L.focus();return;}if(!cv){pitchMsg('pi_need_contact');replay(C,'shake');C.focus();return;}
+  const done=()=>{store.set('jn_pitch','sent');$('pitch-f').hidden=true;const d=$('pitch-done');d.hidden=false;d.querySelectorAll('.spr,.pop').forEach(x=>{x.style.animation='none';void x.offsetWidth;x.style.animation='';});$('pitch-dt').focus();};
   if($('pi-web').value){done();return;}
   if(!pitchOn()){pitchMsg('pi_off');return;}
   const fd=new URLSearchParams();fd.set('entry.'+PITCH.link,lv);fd.set('entry.'+PITCH.contact,cv);if(PITCH.note&&N.value.trim())fd.set('entry.'+PITCH.note,N.value.trim());
-  go.disabled=true;go.textContent=t('pi_sending');pitchMsg(null);
+  go.disabled=true;go.classList.add('busy');go.textContent=t('pi_sending');pitchMsg(null);
   try{await fetch('https://docs.google.com/forms/d/e/'+encodeURIComponent(PITCH.form)+'/formResponse',{method:'POST',mode:'no-cors',body:fd});done();}
   catch(err){pitchMsg('pi_err');}
-  finally{go.disabled=false;go.textContent=t('pi_send');}});
+  finally{go.disabled=false;go.classList.remove('busy');go.textContent=t('pi_send');}});
 $('pi-later').addEventListener('click',closePitch);$('pi-cont').addEventListener('click',closePitch);
 $('pitch').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();closePitch();}});
 gate.querySelectorAll('.q').forEach(q=>q.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;answers[q.dataset.q]=b.dataset.a;gateRender();}));
