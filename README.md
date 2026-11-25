@@ -168,6 +168,17 @@ The in-app briefing has the full list. In short:
 
 ---
 
+## Feedback
+
+Tell Jarn Neow what you think from inside the app, in English or Thai:
+
+- **Footer link** (both modes): "💬 Tell Jarn Neow what you think" opens a short popup: what it's about (bug, confusing, idea, thanks), whether the reading helped, a message, and an optional way to reply.
+- **One-tap question** (Beginner): once all four numbers are your own, the verdict card asks "Did this reading help you set your risk?" A tap sends the answer straight away; it's asked once and never on the same visit as the strategy pitch.
+- **After a report** is downloaded or copied: "Anything wrong or missing in this report?"
+- **On errors** (Myfxbook file, gold data): a "Report this problem" link opens the popup set to Bug.
+
+Answers go to a Google Form and land in its Google Sheet. Add `#feedback` to the page address to open the popup directly.
+
 ## Privacy
 
 - No accounts, cookies or server.
@@ -177,6 +188,7 @@ The in-app briefing has the full list. In short:
 - Gold data comes from this site or from the jsDelivr CDN (a copy of this repository's files); nothing is sent anywhere.
 - A service worker keeps copies of the page, fonts and downloaded gold months in your browser, so the app loads instantly and works offline. Clearing site data removes them.
 - Reports are generated in the browser and saved straight to your device. They hold summaries of a Myfxbook file, not the trade list (the action plan may name a few ticket numbers).
+- **Feedback (only when you choose to send it):** the footer link, the one-tap question under the Beginner verdict, the line under a saved report and the "Report this problem" link on errors all go to a Google Form owned by the developer. Nothing is sent until you tap a rating or press Send. What goes: your answer, your message and contact if you write them, and basic app info (mode, language, strategy type, where you opened the form, screen width, app version). Your numbers go only if you tick "attach my report". The form's settings live in `FB_FORM` in `index.html`.
 - **Optional visit counter:** a cookie-free [GoatCounter](https://www.goatcounter.com) pixel, off by default. It is switched on by putting a GoatCounter site code in `COUNTER` near the end of `index.html`. When on, it sends only the page path, and it respects the browser's Do Not Track setting.
 
 ---

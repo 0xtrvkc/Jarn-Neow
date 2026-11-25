@@ -492,7 +492,7 @@ function periods(){
   const I=R.idx;
   if(isFile())return`<p class="warnnote" style="margin:0">${esc(t('e_file'))}</p>`;
   if(!canRun())return`<p class="warnnote" style="margin:0">${esc(t('e_nodecomp'))}</p>`;
-  if(R.idxErr)return`<p class="errnote" style="margin:0">${esc(t('e_idx',{msg:R.idxErr}))}</p>`;
+  if(R.idxErr)return`<p class="errnote" style="margin:0">${esc(t('e_idx',{msg:R.idxErr}))}${window.__fbErr?window.__fbErr('gold-data'):''}</p>`;
   if(!I){loadIdx();return`<p class="small muted" style="margin:0">${esc(t('loading_idx'))}</p>`;}
   clampStart();const w=win(),ms=months(),[lo,hi]=startRange(),sig=sigOf(),wsig=wsigOf();
   const mo=n=>n===1?t('mo_1'):t('mo_n',{n});
@@ -507,7 +507,7 @@ function periods(){
     <button type="button" class="btn${btOk?'':' alt'}" data-lrun="fw"${blocked||!btOk?' disabled':''}>${esc(t('run_fw'))}</button>
     <span class="small muted" id="lab-status" aria-live="polite">${R.busy?esc(R.prog):!btOk&&!R.busy?esc(t('fw_need')):''}</span></div>
     ${ss==='seen'?`<p class="warnnote" style="margin:.7rem 0 0">${esc(t('lock_seen'))}</p>`:ss==='on'?`<p class="small" style="margin:.7rem 0 0">🔒 ${esc(t('lock_on'))}</p>`:''}
-    ${R.err?`<p class="errnote" style="margin:.7rem 0 0">${esc(R.err)}</p>`:''}`;}
+    ${R.err?`<p class="errnote" style="margin:.7rem 0 0">${esc(R.err)}${R.err!==t('e_inputs')&&window.__fbErr?window.__fbErr('gold-run'):''}</p>`:''}`;}
 
 /* ---------- results ---------- */
 function stats(s){

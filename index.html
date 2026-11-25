@@ -719,6 +719,21 @@ html.noanim .rdcard,html.noanim .rdbar i,html.noanim .rdrange i,html.noanim .gpr
 html[data-mode=desk] .pitch-box,html.noanim .pitch-box.in,html.noanim .pfl,html.noanim #pi-send.busy,html.noanim .pf .txt.bad.shake{animation:none!important}
 html.noanim .pf .txt:focus{transform:none}
 html.noanim .pdone .pfl{display:none}
+/* feedback: popup, the one-tap question under the Beginner verdict, the line after a report, the link on errors */
+.fb-box .rk,#fb-done{text-align:center}
+.fbchips{display:flex;flex-wrap:wrap;gap:.45rem}
+html[data-mode=desk] .fb-box .pst{display:none}
+html[data-mode=desk] .fbchips .rdsymb,html[data-mode=desk] .fbstrip .rdsymb{border-radius:2px;border-width:1px}
+.fbatt{display:flex;gap:.5rem;align-items:center;margin:.5rem 0;font-weight:600;cursor:pointer}
+.fbatt input{width:1.1rem;height:1.1rem;flex:none}
+.fbwhat{margin:.6rem 0}.fbwhat summary{cursor:pointer;font-weight:600}.fbwhat p{margin:.35rem 0 0}
+#fb-send.busy{animation:wob .6s ease-in-out infinite}
+html.noanim #fb-send.busy{animation:none}
+.fbstrip{margin-top:.9rem;padding-top:.8rem;border-top:2px dashed var(--line);display:grid;gap:.5rem;justify-items:start}
+.fbstrip .rdsymb{padding:.35rem .8rem}
+.fbrow{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center}
+.fbafter{margin:.7rem 0 0}
+.fberr{margin-left:.4rem;font-weight:600}
 .shake{animation:shake .5s .25s both}
 @keyframes shake{0%,100%{transform:none}20%{transform:translateX(-7px) rotate(-2deg)}40%{transform:translateX(7px) rotate(2deg)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
 .pop{animation:popin .45s cubic-bezier(.2,1.6,.4,1) both}
@@ -928,7 +943,13 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
 
     <div class="col-out">
       <div class="errnote inerr" id="play-err" role="alert" hidden></div>
-      <div class="card" id="verdict-card"><button type="button" class="rdbadge" id="ready-badge" data-l="none"></button><div id="v-body" aria-live="polite"></div></div>
+      <div class="card" id="verdict-card"><button type="button" class="rdbadge" id="ready-badge" data-l="none"></button><div id="v-body" aria-live="polite"></div>
+        <div class="fbstrip" id="fb-strip" hidden>
+          <div id="fb-sq"><b data-i18n="fb_strip_q"></b>
+            <div class="fbrow" style="margin-top:.45rem"><button type="button" class="rdsymb" data-v="👍" data-i18n="fb_r_up"></button><button type="button" class="rdsymb" data-v="🤔" data-i18n="fb_r_meh"></button><button type="button" class="rdsymb" data-v="👎" data-i18n="fb_r_down"></button><button type="button" class="link small" id="fb-sno" data-i18n="fb_strip_no"></button></div>
+            <p class="small muted" style="margin:.4rem 0 0" data-i18n="fb_strip_priv"></p></div>
+          <p id="fb-sthx" style="margin:0" role="status" hidden><span id="fb-sthx-t"></span> <button type="button" class="link" id="fb-smore" data-i18n="fb_more"></button></p>
+        </div></div>
       <div class="card" id="fan-card"></div>
     </div>
   </div>
@@ -1040,6 +1061,7 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
   <p data-i18n="disclaimer"></p>
   <p><button type="button" class="link" id="regate" data-i18n="regate"></button></p>
   <p><button type="button" class="link" id="tour-again" data-i18n="tu_again"></button></p>
+  <p><button type="button" class="link" data-fb-open="footer" data-i18n="fb_foot"></button></p>
 </footer>
 
 <div id="scope" class="gate" role="dialog" aria-modal="true" aria-labelledby="scope-title" hidden>
@@ -1070,6 +1092,36 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
       <h2 id="pitch-dt" class="pt pop" tabindex="-1" data-i18n="pi_done_t"></h2>
       <p data-i18n="pi_done_p"></p>
       <div class="rob"><button type="button" class="btn" id="pi-cont" data-i18n="pi_cont"></button></div>
+    </div>
+  </div>
+</div>
+<div id="fb" class="gate" role="dialog" aria-modal="true" aria-labelledby="fb-t" hidden>
+  <div class="gate-box pitch-box fb-box">
+    <form id="fb-f" novalidate>
+      <div class="pst"><span class="spr" data-s="shaman_thinking" style="--s:3" aria-hidden="true"></span></div>
+      <p class="rk" data-i18n="fb_kick"></p>
+      <h2 id="fb-t" class="pt" tabindex="-1" data-i18n="fb_t"></h2>
+      <p data-i18n="fb_p"></p>
+      <div class="pf" role="group" aria-labelledby="fb-l-type"><b id="fb-l-type" data-i18n="fb_l_type"></b>
+        <div class="fbchips"><button type="button" class="rdsymb" data-g="type" data-v="Bug" aria-pressed="false" data-i18n="fb_ty_bug"></button><button type="button" class="rdsymb" data-g="type" data-v="Confusing" aria-pressed="false" data-i18n="fb_ty_conf"></button><button type="button" class="rdsymb" data-g="type" data-v="Idea" aria-pressed="false" data-i18n="fb_ty_idea"></button><button type="button" class="rdsymb" data-g="type" data-v="Praise" aria-pressed="false" data-i18n="fb_ty_praise"></button></div></div>
+      <div class="pf" role="group" aria-labelledby="fb-l-rate"><b id="fb-l-rate" data-i18n="fb_l_rate"></b>
+        <div class="fbchips"><button type="button" class="rdsymb" data-g="rate" data-v="👍" aria-pressed="false" data-i18n="fb_r_up"></button><button type="button" class="rdsymb" data-g="rate" data-v="🤔" aria-pressed="false" data-i18n="fb_r_meh"></button><button type="button" class="rdsymb" data-g="rate" data-v="👎" aria-pressed="false" data-i18n="fb_r_down"></button></div></div>
+      <label class="pf"><b data-i18n="fb_l_msg"></b><span class="small muted" id="fb-h-msg" data-i18n="fb_h_msg"></span>
+        <textarea class="txt" id="fb-msg" rows="4" maxlength="5000" aria-describedby="fb-h-msg"></textarea></label>
+      <label class="pf"><b data-i18n="fb_l_contact"></b><span class="small muted" id="fb-h-contact" data-i18n="fb_h_contact"></span>
+        <input class="txt" id="fb-contact" type="text" maxlength="200" autocomplete="email" aria-describedby="fb-h-contact"></label>
+      <label class="fbatt" id="fb-attw"><input type="checkbox" id="fb-att"><span data-i18n="fb_att"></span></label>
+      <details class="fbwhat small"><summary data-i18n="fb_what"></summary><p data-i18n="fb_what_p"></p></details>
+      <label class="phide" aria-hidden="true">Website<input type="text" id="fb-web" tabindex="-1" autocomplete="off"></label>
+      <p class="pmsg" id="fb-m" role="alert" hidden></p>
+      <p class="small muted" data-i18n="fb_priv"></p>
+      <div class="rob"><button type="submit" class="btn" id="fb-send" data-i18n="fb_send"></button><button type="button" class="btn alt" id="fb-later" data-i18n="fb_later"></button></div>
+    </form>
+    <div id="fb-done" class="pdone" hidden>
+      <div class="pst"><span class="spr swap" data-s="shaman_happy" style="--s:3" aria-hidden="true"></span><span class="spr pfl" data-s="spirit_flame" style="--s:2" aria-hidden="true"></span><span class="spr pfl" data-s="spirit_flame" style="--s:2" aria-hidden="true"></span><span class="spr pfl" data-s="spirit_flame" style="--s:2" aria-hidden="true"></span></div>
+      <h2 id="fb-dt" class="pt pop" tabindex="-1" data-i18n="fb_done_t"></h2>
+      <p id="fb-dp" data-i18n="fb_done_p"></p>
+      <div class="rob"><button type="button" class="btn" id="fb-cont" data-i18n="fb_cont"></button></div>
     </div>
   </div>
 </div>
@@ -2444,6 +2496,34 @@ flag_bt:"มีแค่ Backtest: ตัวเลขอาจ Overfit (จู�
 });
 Object.assign(I18N.en,{unset_desk_t:"{n} inputs still use example or default values, so the results may not describe your trading. Tap one to fill it in:",jump_t:"Jump to"});
 Object.assign(I18N.th,{unset_desk_t:"มี {n} ช่องที่ยังใช้ค่าตัวอย่างหรือค่าเริ่มต้น ผลลัพธ์จึงอาจไม่ตรงกับการเทรดของคุณ แตะเพื่อไปกรอก:",jump_t:"ไปที่"});
+Object.assign(I18N.en,{
+fb_foot:"💬 Tell Jarn Neow what you think",fb_strip_q:"Did this reading help you set your risk?",fb_r_up:"👍 Yes",fb_r_meh:"🤔 Not sure",fb_r_down:"👎 Nope",
+fb_strip_no:"Don't ask",fb_strip_priv:"A tap sends only your answer and basic app info, not your numbers.",fb_thx_up:"Thanks! Want to tell me more?",fb_thx_down:"Ouch. Tell me what went wrong.",fb_more:"Tell me",
+fb_after:"Anything wrong or missing in this report?",fb_after_go:"Send feedback",fb_err_link:"Report this problem",
+fb_kick:"The shaman is listening.",fb_t:"Tell me straight. I can take it.",fb_p:"Found a bug, got lost, or have an idea? Praise is allowed too. Takes 30 seconds.",
+fb_l_type:"What is it?",fb_ty_bug:"🐛 Something's broken",fb_ty_conf:"🌀 I got lost",fb_ty_idea:"💡 I have an idea",fb_ty_praise:"🙏 Just saying thanks",
+fb_l_rate:"Did the reading help?",fb_l_msg:"Tell me more",fb_h_bug:"What did you do, what did you expect, what happened?",fb_h_msg:"The more honest, the better.",
+fb_l_contact:"Want a reply? (optional)",fb_h_contact:"Email, LINE ID, anything. Leave it empty to stay a nameless ghost. 👻",
+fb_att:"Attach my report (your numbers go with it)",fb_what:"What gets sent?",
+fb_what_p:"Your message, plus: mode, language, strategy type, where you opened this, screen width and app version. Your numbers stay on your device unless you attach the report.",
+fb_priv:"Only I see this. Nothing gets posted.",fb_send:"Send it",fb_later:"Not now",fb_sending:"Sending…",
+fb_need:"Pick a type or write something first.",fb_offline:"You're offline. Even spirits need signal. Try again later.",fb_err:"Couldn't send. Check your connection and try again.",
+fb_done_t:"Received. Candle lit. 🕯️",fb_done_p:"I read every one. If you left a contact, I'll reply (ASAP: As Slow As Possible).",fb_done_praise:"Jarn Neow is blushing. Thank you.",fb_cont:"Continue"
+});
+Object.assign(I18N.th,{
+fb_foot:"💬 บอกจารย์เหนียวหน่อย",fb_strip_q:"คำทำนายนี้ช่วยให้เจ้าตั้งความเสี่ยงได้ไหม?",fb_r_up:"👍 ช่วยได้",fb_r_meh:"🤔 ไม่แน่ใจ",fb_r_down:"👎 ไม่เลย",
+fb_strip_no:"ไม่ต้องถาม",fb_strip_priv:"กดแล้วส่งแค่คำตอบกับข้อมูลแอป ไม่ส่งตัวเลขของเจ้า",fb_thx_up:"ขอบใจ อยากเล่าอะไรเพิ่มไหม?",fb_thx_down:"โอ๊ย เจ็บ… อะไรไม่ดี บอกข้าหน่อย",fb_more:"เล่าเลย",
+fb_after:"รายงานนี้มีอะไรผิดหรือขาดไหม?",fb_after_go:"ส่งความเห็น",fb_err_link:"แจ้งปัญหานี้",
+fb_kick:"ข้ากำลังฟังอยู่",fb_t:"ว่ามาตรงๆ ข้ารับได้",fb_p:"เจอบั๊ก งงตรงไหน หรือมีไอเดีย? ชมก็ได้ ไม่ว่ากัน ใช้เวลาแค่ 30 วินาที",
+fb_l_type:"เรื่องอะไร?",fb_ty_bug:"🐛 มีอะไรพัง",fb_ty_conf:"🌀 งงตรงนี้",fb_ty_idea:"💡 มีไอเดีย",fb_ty_praise:"🙏 แค่อยากขอบคุณ",
+fb_l_rate:"คำทำนายช่วยได้ไหม?",fb_l_msg:"เล่าให้ข้าฟังหน่อย",fb_h_bug:"ทำอะไรอยู่ คาดว่าจะเป็นยังไง แล้วเกิดอะไรขึ้น?",fb_h_msg:"ยิ่งพูดตรง ยิ่งดี",
+fb_l_contact:"อยากให้ข้าตอบกลับไหม (ไม่บังคับ)",fb_h_contact:"อีเมล ไลน์ไอดี อะไรก็ได้ อยากเป็นผีไร้ชื่อก็เว้นว่างไว้ 👻",
+fb_att:"แนบรายงานไปด้วย (ตัวเลขของเจ้าจะถูกส่งไปด้วย)",fb_what:"อะไรถูกส่งไปบ้าง?",
+fb_what_p:"ข้อความของเจ้า พร้อมโหมด ภาษา ประเภทกลยุทธ์ หน้าที่เปิดฟอร์มนี้ ความกว้างจอ และเวอร์ชันแอป ตัวเลขของเจ้าอยู่ในเครื่อง เว้นแต่จะแนบรายงาน",
+fb_priv:"ข้าเห็นคนเดียว ไม่มีการโพสต์ที่ไหน",fb_send:"ส่งเลย",fb_later:"ไว้ก่อน",fb_sending:"กำลังส่ง…",
+fb_need:"เลือกเรื่อง หรือพิมพ์อะไรสักหน่อยก่อน",fb_offline:"เน็ตหลุด ผีก็ต้องใช้สัญญาณนะ ลองใหม่ทีหลัง",fb_err:"ส่งไม่สำเร็จ ลองเช็กอินเทอร์เน็ตแล้วส่งใหม่",
+fb_done_t:"ได้รับแล้ว ข้าจุดเทียนรับทราบ 🕯️",fb_done_p:"ข้าอ่านทุกข้อความ ถ้าทิ้งช่องทางติดต่อไว้ ข้าจะตอบกลับ (ASAP แบบช้าๆ นะ)",fb_done_praise:"จารย์เหนียวเขินเลย ขอบใจนะ",fb_cont:"ไปต่อ"
+});
 Object.assign(I18N.en,{dtab_risk:"Risk calculator",dtab_lab:"Gold playground",lab_loading:"Loading the gold playground…",lab_load_err:"The gold playground couldn't load. Check your connection and open the tab again.",desk_loading:"Loading Expert mode…",desk_load_err:"Expert mode couldn't load. Check your connection and switch to Expert again. If you opened index.html from your computer, keep expert.js in the same folder."});
 Object.assign(I18N.th,{dtab_risk:"คำนวณความเสี่ยง",dtab_lab:"สนามทดลองทองคำ",lab_loading:"กำลังโหลดสนามทดลองทองคำ…",lab_load_err:"โหลดสนามทดลองทองคำไม่สำเร็จ ตรวจการเชื่อมต่อแล้วเปิดแท็บอีกครั้ง",desk_loading:"กำลังโหลดโหมดผู้เชี่ยวชาญ…",desk_load_err:"โหลดโหมดผู้เชี่ยวชาญไม่สำเร็จ ตรวจการเชื่อมต่อแล้วกดผู้เชี่ยวชาญอีกครั้ง ถ้าเปิด index.html จากเครื่อง ให้วาง expert.js ไว้ในโฟลเดอร์เดียวกัน"});
 function t(k,v){
@@ -2749,7 +2829,7 @@ function rangeNote(a){return a.E>0?(a.nNeeded?t('range_need',{n:a.n,x:a.nNeeded.
 const per100=E=>{const v=Math.round(E*100);return(v<0?MINUS:v>0?'+':'')+Math.abs(v);};
 function renderVerdict(){
   const a=A.flag?Object.assign({},A,{v:'bad'}):A,card=$('v-body'),wide=a.survHi-a.survLo>0.04,ex=exState();
-  $('verdict-card').classList.toggle('isex',!!ex);
+  $('verdict-card').classList.toggle('isex',!!ex);window.__jnLastEx=ex;if(window.__fbStrip)window.__fbStrip(ex);
   card.innerHTML=otBanner()+(ex?`<p class="exbadge"><span class="badge">${esc(t('ex_badge'))}</span> ${esc(ex==='all'?t('ex_res_all'):t('ex_res_some'))}</p>`:'')+`<div class="vrow">${SPR(a.v==='warn'&&a.ruinP<=0.05?'shaman_thinking':MOOD[a.v],2,'vsh')}<div class="vhead">${SPR(RISKS[a.v])}<h2>${esc(t('v_'+a.v))}</h2></div></div>
   <p class="vtext">${esc(sentence(a))}</p>
   <div class="tiles">
@@ -2999,7 +3079,8 @@ function init(){
     if(b.dataset.fix){const f=getFixes().find(x=>x.id===b.dataset.fix);if(!f)return;before={st:Object.assign({},st),A};Object.assign(st,f.changes);example=false;$('example-badge').hidden=true;syncInputs();updateHash();render();}
     else if(b.dataset.undo){if(before){Object.assign(st,before.st);before=null;syncInputs();updateHash();render();}}
     else if(b.dataset.hidecmp){before=null;renderFix();}});
-  const mdGo=cp=>{const b=$(cp?'md-play-copy':'md-play');let r=null;try{r=mdReport();}catch(e){console.error('report',e);}if(!r)return;if(cp)MD.copy(r.text,b);else{MD.download(r.file,r.text);MD.flash(b,'md_saved');}};
+  const mdGo=cp=>{const b=$(cp?'md-play-copy':'md-play');let r=null;try{r=mdReport();}catch(e){console.error('report',e);}if(!r)return;if(cp)MD.copy(r.text,b);else{MD.download(r.file,r.text);MD.flash(b,'md_saved');}if(window.__fbAfter)window.__fbAfter(b.parentNode);};
+  window.__jnPlayReport=()=>mdReport();
   $('md-play').addEventListener('click',()=>mdGo(false));$('md-play-copy').addEventListener('click',()=>mdGo(true));
   syncInputs();
   if('IntersectionObserver' in window){const vb=$('vbar');new IntersectionObserver(es=>{es.forEach(e=>vb.classList.toggle('away',e.isIntersecting));},{threshold:0.2}).observe($('verdict-card'));}
@@ -3157,7 +3238,7 @@ function toDesk(){if(!deskReady())return;if(pv()!==lastPlay){const v=JSON.parse(
 function toPlay(){if(!deskReady())return;if(dv()!==lastDesk){const v=JSON.parse(dv());PLAY.setState(v,v.t);}lastDesk=dv();lastPlay=pv();}
 
 /* ----- Expert mode code lives in expert.js and loads the first time Expert opens ----- */
-const EXPERT_V='3af76d20';
+const EXPERT_V='00cb7ebe';
 const deskReady=()=>typeof DESK!=='undefined';
 let deskLoading=null;
 function loadDesk(){
@@ -3168,7 +3249,7 @@ function loadDesk(){
     sc.onerror=()=>{deskLoading=null;if(main)main.innerHTML=`<div class="errnote">${esc(t('desk_load_err'))}</div>`;fail(new Error('expert.js'));};document.head.appendChild(sc);});
   return deskLoading;}
 /* ----- the gold playground (an Expert tab) lives in lab.js and lab-worker.js, loaded the first time the tab opens ----- */
-const LAB_V='a6fb217a';
+const LAB_V='3a905d24';
 const labReady=()=>typeof LAB!=='undefined';
 let labLoading=null;
 function loadLab(){
@@ -3218,7 +3299,7 @@ function stepRender(){
   gate.setAttribute('aria-labelledby',q?'gate-qt':'gate-title');}
 function goStep(n){gstep=n;stepRender();gate.scrollTop=0;const h=gate.querySelector(gstep?'#gate-qt':'#gate-title');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}}
 /* while a popup is open, everything behind it is inert: no keyboard focus, hidden from screen readers */
-function syncInert(){const sc=$('scope'),g=$('gate'),pi=$('pitch'),rd=$('ready'),top=!sc.hidden?sc:!g.hidden?g:!pi.hidden?pi:!rd.hidden?rd:null;
+function syncInert(){const sc=$('scope'),g=$('gate'),pi=$('pitch'),rd=$('ready'),fb=$('fb'),top=!sc.hidden?sc:!g.hidden?g:!pi.hidden?pi:!rd.hidden?rd:!fb.hidden?fb:null;
   [...document.body.children].forEach(el=>{if(el.tagName==='SCRIPT'||el.id==='tip')return;const on=!!top&&el!==top&&!el.contains(top);if(on)el.setAttribute('inert','');else el.removeAttribute('inert');});}
 /* the roast: a cheeky first screen on page load, before the real questions */
 let intro=0;
@@ -3238,7 +3319,7 @@ function closeGate(o){ILL.hide();gate.hidden=true;document.body.classList.remove
    form: the long id in the form's share link .../forms/d/e/<id>/viewform
    link/contact/note: the entry numbers from the form's "Get pre-filled link" (entry.123456 -> '123456'). Add #pitch to the page address to preview it. */
 const PITCH={form:'1FAIpQLSezRZKXPqcmXMt8k7ZAqiVMuc0ZAVoS0riFBTX-7M7bfmPYkw',link:'1000057',contact:'1000027',note:'1000023'},pitchOn=()=>!!(PITCH.form&&PITCH.link&&PITCH.contact);
-function openPitch(){const p=$('pitch');$('pitch-f').hidden=false;$('pitch-done').hidden=true;$('pi-msg').hidden=true;
+function openPitch(){window.__jnPitched=1;const p=$('pitch');$('pitch-f').hidden=false;$('pitch-done').hidden=true;$('pi-msg').hidden=true;
   p.querySelectorAll('.txt').forEach(x=>x.classList.remove('bad'));document.body.classList.add('locked');p.hidden=false;p.scrollTop=0;replay(p.querySelector('.pitch-box'),'in');syncInert();$('pitch-t').focus({preventScroll:true});}
 function closePitch(){const p=$('pitch');if(p.hidden)return;p.hidden=true;document.body.classList.remove('locked');syncInert();PLAY.render();window.scrollTo(0,0);TOUR&&TOUR.maybe();}
 const replay=(el,c)=>{el.classList.remove(c);void el.offsetWidth;el.classList.add(c);};
@@ -3257,6 +3338,69 @@ $('pitch-f').addEventListener('submit',async e=>{e.preventDefault();
   finally{go.disabled=false;go.classList.remove('busy');go.textContent=t('pi_send');}});
 $('pi-later').addEventListener('click',closePitch);$('pi-cont').addEventListener('click',closePitch);
 $('pitch').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();closePitch();}});
+/* ----- feedback: a footer link, a one-tap question under the Beginner verdict, a line after a report is saved, and a link on errors.
+   Answers go to a Google Form you own (they land in its Google Sheet), the same way as the pitch. Nothing is sent until someone taps a
+   rating or presses Send, and their numbers go only if they tick "attach my report".
+   form: the long id in .../forms/d/e/<id>/viewform; the others are entry numbers from the form's "Get pre-filled link".
+   The type and rating values must match the form's choices exactly. Add #feedback to the page address to open it. ----- */
+const FB_FORM={form:'1FAIpQLSfg8JRoq4yKV7S_RDGSWXnnVPH1yKtWf_0LW2MEW7GhI2qIwg',type:'2005620554',rate:'1045781291',msg:'1065046570',contact:'1166974658',report:'839337160',info:'2023802741'};
+const FB=(function(){
+const MAXR=30000,box=$('fb'),sel={type:null,rate:null};
+let ctx={from:'footer',err:''},back=null,stripNow=false,stripRate=null;
+const ver=()=>{const d=new Date(document.lastModified);return isNaN(d)?'?':d.toISOString().slice(0,10);};
+const info=c=>['mode='+(root.dataset.mode==='desk'?'expert':'beginner'),'lang='+LANG,'type='+(root.dataset.st||'-'),'from='+c.from+(c.err?':'+c.err:''),'w='+Math.round(innerWidth),'v='+ver()].join('; ');
+function report(){try{const f=root.dataset.mode==='desk'?window.__jnDeskReport:window.__jnPlayReport,r=f&&f();if(!r||!r.text)return'';return r.text.length>MAXR?r.text.slice(0,MAXR)+'\n\n… (cut)':r.text;}catch(e){return'';}}
+async function send(d,c){
+  if(navigator.onLine===false)throw new Error('offline');
+  const F=FB_FORM,fd=new URLSearchParams();
+  if(d.type)fd.set('entry.'+F.type,d.type);if(d.rate)fd.set('entry.'+F.rate,d.rate);
+  fd.set('entry.'+F.msg,d.msg||(d.type?'(no message)':'(rating only)'));
+  if(d.contact)fd.set('entry.'+F.contact,d.contact);if(d.report)fd.set('entry.'+F.report,d.report);fd.set('entry.'+F.info,info(c));
+  await fetch('https://docs.google.com/forms/d/e/'+encodeURIComponent(F.form)+'/formResponse',{method:'POST',mode:'no-cors',body:fd});}
+const setT=(el,k)=>{el.dataset.i18n=k;el.textContent=t(k);};
+function paint(){box.querySelectorAll('[data-g]').forEach(b=>b.setAttribute('aria-pressed',String(sel[b.dataset.g]===b.dataset.v)));setT($('fb-h-msg'),sel.type==='Bug'?'fb_h_bug':'fb_h_msg');}
+function msg(k){const m=$('fb-m');m.hidden=!k;m.textContent=k?t(k):'';}
+function open(o){o=o||{};ctx={from:o.from||'footer',err:o.err||''};if('type'in o)sel.type=o.type||null;if('rate'in o)sel.rate=o.rate||null;
+  back=document.activeElement;$('fb-f').hidden=false;$('fb-done').hidden=true;msg(null);$('fb-msg').classList.remove('bad');
+  $('fb-attw').hidden=!(root.dataset.mode==='desk'?window.__jnDeskReport:window.__jnPlayReport);paint();
+  document.body.classList.add('locked');box.hidden=false;box.scrollTop=0;replay(box.querySelector('.fb-box'),'in');syncInert();$('fb-t').focus({preventScroll:true});}
+function close(){if(box.hidden)return;box.hidden=true;document.body.classList.remove('locked');syncInert();if(back&&back.isConnected)back.focus({preventScroll:true});}
+function done(type){store.set('jn_fb','done');$('fb-f').hidden=true;const d=$('fb-done');d.hidden=false;setT($('fb-dp'),type==='Praise'?'fb_done_praise':'fb_done_p');
+  d.querySelectorAll('.spr,.pop').forEach(x=>{x.style.animation='none';void x.offsetWidth;x.style.animation='';});
+  $('fb-msg').value='';$('fb-contact').value='';$('fb-att').checked=false;sel.type=sel.rate=null;$('fb-dt').focus();}
+box.addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const g=b.dataset.g;sel[g]=sel[g]===b.dataset.v?null:b.dataset.v;paint();msg(null);});
+$('fb-f').addEventListener('submit',async e=>{e.preventDefault();
+  const M=$('fb-msg'),go=$('fb-send'),mv=M.value.trim(),type=sel.type;
+  if(!type&&!mv){msg('fb_need');M.classList.add('bad');replay(M,'shake');M.focus();return;}M.classList.remove('bad');
+  if($('fb-web').value){done(type);return;}
+  if(navigator.onLine===false){msg('fb_offline');return;}
+  go.disabled=true;go.classList.add('busy');go.textContent=t('fb_sending');msg(null);
+  try{await send({type,rate:sel.rate,msg:mv,contact:$('fb-contact').value.trim(),report:$('fb-att').checked?report():''},ctx);done(type);}
+  catch(err){msg(navigator.onLine===false?'fb_offline':'fb_err');}
+  finally{go.disabled=false;go.classList.remove('busy');go.textContent=t('fb_send');}});
+$('fb-later').addEventListener('click',close);$('fb-cont').addEventListener('click',close);
+box.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close();}});
+document.addEventListener('click',e=>{const o=e.target.closest('[data-fb-open]'),r=e.target.closest('[data-fb-err]');
+  if(o)open({from:o.dataset.fbOpen});else if(r)open({from:'error',err:r.dataset.fbErr,type:'Bug'});});
+/* the one-tap question: Beginner only, once all four numbers are the person's own, never in the same visit as the pitch,
+   and only until it's answered or dismissed (jn_fb). A tap sends the rating at once; the popup is for anything more. */
+const strip=$('fb-strip');
+function showStrip(ex){strip.hidden=!(stripNow||(!ex&&!store.get('jn_fb')&&!window.__jnPitched));}
+strip.addEventListener('click',e=>{const b=e.target.closest('.rdsymb[data-v]');
+  if(b){const v=b.dataset.v;store.set('jn_fb','done');stripNow=true;$('fb-sq').hidden=true;$('fb-sthx').hidden=false;
+    setT($('fb-sthx-t'),v==='👎'?'fb_thx_down':'fb_thx_up');stripRate=v;send({rate:v},{from:'strip'}).catch(()=>{});return;}
+  if(e.target.closest('#fb-smore')){open({from:'strip-more',rate:stripRate,type:null});return;}
+  if(e.target.closest('#fb-sno')){store.set('jn_fb','no');strip.hidden=true;}});
+/* a line under the report buttons once a report is saved or copied */
+function after(el){if(!el||!el.parentNode||(el.nextElementSibling&&el.nextElementSibling.classList.contains('fbafter')))return;
+  const p=document.createElement('p');p.className='small fbafter';p.innerHTML='<span data-i18n="fb_after"></span> <button type="button" class="link" data-fb-open="report" data-i18n="fb_after_go"></button>';
+  p.querySelectorAll('[data-i18n]').forEach(x=>{x.textContent=t(x.dataset.i18n);});el.after(p);}
+const errLink=code=>`<button type="button" class="link fberr" data-fb-err="${esc(code)}">${esc(t('fb_err_link'))}</button>`;
+window.__fbStrip=showStrip;window.__fbAfter=after;window.__fbErr=errLink;
+if(window.__jnLastEx!==undefined)showStrip(window.__jnLastEx);
+if(location.hash==='#feedback')setTimeout(()=>open({from:'link'}),400);
+return{open,close};
+})();
 /* ----- readiness check (Beginner): 6 questions on what blows up beginner accounts; a short lesson after each wrong answer.
    Optional. The result is remembered in this browser (jn_ready) and shown on the card above the inputs and on the result.
    Questions 1-3 use the symbol the person trades. Prices are round example prices (gold from this app's own data), not live quotes. ----- */

@@ -21,7 +21,7 @@ const note=(k,v)=>exBlock(k,v);
 const ch=svg=>`<div class="chart">${svg}</div>`;
 
 /* ---------- file handling ---------- */
-function showErr(msg){D.err=msg;$('file-status').innerHTML=msg?`<div class="errnote">${esc(msg)}</div>`:'';}
+function showErr(msg){D.err=msg;$('file-status').innerHTML=msg?`<div class="errnote">${esc(msg)}${window.__fbErr?window.__fbErr('myfxbook'):''}</div>`:'';}
 function readFile(file){
   if(!file)return;if(file.size>25*1024*1024){showErr(t('err_big'));return;}
   const fr=new FileReader();
@@ -1022,7 +1022,8 @@ function init(){
     if(g){const el=$(g.dataset.unsetGo);el.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(()=>el.focus({preventScroll:true}),250);}});
   $('d-apply').addEventListener('click',()=>{autoFill();statusLine();analyze();window.scrollTo(0,0);});
   $('d-jump').addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;e.preventDefault();const sec=$(a.getAttribute('href').slice(1));if(!sec)return;sec.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});const h=sec.querySelector('h2');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}});
-  const mdGo=cp=>{const b=$(cp?'md-desk-copy':'md-desk');let r=null;try{r=mdReport();}catch(e){console.error('report',e);}if(!r)return;if(cp)MD.copy(r.text,b);else{MD.download(r.file,r.text);MD.flash(b,'md_saved');}};
+  const mdGo=cp=>{const b=$(cp?'md-desk-copy':'md-desk');let r=null;try{r=mdReport();}catch(e){console.error('report',e);}if(!r)return;if(cp)MD.copy(r.text,b);else{MD.download(r.file,r.text);MD.flash(b,'md_saved');}if(window.__fbAfter)window.__fbAfter(b.closest('.xbar'));};
+  window.__jnDeskReport=()=>mdReport();
   $('md-desk').addEventListener('click',()=>mdGo(false));$('md-desk-copy').addEventListener('click',()=>mdGo(true));
   $('d-main').addEventListener('input',e=>{const inp=e.target.closest('.wi input[type=range]');if(!inp)return;const box=inp.closest('.wi'),r=wiRange(inp.dataset.k);
     inp.nextElementSibling.textContent=r.f(inp.dataset.k==='n'||inp.dataset.k==='hor'?Math.round(+inp.value):+inp.value);wiLive(box);clearTimeout(wiTimer);wiTimer=setTimeout(()=>wiApply(box),350);});
