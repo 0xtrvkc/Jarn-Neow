@@ -720,10 +720,76 @@ html[data-mode=desk] .pitch-box,html.noanim .pitch-box.in,html.noanim .pfl,html.
 html.noanim .pf .txt:focus{transform:none}
 html.noanim .pdone .pfl{display:none}
 /* feedback: popup, the one-tap question under the Beginner verdict, the line after a report, the link on errors */
-.fb-box .rk,#fb-done{text-align:center}
 .fbchips{display:flex;flex-wrap:wrap;gap:.45rem}
-html[data-mode=desk] .fb-box .pst{display:none}
 html[data-mode=desk] .fbchips .rdsymb,html[data-mode=desk] .fbstrip .rdsymb{border-radius:2px;border-width:1px}
+/* feedback chat: a bubble in the bottom-right corner opens a one-way chat panel that grows out of it (a bottom sheet on phones).
+   The bubble hides while a popup, the tour or the Expert nudge is on screen, and on phones while someone is typing in the page. */
+.fbl{position:fixed;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,env(safe-area-inset-bottom));z-index:50;width:64px;height:64px;padding:0;border-radius:50%;border:var(--bw) solid var(--line);background:var(--card);color:var(--ink);box-shadow:0 4px 0 var(--line),0 10px 24px rgba(0,0,0,.35);display:grid;place-items:center;cursor:pointer;animation:fblin .45s cubic-bezier(.2,1.4,.4,1) backwards;transition:transform .15s}
+.fbl:hover{transform:translateY(-2px)}
+.fbl>*{grid-area:1/1}
+.fbl-ic{width:24px;height:24px;display:none}
+.fbl-x{display:none;font-size:1.35rem;font-weight:700;line-height:1}
+.fbl[aria-expanded=true] .spr,.fbl[aria-expanded=true] .fbl-ic{display:none}
+.fbl[aria-expanded=true] .fbl-x{display:block}
+html[data-mode=desk] .fbl{width:48px;height:48px;border-radius:2px;border-color:var(--accent);box-shadow:0 6px 20px rgba(0,0,0,.55);color:var(--accent)}
+html[data-mode=desk] .fbl-ic{display:block}
+html[data-mode=desk] .fbl[aria-expanded=true] .fbl-ic{display:none}
+.fbl.ping::after{content:"";position:absolute;inset:-7px;border-radius:inherit;border:3px solid var(--p3,var(--accent));animation:fbping 1.5s ease-out 2 both;pointer-events:none}
+@keyframes fbping{from{transform:scale(.85);opacity:1}to{transform:scale(1.4);opacity:0}}
+@keyframes fblin{from{transform:scale(.3);opacity:0}}
+.fbtip{position:fixed;right:calc(max(1rem,env(safe-area-inset-right)) + 76px);bottom:calc(max(1rem,env(safe-area-inset-bottom)) + 12px);z-index:50;max-width:min(15rem,calc(100vw - 7rem));margin:0;padding:.5rem .8rem;background:var(--card);color:var(--ink);border:var(--bw) solid var(--line);border-radius:16px 16px 4px 16px;box-shadow:0 6px 18px rgba(0,0,0,.3);font-weight:600;font-size:.9rem;line-height:1.35;cursor:pointer;animation:fbtipin .35s ease-out backwards}
+html[data-mode=desk] .fbtip{right:calc(max(1rem,env(safe-area-inset-right)) + 60px);bottom:calc(max(1rem,env(safe-area-inset-bottom)) + 4px);border-radius:2px;border-width:1px;font-weight:500}
+@keyframes fbtipin{from{transform:translateX(12px);opacity:0}}
+body.locked .fbl,body.locked .fbtip,body:has(#tour:not([hidden])) :is(.fbl,.fbtip),body:has(#desk-nudge:not([hidden])) :is(.fbl,.fbtip){display:none}
+footer{padding-bottom:calc(2.5rem + 72px)}
+.fbscrim{position:fixed;inset:0;z-index:69;background:rgba(18,4,32,.6)}
+html[data-mode=desk] .fbscrim{background:rgba(2,5,9,.75)}
+.fbp{position:fixed;z-index:70;right:max(1rem,env(safe-area-inset-right));bottom:calc(max(1rem,env(safe-area-inset-bottom)) + 78px);width:min(380px,calc(100vw - 2rem));max-height:min(620px,calc(100vh - 7.5rem));max-height:min(620px,calc(100dvh - 7.5rem));display:flex;flex-direction:column;background:var(--card);color:var(--ink);border:var(--bw) solid var(--line);border-radius:var(--radius);box-shadow:0 18px 50px rgba(0,0,0,.45);overflow:hidden;transform-origin:calc(100% - 32px) calc(100% + 46px)}
+html[data-mode=desk] .fbp{bottom:calc(max(1rem,env(safe-area-inset-bottom)) + 60px);border-color:var(--line);box-shadow:0 18px 50px rgba(0,0,0,.6);transform-origin:calc(100% - 24px) calc(100% + 36px)}
+.fbp.in{animation:fbpin .3s cubic-bezier(.2,1.25,.4,1) backwards}
+@keyframes fbpin{from{transform:scale(.15);opacity:0}}
+.fbp-h{position:relative;flex:none;display:flex;align-items:center;gap:.65rem;padding:.75rem .6rem .75rem .85rem;background:var(--accent);color:var(--accent-ink)}
+.fbp-grab{display:none;position:absolute;top:6px;left:50%;width:40px;height:5px;margin-left:-20px;border-radius:9px;background:currentColor;opacity:.45}
+.fbp-av{flex:none;width:46px;height:46px;border-radius:50%;background:var(--card);border:2px solid var(--line);display:grid;place-items:center;overflow:hidden}
+html[data-mode=desk] .fbp-av{width:32px;height:32px;border-radius:2px;border-width:1px;font:600 .78rem var(--mono);color:var(--ink)}
+.fbp-ht{flex:1;min-width:0}
+.fbp-h h2{font-size:1.08rem;margin:0}
+.fbp-h h2:focus{outline:none}
+.fbp-h p{margin:.1rem 0 0;line-height:1.3;opacity:.9}
+.fbp-x{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:inherit;font-size:1.15rem;cursor:pointer}
+.fbp-x:hover{background:rgba(255,255,255,.18)}
+html[data-mode=desk] .fbp-x{border-radius:2px;width:36px;height:36px}
+html[data-mode=desk] .fbp-x:hover{background:rgba(0,0,0,.15)}
+.fbp-f{flex:1;min-height:0;display:flex;flex-direction:column}
+.fbp-log{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:.9rem .8rem;display:flex;flex-direction:column;gap:.7rem;background:var(--soft)}
+.fbm{align-self:flex-start;max-width:90%;margin:0;padding:.55rem .8rem;background:var(--card);border:var(--bw) solid var(--line);border-radius:4px 18px 18px 18px;line-height:1.4}
+.fbm p{margin:0}.fbm p+p{margin-top:.3rem}.fbm .txt{margin-top:.45rem}
+.fbme{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-radius:18px 4px 18px 18px;white-space:pre-wrap;overflow-wrap:anywhere}
+.fbq{display:grid;gap:.45rem;justify-items:start}
+.fbq .fbchips{padding-left:.15rem}
+.fbfine{font-size:.86em;color:var(--muted);display:grid;gap:.15rem;padding:0 .2rem}
+.fbfine p,.fbfine .fbatt,.fbfine .fbwhat{margin:0}.fbfine .fbatt{color:var(--ink)}
+html[data-mode=desk] .fbm{border-width:1px;border-radius:2px}
+#fb-dt:focus{outline:none}
+#fb-done .rob{margin-top:.2rem}
+.fbp-c{flex:none;display:grid;gap:.45rem;padding:.6rem .7rem;border-top:var(--bw) solid var(--line);background:var(--card)}
+.fbp-c .pmsg{margin:0}
+.fbp-cr{display:flex;gap:.5rem;align-items:flex-end}
+.fbp-cr .txt{font:inherit;flex:1;min-width:0;min-height:44px;max-height:9rem;resize:none;line-height:1.4;padding:.6rem .8rem;border-radius:22px}
+html[data-mode=desk] .fbp-cr .txt{border-radius:2px}
+.fbp-cr .btn{flex:none;min-height:44px}
+@media (max-width:700px){
+  body:has(:is(main,footer) :is(input,textarea,select):focus) :is(.fbl,.fbtip){display:none}
+  .fbp,html[data-mode=desk] .fbp{left:0;right:0;bottom:0;width:auto;max-height:88vh;max-height:88dvh;border-bottom:0;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom);transform-origin:50% 100%}
+  html[data-mode=desk] .fbp{border-radius:4px 4px 0 0}
+  .fbp.in{animation:fbsheet .32s cubic-bezier(.2,1,.3,1) backwards}
+  .fbp-h{padding-top:1.1rem;touch-action:none}
+  .fbp-grab{display:block}
+  .fbp-cr .txt{font-size:16px}
+}
+@keyframes fbsheet{from{transform:translateY(100%)}}
+html.noanim .fbl,html.noanim .fbtip,html.noanim .fbp.in,html.noanim .fbl.ping::after{animation:none}
+html.noanim .fbl{transition:none}
 .fbatt{display:flex;gap:.5rem;align-items:center;margin:.5rem 0;font-weight:600;cursor:pointer}
 .fbatt input{width:1.1rem;height:1.1rem;flex:none}
 .fbwhat{margin:.6rem 0}.fbwhat summary{cursor:pointer;font-weight:600}.fbwhat p{margin:.35rem 0 0}
@@ -1095,36 +1161,45 @@ html[data-mode=desk] input.txt,html[data-mode=desk] select.txt{min-height:40px}
     </div>
   </div>
 </div>
-<div id="fb" class="gate" role="dialog" aria-modal="true" aria-labelledby="fb-t" hidden>
-  <div class="gate-box pitch-box fb-box">
-    <form id="fb-f" novalidate>
-      <div class="pst"><span class="spr" data-s="shaman_thinking" style="--s:3" aria-hidden="true"></span></div>
-      <p class="rk" data-i18n="fb_kick"></p>
-      <h2 id="fb-t" class="pt" tabindex="-1" data-i18n="fb_t"></h2>
-      <p data-i18n="fb_p"></p>
-      <div class="pf" role="group" aria-labelledby="fb-l-type"><b id="fb-l-type" data-i18n="fb_l_type"></b>
+<button type="button" id="fbl" class="fbl" aria-haspopup="dialog" aria-expanded="false" aria-controls="fb"><span class="spr" data-s="shaman_thinking" aria-hidden="true"></span><svg class="fbl-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5h16v11.5H10l-6 4.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 9h8M8 12.3h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="fbl-x" aria-hidden="true">✕</span></button>
+<p id="fbtip" class="fbtip" aria-hidden="true" hidden><span data-i18n="fbl_tip"></span></p>
+<div id="fb-scrim" class="fbscrim" hidden></div>
+<section id="fb" class="fbp" role="dialog" aria-modal="false" aria-labelledby="fb-t" aria-describedby="fb-sub" hidden>
+  <header class="fbp-h">
+    <span class="fbp-grab" aria-hidden="true"></span>
+    <span class="fbp-av" aria-hidden="true"><span class="spr" data-s="shaman_thinking"></span><span class="only-desk">JN</span></span>
+    <div class="fbp-ht"><h2 id="fb-t" tabindex="-1" data-i18n="fb_kick"></h2><p id="fb-sub" class="small" data-i18n="fbp_sub"></p></div>
+    <button type="button" class="fbp-x" id="fb-x">✕</button>
+  </header>
+  <form id="fb-f" class="fbp-f" novalidate>
+    <div class="fbp-log">
+      <div class="fbm"><p><b data-i18n="fb_t"></b></p><p data-i18n="fb_p"></p></div>
+      <div class="fbq" role="group" aria-labelledby="fb-l-type"><p class="fbm" id="fb-l-type" data-i18n="fb_l_type"></p>
         <div class="fbchips"><button type="button" class="rdsymb" data-g="type" data-v="Bug" aria-pressed="false" data-i18n="fb_ty_bug"></button><button type="button" class="rdsymb" data-g="type" data-v="Confusing" aria-pressed="false" data-i18n="fb_ty_conf"></button><button type="button" class="rdsymb" data-g="type" data-v="Idea" aria-pressed="false" data-i18n="fb_ty_idea"></button><button type="button" class="rdsymb" data-g="type" data-v="Praise" aria-pressed="false" data-i18n="fb_ty_praise"></button></div></div>
-      <div class="pf" role="group" aria-labelledby="fb-l-rate"><b id="fb-l-rate" data-i18n="fb_l_rate"></b>
+      <div class="fbq" role="group" aria-labelledby="fb-l-rate"><p class="fbm" id="fb-l-rate" data-i18n="fb_l_rate"></p>
         <div class="fbchips"><button type="button" class="rdsymb" data-g="rate" data-v="👍" aria-pressed="false" data-i18n="fb_r_up"></button><button type="button" class="rdsymb" data-g="rate" data-v="🤔" aria-pressed="false" data-i18n="fb_r_meh"></button><button type="button" class="rdsymb" data-g="rate" data-v="👎" aria-pressed="false" data-i18n="fb_r_down"></button></div></div>
-      <label class="pf"><b data-i18n="fb_l_msg"></b><span class="small muted" id="fb-h-msg" data-i18n="fb_h_msg"></span>
-        <textarea class="txt" id="fb-msg" rows="4" maxlength="5000" aria-describedby="fb-h-msg"></textarea></label>
-      <label class="pf"><b data-i18n="fb_l_contact"></b><span class="small muted" id="fb-h-contact" data-i18n="fb_h_contact"></span>
-        <input class="txt" id="fb-contact" type="text" maxlength="200" autocomplete="email" aria-describedby="fb-h-contact"></label>
-      <label class="fbatt" id="fb-attw"><input type="checkbox" id="fb-att"><span data-i18n="fb_att"></span></label>
-      <details class="fbwhat small"><summary data-i18n="fb_what"></summary><p data-i18n="fb_what_p"></p></details>
-      <label class="phide" aria-hidden="true">Website<input type="text" id="fb-web" tabindex="-1" autocomplete="off"></label>
-      <p class="pmsg" id="fb-m" role="alert" hidden></p>
-      <p class="small muted" data-i18n="fb_priv"></p>
-      <div class="rob"><button type="submit" class="btn" id="fb-send" data-i18n="fb_send"></button><button type="button" class="btn alt" id="fb-later" data-i18n="fb_later"></button></div>
-    </form>
-    <div id="fb-done" class="pdone" hidden>
-      <div class="pst"><span class="spr swap" data-s="shaman_happy" style="--s:3" aria-hidden="true"></span><span class="spr pfl" data-s="spirit_flame" style="--s:2" aria-hidden="true"></span><span class="spr pfl" data-s="spirit_flame" style="--s:2" aria-hidden="true"></span><span class="spr pfl" data-s="spirit_flame" style="--s:2" aria-hidden="true"></span></div>
-      <h2 id="fb-dt" class="pt pop" tabindex="-1" data-i18n="fb_done_t"></h2>
-      <p id="fb-dp" data-i18n="fb_done_p"></p>
-      <div class="rob"><button type="button" class="btn" id="fb-cont" data-i18n="fb_cont"></button></div>
+      <div class="fbm"><label for="fb-contact"><b data-i18n="fb_l_contact"></b></label><p class="small" id="fb-h-contact" data-i18n="fb_h_contact"></p>
+        <input class="txt" id="fb-contact" type="text" maxlength="200" autocomplete="email" aria-describedby="fb-h-contact"></div>
+      <div class="fbfine">
+        <label class="fbatt" id="fb-attw"><input type="checkbox" id="fb-att"><span data-i18n="fb_att"></span></label>
+        <details class="fbwhat"><summary data-i18n="fb_what"></summary><p data-i18n="fb_what_p"></p></details>
+        <p data-i18n="fb_priv"></p>
+      </div>
     </div>
+    <div class="fbp-c">
+      <p class="pmsg" id="fb-m" role="alert" hidden></p>
+      <label class="phide" aria-hidden="true">Website<input type="text" id="fb-web" tabindex="-1" autocomplete="off"></label>
+      <div class="fbp-cr"><label for="fb-msg" class="sr-only" data-i18n="fb_l_msg"></label><span class="sr-only" id="fb-h-msg" data-i18n="fb_h_msg"></span>
+        <textarea class="txt" id="fb-msg" rows="1" maxlength="5000" aria-describedby="fb-h-msg"></textarea>
+        <button type="submit" class="btn" id="fb-send" data-i18n="fb_send"></button></div>
+    </div>
+  </form>
+  <div id="fb-done" class="fbp-log" hidden>
+    <p class="fbm fbme" id="fb-echo"></p>
+    <div class="fbm" role="status"><p><b id="fb-dt" tabindex="-1" data-i18n="fb_done_t"></b></p><p id="fb-dp" data-i18n="fb_done_p"></p></div>
+    <div class="rob"><button type="button" class="btn" id="fb-cont" data-i18n="fb_cont"></button><button type="button" class="btn alt" id="fb-again" data-i18n="fbp_again"></button></div>
   </div>
-</div>
+</section>
 <div id="ready" class="gate" role="dialog" aria-modal="true" aria-labelledby="rd-qt" hidden>
   <div class="gate-box rd-box">
     <div class="rdtop"><p class="gkick" id="rd-step"></p><button type="button" class="rdx" id="rd-x" aria-label="Close">✕</button></div>
@@ -2508,7 +2583,8 @@ fb_att:"Attach my report (your numbers go with it)",fb_what:"What gets sent?",
 fb_what_p:"Your message, plus: mode, language, strategy type, where you opened this, screen width and app version. Your numbers stay on your device unless you attach the report.",
 fb_priv:"Only I see this. Nothing gets posted.",fb_send:"Send it",fb_later:"Not now",fb_sending:"Sending…",
 fb_need:"Pick a type or write something first.",fb_offline:"You're offline. Even spirits need signal. Try again later.",fb_err:"Couldn't send. Check your connection and try again.",
-fb_done_t:"Received. Candle lit. 🕯️",fb_done_p:"I read every one. If you left a contact, I'll reply (ASAP: As Slow As Possible).",fb_done_praise:"Jarn Neow is blushing. Thank you.",fb_cont:"Continue"
+fb_done_t:"Received. Candle lit. 🕯️",fb_done_p:"I read every one. If you left a contact, I'll reply (ASAP: As Slow As Possible).",fb_done_praise:"Jarn Neow is blushing. Thank you.",fb_cont:"Continue",
+fbl_open:"Tell Jarn Neow what you think",fbl_close:"Close the chat",fbl_tip:"Psst… found a bug or have an idea? Tell me.",fbp_sub:"One-way chat. I reply by email or LINE, not here.",fbp_close:"Close",fbp_again:"Send another"
 });
 Object.assign(I18N.th,{
 fb_foot:"💬 บอกจารย์เหนียวหน่อย",fb_strip_q:"คำทำนายนี้ช่วยให้เจ้าตั้งความเสี่ยงได้ไหม?",fb_r_up:"👍 ช่วยได้",fb_r_meh:"🤔 ไม่แน่ใจ",fb_r_down:"👎 ไม่เลย",
@@ -2522,7 +2598,8 @@ fb_att:"แนบรายงานไปด้วย (ตัวเลขขอ�
 fb_what_p:"ข้อความของเจ้า พร้อมโหมด ภาษา ประเภทกลยุทธ์ หน้าที่เปิดฟอร์มนี้ ความกว้างจอ และเวอร์ชันแอป ตัวเลขของเจ้าอยู่ในเครื่อง เว้นแต่จะแนบรายงาน",
 fb_priv:"ข้าเห็นคนเดียว ไม่มีการโพสต์ที่ไหน",fb_send:"ส่งเลย",fb_later:"ไว้ก่อน",fb_sending:"กำลังส่ง…",
 fb_need:"เลือกเรื่อง หรือพิมพ์อะไรสักหน่อยก่อน",fb_offline:"เน็ตหลุด ผีก็ต้องใช้สัญญาณนะ ลองใหม่ทีหลัง",fb_err:"ส่งไม่สำเร็จ ลองเช็กอินเทอร์เน็ตแล้วส่งใหม่",
-fb_done_t:"ได้รับแล้ว ข้าจุดเทียนรับทราบ 🕯️",fb_done_p:"ข้าอ่านทุกข้อความ ถ้าทิ้งช่องทางติดต่อไว้ ข้าจะตอบกลับ (ASAP แบบช้าๆ นะ)",fb_done_praise:"จารย์เหนียวเขินเลย ขอบใจนะ",fb_cont:"ไปต่อ"
+fb_done_t:"ได้รับแล้ว ข้าจุดเทียนรับทราบ 🕯️",fb_done_p:"ข้าอ่านทุกข้อความ ถ้าทิ้งช่องทางติดต่อไว้ ข้าจะตอบกลับ (ASAP แบบช้าๆ นะ)",fb_done_praise:"จารย์เหนียวเขินเลย ขอบใจนะ",fb_cont:"ไปต่อ",
+fbl_open:"บอกจารย์เหนียวหน่อย",fbl_close:"ปิดแชต",fbl_tip:"ชู่ว… เจอบั๊กหรือมีไอเดีย? บอกข้าได้นะ",fbp_sub:"แชตทางเดียว ข้าจะตอบทางอีเมลหรือไลน์ ไม่ใช่ที่นี่",fbp_close:"ปิด",fbp_again:"ส่งอีกเรื่อง"
 });
 Object.assign(I18N.en,{dtab_risk:"Risk calculator",dtab_lab:"Gold playground",lab_loading:"Loading the gold playground…",lab_load_err:"The gold playground couldn't load. Check your connection and open the tab again.",desk_loading:"Loading Expert mode…",desk_load_err:"Expert mode couldn't load. Check your connection and switch to Expert again. If you opened index.html from your computer, keep expert.js in the same folder."});
 Object.assign(I18N.th,{dtab_risk:"คำนวณความเสี่ยง",dtab_lab:"สนามทดลองทองคำ",lab_loading:"กำลังโหลดสนามทดลองทองคำ…",lab_load_err:"โหลดสนามทดลองทองคำไม่สำเร็จ ตรวจการเชื่อมต่อแล้วเปิดแท็บอีกครั้ง",desk_loading:"กำลังโหลดโหมดผู้เชี่ยวชาญ…",desk_load_err:"โหลดโหมดผู้เชี่ยวชาญไม่สำเร็จ ตรวจการเชื่อมต่อแล้วกดผู้เชี่ยวชาญอีกครั้ง ถ้าเปิด index.html จากเครื่อง ให้วาง expert.js ไว้ในโฟลเดอร์เดียวกัน"});
@@ -3299,8 +3376,8 @@ function stepRender(){
   gate.setAttribute('aria-labelledby',q?'gate-qt':'gate-title');}
 function goStep(n){gstep=n;stepRender();gate.scrollTop=0;const h=gate.querySelector(gstep?'#gate-qt':'#gate-title');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}}
 /* while a popup is open, everything behind it is inert: no keyboard focus, hidden from screen readers */
-function syncInert(){const sc=$('scope'),g=$('gate'),pi=$('pitch'),rd=$('ready'),fb=$('fb'),top=!sc.hidden?sc:!g.hidden?g:!pi.hidden?pi:!rd.hidden?rd:!fb.hidden?fb:null;
-  [...document.body.children].forEach(el=>{if(el.tagName==='SCRIPT'||el.id==='tip')return;const on=!!top&&el!==top&&!el.contains(top);if(on)el.setAttribute('inert','');else el.removeAttribute('inert');});}
+function syncInert(){const sc=$('scope'),g=$('gate'),pi=$('pitch'),rd=$('ready'),fb=$('fb'),top=!sc.hidden?sc:!g.hidden?g:!pi.hidden?pi:!rd.hidden?rd:!fb.hidden&&fb.getAttribute('aria-modal')==='true'?fb:null;
+  [...document.body.children].forEach(el=>{if(el.tagName==='SCRIPT'||el.id==='tip'||el.id==='fb-scrim')return;const on=!!top&&el!==top&&!el.contains(top);if(on)el.setAttribute('inert','');else el.removeAttribute('inert');});}
 /* the roast: a cheeky first screen on page load, before the real questions */
 let intro=0;
 function renderIntro(){
@@ -3338,15 +3415,17 @@ $('pitch-f').addEventListener('submit',async e=>{e.preventDefault();
   finally{go.disabled=false;go.classList.remove('busy');go.textContent=t('pi_send');}});
 $('pi-later').addEventListener('click',closePitch);$('pi-cont').addEventListener('click',closePitch);
 $('pitch').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();closePitch();}});
-/* ----- feedback: a footer link, a one-tap question under the Beginner verdict, a line after a report is saved, and a link on errors.
+/* ----- feedback: a chat bubble in the bottom-right corner, a footer link, a one-tap question under the Beginner verdict, a line after a report is saved, and a link on errors.
+   All of them open the same one-way chat panel.
    Answers go to a Google Form you own (they land in its Google Sheet), the same way as the pitch. Nothing is sent until someone taps a
    rating or presses Send, and their numbers go only if they tick "attach my report".
    form: the long id in .../forms/d/e/<id>/viewform; the others are entry numbers from the form's "Get pre-filled link".
    The type and rating values must match the form's choices exactly. Add #feedback to the page address to open it. ----- */
 const FB_FORM={form:'1FAIpQLSfg8JRoq4yKV7S_RDGSWXnnVPH1yKtWf_0LW2MEW7GhI2qIwg',type:'2005620554',rate:'1045781291',msg:'1065046570',contact:'1166974658',report:'839337160',info:'2023802741'};
 const FB=(function(){
-const MAXR=30000,box=$('fb'),sel={type:null,rate:null};
-let ctx={from:'footer',err:''},back=null,stripNow=false,stripRate=null;
+const MAXR=30000,box=$('fb'),fbl=$('fbl'),scrim=$('fb-scrim'),tip=$('fbtip'),sheetQ=matchMedia('(max-width:700px)'),sel={type:null,rate:null};
+const TYPES={Bug:'fb_ty_bug',Confusing:'fb_ty_conf',Idea:'fb_ty_idea',Praise:'fb_ty_praise'};
+let ctx={from:'footer',err:''},back=null,stripNow=false,stripRate=null,ownLock=false;
 const ver=()=>{const d=new Date(document.lastModified);return isNaN(d)?'?':d.toISOString().slice(0,10);};
 const info=c=>['mode='+(root.dataset.mode==='desk'?'expert':'beginner'),'lang='+LANG,'type='+(root.dataset.st||'-'),'from='+c.from+(c.err?':'+c.err:''),'w='+Math.round(innerWidth),'v='+ver()].join('; ');
 function report(){try{const f=root.dataset.mode==='desk'?window.__jnDeskReport:window.__jnPlayReport,r=f&&f();if(!r||!r.text)return'';return r.text.length>MAXR?r.text.slice(0,MAXR)+'\n\n… (cut)':r.text;}catch(e){return'';}}
@@ -3358,30 +3437,62 @@ async function send(d,c){
   if(d.contact)fd.set('entry.'+F.contact,d.contact);if(d.report)fd.set('entry.'+F.report,d.report);fd.set('entry.'+F.info,info(c));
   await fetch('https://docs.google.com/forms/d/e/'+encodeURIComponent(F.form)+'/formResponse',{method:'POST',mode:'no-cors',body:fd});}
 const setT=(el,k)=>{el.dataset.i18n=k;el.textContent=t(k);};
-function paint(){box.querySelectorAll('[data-g]').forEach(b=>b.setAttribute('aria-pressed',String(sel[b.dataset.g]===b.dataset.v)));setT($('fb-h-msg'),sel.type==='Bug'?'fb_h_bug':'fb_h_msg');}
+function paint(){box.querySelectorAll('[data-g]').forEach(b=>b.setAttribute('aria-pressed',String(sel[b.dataset.g]===b.dataset.v)));const h=sel.type==='Bug'?'fb_h_bug':'fb_h_msg';setT($('fb-h-msg'),h);$('fb-msg').placeholder=t(h);}
+/* labels that applyI18n can't reach: aria-labels and the placeholder */
+function lang(){fbl.setAttribute('aria-label',t(box.hidden?'fbl_open':'fbl_close'));$('fb-x').setAttribute('aria-label',t('fbp_close'));paint();}
+/* a bottom sheet on phones (modal: page dimmed, everything behind it inert), a panel above the bubble on wider screens (the page stays usable) */
+function layout(){const m=!box.hidden&&sheetQ.matches;box.setAttribute('aria-modal',String(m));scrim.hidden=!m;
+  if(m&&!ownLock){document.body.classList.add('locked');ownLock=true;}else if(!m&&ownLock){document.body.classList.remove('locked');ownLock=false;}
+  fbl.setAttribute('aria-expanded',String(!box.hidden));lang();syncInert();}
+const grow=()=>{const m=$('fb-msg');m.style.height='auto';m.style.height=Math.min(m.scrollHeight+2,144)+'px';};
 function msg(k){const m=$('fb-m');m.hidden=!k;m.textContent=k?t(k):'';}
 function open(o){o=o||{};ctx={from:o.from||'footer',err:o.err||''};if('type'in o)sel.type=o.type||null;if('rate'in o)sel.rate=o.rate||null;
-  back=document.activeElement;$('fb-f').hidden=false;$('fb-done').hidden=true;msg(null);$('fb-msg').classList.remove('bad');
+  hideTip();if(box.hidden)back=document.activeElement;$('fb-f').hidden=false;$('fb-done').hidden=true;msg(null);$('fb-msg').classList.remove('bad');
   $('fb-attw').hidden=!(root.dataset.mode==='desk'?window.__jnDeskReport:window.__jnPlayReport);paint();
-  document.body.classList.add('locked');box.hidden=false;box.scrollTop=0;replay(box.querySelector('.fb-box'),'in');syncInert();$('fb-t').focus({preventScroll:true});}
-function close(){if(box.hidden)return;box.hidden=true;document.body.classList.remove('locked');syncInert();if(back&&back.isConnected)back.focus({preventScroll:true});}
-function done(type){store.set('jn_fb','done');$('fb-f').hidden=true;const d=$('fb-done');d.hidden=false;setT($('fb-dp'),type==='Praise'?'fb_done_praise':'fb_done_p');
+  const was=box.hidden;box.hidden=false;layout();if(was)replay(box,'in');box.querySelector('.fbp-log').scrollTop=0;grow();$('fb-t').focus({preventScroll:true});}
+function close(){if(box.hidden)return;box.hidden=true;box.style.transform='';layout();
+  const to=back&&back.isConnected&&back!==document.body&&back.offsetParent!==null?back:fbl;to.focus({preventScroll:true});}
+function done(type,mv){store.set('jn_fb','done');$('fb-f').hidden=true;const d=$('fb-done');d.hidden=false;setT($('fb-dp'),type==='Praise'?'fb_done_praise':'fb_done_p');
+  const e=$('fb-echo');e.textContent=[type?t(TYPES[type]):'',mv||''].filter(Boolean).join('\n');e.hidden=!e.textContent;
   d.querySelectorAll('.spr,.pop').forEach(x=>{x.style.animation='none';void x.offsetWidth;x.style.animation='';});
   $('fb-msg').value='';$('fb-contact').value='';$('fb-att').checked=false;sel.type=sel.rate=null;$('fb-dt').focus();}
 box.addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const g=b.dataset.g;sel[g]=sel[g]===b.dataset.v?null:b.dataset.v;paint();msg(null);});
 $('fb-f').addEventListener('submit',async e=>{e.preventDefault();
   const M=$('fb-msg'),go=$('fb-send'),mv=M.value.trim(),type=sel.type;
   if(!type&&!mv){msg('fb_need');M.classList.add('bad');replay(M,'shake');M.focus();return;}M.classList.remove('bad');
-  if($('fb-web').value){done(type);return;}
+  if($('fb-web').value){done(type,mv);return;}
   if(navigator.onLine===false){msg('fb_offline');return;}
   go.disabled=true;go.classList.add('busy');go.textContent=t('fb_sending');msg(null);
-  try{await send({type,rate:sel.rate,msg:mv,contact:$('fb-contact').value.trim(),report:$('fb-att').checked?report():''},ctx);done(type);}
+  try{await send({type,rate:sel.rate,msg:mv,contact:$('fb-contact').value.trim(),report:$('fb-att').checked?report():''},ctx);done(type,mv);}
   catch(err){msg(navigator.onLine===false?'fb_offline':'fb_err');}
   finally{go.disabled=false;go.classList.remove('busy');go.textContent=t('fb_send');}});
-$('fb-later').addEventListener('click',close);$('fb-cont').addEventListener('click',close);
+$('fb-x').addEventListener('click',close);$('fb-cont').addEventListener('click',close);scrim.addEventListener('click',close);
+$('fb-again').addEventListener('click',()=>open({from:'again',type:null,rate:null}));
+$('fb-msg').addEventListener('input',grow);
+/* Enter in the message adds a new line; Ctrl/Cmd+Enter sends */
+$('fb-msg').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();$('fb-f').requestSubmit();}});
 box.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close();}});
+fbl.addEventListener('click',()=>{if(box.hidden)open({from:'bubble'});else close();});
+sheetQ.addEventListener('change',()=>{if(!box.hidden)layout();});
+/* swipe the sheet's header down to close it (phones) */
+{const hd=box.querySelector('.fbp-h');let y0=null;
+  hd.addEventListener('pointerdown',e=>{if(box.getAttribute('aria-modal')!=='true'||e.target.closest('button'))return;y0=e.clientY;hd.setPointerCapture(e.pointerId);});
+  hd.addEventListener('pointermove',e=>{if(y0!==null)box.style.transform='translateY('+Math.max(0,e.clientY-y0)+'px)';});
+  const end=e=>{if(y0===null)return;const dy=e.clientY-y0;y0=null;box.style.transform='';if(e.type==='pointerup'&&dy>80)close();};
+  hd.addEventListener('pointerup',end);hd.addEventListener('pointercancel',end);}
+/* a one-time hint beside the bubble: once per browser, only to people who haven't sent feedback, ~10s after the bubble is first on
+   screen. No red badge and no fake unread count: nobody has messaged them. With animations off it appears without the pulse. */
+let tipT=0;
+function hideTip(){clearTimeout(tipT);tip.hidden=true;fbl.classList.remove('ping');}
+function tryTip(n){if(store.get('jn_fbtip')||store.get('jn_fb')||!box.hidden)return;
+  if(document.hidden||getComputedStyle(fbl).display==='none'){if(n<24)tipT=setTimeout(()=>tryTip(n+1),5000);return;}
+  store.set('jn_fbtip','1');tip.hidden=false;fbl.classList.add('ping');tipT=setTimeout(hideTip,8000);}
+tip.addEventListener('click',()=>open({from:'tip'}));
+tipT=setTimeout(()=>tryTip(0),10000);
+window.__fbLang=lang;lang();
 document.addEventListener('click',e=>{const o=e.target.closest('[data-fb-open]'),r=e.target.closest('[data-fb-err]');
-  if(o)open({from:o.dataset.fbOpen});else if(r)open({from:'error',err:r.dataset.fbErr,type:'Bug'});});
+  if(o)open({from:o.dataset.fbOpen});else if(r)open({from:'error',err:r.dataset.fbErr,type:'Bug'});
+  else if(!tip.hidden&&!e.target.closest('#fbl'))hideTip();});
 /* the one-tap question: Beginner only, once all four numbers are the person's own, never in the same visit as the pitch,
    and only until it's answered or dismissed (jn_fb). A tap sends the rating at once; the popup is for anything more. */
 const strip=$('fb-strip');
@@ -3570,7 +3681,7 @@ function setLang(l,save){
   LANG=l==='th'?'th':'en';root.lang=LANG;root.dataset.lang=LANG;if(TOUR)TOUR.lang();
   document.querySelectorAll('.langseg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===LANG)));
   document.title=LANG==='th'?'จารย์เหนียว – กลยุทธ์ของคุณจะรอดไหม?':'Jarn Neow – Will your strategy survive?';
-  applyI18n();gateRender();RD.refresh();RD.rerender();if(!$('scope').hidden)renderScope();if(window.__sfxTip)window.__sfxTip.refresh();
+  applyI18n();gateRender();RD.refresh();RD.rerender();if(!$('scope').hidden)renderScope();if(window.__sfxTip)window.__sfxTip.refresh();if(window.__fbLang)window.__fbLang();
   if(save)store.set('sfx_lang',LANG);
   renderActive();updateShareHash();}
 
