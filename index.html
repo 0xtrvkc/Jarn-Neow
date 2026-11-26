@@ -281,7 +281,7 @@ html[data-mode=play] .unsetnote .btn{padding:.35rem .9rem}
 .cd{display:block;aspect-ratio:1;border-radius:50%;background:var(--none)}.cd[data-c=x10]{background:#ffb000;box-shadow:0 0 0 2px #ffe08a inset}.cd[data-c=up]{background:var(--ok)}.cd[data-c=dn]{background:var(--warn)}.cd[data-c=blow]{background:var(--bad)}
 .crleg{list-style:none;margin:0;padding:0;display:grid;gap:.15rem;font-size:.86rem}.crleg li{display:grid;grid-template-columns:12px 1fr auto;gap:.45rem;align-items:center}.crleg .cd{width:12px}
 .crstat{display:grid;grid-template-columns:1fr auto;gap:.1rem .5rem;margin-top:.5rem;padding-top:.45rem;border-top:2px dashed var(--line);font-size:.86rem}.crstat b{text-align:right}
-.crbtn{margin:.1rem 0 .7rem}.pfshow{font-weight:700;margin:.2rem 0}.pfhide{margin:.2rem 0;padding:.35rem .55rem;border:2px dashed var(--bad);border-radius:10px;font-weight:600}.crct{font-weight:700;margin:.2rem 0 .3rem}
+.crbtn{margin:.1rem 0 .7rem}.pfshow{font-weight:700;margin:.2rem 0}.pfhide{margin:.2rem 0;padding:.35rem .55rem;border:2px dashed var(--bad);border-radius:10px;font-weight:600}.pfhide p{margin:0}.pfhide .crdots{margin:.45rem 0 .2rem}.cd[data-c=hid]{box-sizing:border-box;background:transparent;border:2px dashed var(--muted);opacity:.75}.crct{font-weight:700;margin:.2rem 0 .3rem}
 @media(max-width:520px){.crowd{grid-template-columns:minmax(0,1fr)}.crdots{max-width:230px}}
 .ilkey{background:var(--soft);border:2px solid var(--line);border-left-width:7px;border-left-color:var(--p2);border-radius:14px;padding:.6rem .8rem;font-weight:600;margin-top:.8rem}
 .ilpair{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.6rem 0 1rem}
@@ -3249,7 +3249,7 @@ function prop(){
   const leg=['paid','funded','fail2','fail'].map(x=>`<li><i class="cd" data-c="${cat[x]}"></i><span>${esc(t('il_pf_'+x))}</span><b>${c[x]}</b></li>`).join('');
   const A=tip('il_pf_a_tip',`<div class="crh"><b>${esc(t('il_pf_all'))}</b></div><div class="crdots" aria-hidden="true">${dots(S)}</div><ul class="crleg">${leg}</ul>`,'crg');
   const B=tip('il_pf_b_tip',`<div class="crh"><b>${esc(t('il_pf_post'))}</b></div><div class="crdots" aria-hidden="true">${dots(S.filter(x=>x==='paid'))}</div>
-    <p class="pfshow">${c.paid?esc(t('il_pf_shown',{n:c.paid})):esc(t('il_pf_none'))}</p><p class="pfhide">${esc(t('il_pf_hidden',{n:100-c.paid}))}</p>`,'crg');
+    <p class="pfshow">${c.paid?esc(t('il_pf_shown',{n:c.paid})):esc(t('il_pf_none'))}</p><div class="pfhide"><p>${esc(t('il_pf_hidden',{n:100-c.paid}))}</p><div class="crdots" aria-hidden="true">${'<i class="cd" data-c="hid"></i>'.repeat(100-c.paid)}</div></div>`,'crg');
   const p=propRate(),buy=[1,5,10,20,50].map(n=>{const q=1-Math.pow(1-p,n);
     return tip('il_pf_buy_tip',`<span class="ilcl">${esc(t('il_pf_buy',{n}))}</span><span class="ilcb"><i style="width:${Math.max(2,q*100)}%"></i></span><b>${pctS(q)}</b>`,'ilcrow');}).join('');
   const n90=Math.ceil(Math.log(0.1)/Math.log(1-p));
