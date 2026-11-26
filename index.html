@@ -281,7 +281,7 @@ html[data-mode=play] .unsetnote .btn{padding:.35rem .9rem}
 .cd{display:block;aspect-ratio:1;border-radius:50%;background:var(--none)}.cd[data-c=x10]{background:#ffb000;box-shadow:0 0 0 2px #ffe08a inset}.cd[data-c=up]{background:var(--ok)}.cd[data-c=dn]{background:var(--warn)}.cd[data-c=blow]{background:var(--bad)}
 .crleg{list-style:none;margin:0;padding:0;display:grid;gap:.15rem;font-size:.86rem}.crleg li{display:grid;grid-template-columns:12px 1fr auto;gap:.45rem;align-items:center}.crleg .cd{width:12px}
 .crstat{display:grid;grid-template-columns:1fr auto;gap:.1rem .5rem;margin-top:.5rem;padding-top:.45rem;border-top:2px dashed var(--line);font-size:.86rem}.crstat b{text-align:right}
-.crbtn{margin:.1rem 0 .7rem}.crct{font-weight:700;margin:.2rem 0 .3rem}
+.crbtn{margin:.1rem 0 .7rem}.pfshow{font-weight:700;margin:.2rem 0}.pfhide{margin:.2rem 0;padding:.35rem .55rem;border:2px dashed var(--bad);border-radius:10px;font-weight:600}.crct{font-weight:700;margin:.2rem 0 .3rem}
 @media(max-width:520px){.crowd{grid-template-columns:minmax(0,1fr)}.crdots{max-width:230px}}
 .ilkey{background:var(--soft);border:2px solid var(--line);border-left-width:7px;border-left-color:var(--p2);border-radius:14px;padding:.6rem .8rem;font-weight:600;margin-top:.8rem}
 .ilpair{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.6rem 0 1rem}
@@ -1573,7 +1573,7 @@ gate_ok_t:"Both tests done.",gate_ok_p:"Use your forward-test numbers here. They
 flag_nn:"No backtest and no forward test: treat every result below as an illustration, not evidence.",flag_bt:"Backtest only: these numbers may be overfit, so the results below are probably optimistic.",flag_ft:"Forward test only: without a backtest, a small sample like this may be luck.",
 layout_full:"Full dashboard",layout_guided:"Step by step",
 gate_title:"Quick check first",
-ro_kick:"I'm Jarn Neow, spirit doctor for dying trading accounts.",ro_t:"So you know how to trade?",ro_p:"Then why does the margin call keep calling you? 📞",ro_1:"Win rate 90%. Balance: 0.",ro_2:"\"One more trade and I'll win it all back.\"",ro_3:"Stop loss? Never heard of her.",ro_no:"…okay, help me",ro_jk:"Breathe. Your account can still be saved.",ro_jk_p:"Every trader who lasts learned this the hard way. Answer 2 quick questions and 5 tiny quizzes (about a minute) and you'll know how to keep yours alive.",ro_go:"Let's go",
+ro_kick:"I'm Jarn Neow, spirit doctor for dying trading accounts.",ro_t:"So you know how to trade?",ro_p:"Then why does the margin call keep calling you? 📞",ro_1:"Win rate 90%. Balance: 0.",ro_2:"\"One more trade and I'll win it all back.\"",ro_3:"Stop loss? Never heard of her.",ro_no:"…okay, help me",ro_jk:"Breathe. Your account can still be saved.",ro_jk_p:"Every trader who lasts learned this the hard way. Answer 2 quick questions and 6 tiny quizzes (about a minute) and you'll know how to keep yours alive.",ro_go:"Let's go",
 wh_q:"Whose strategy?",wh_me:"Mine",wh_ot:"Someone else's",
 ot_intro:"Bought it, copied it, or learned it from someone? Ask them these questions before you pay, then type their answers below.",ot_src:"Where is it from?",
 ot_s_ea:"EA / bot",ot_s_sig:"Signal group",ot_s_copy:"Copy trading",ot_s_course:"Course or mentor",
@@ -2019,7 +2019,7 @@ gate_ok_t:"ทดสอบครบทั้งสองอย่างแล้
 flag_nn:"ยังไม่ได้ Backtest และ Forward test: ผลลัพธ์ด้านล่างเป็นเพียงตัวอย่าง ไม่ใช่หลักฐาน",flag_bt:"มีแค่ Backtest: ตัวเลขอาจ Overfit ผลลัพธ์ด้านล่างจึงน่าจะดีเกินจริง",flag_ft:"มีแค่ Forward test: เมื่อไม่มี Backtest ตัวอย่างขนาดเล็กแบบนี้อาจเป็นแค่โชค",
 mode_desk:"ผู้เชี่ยวชาญ",desk_h1:"จารย์เหนียว โหมดผู้เชี่ยวชาญ: วิเคราะห์ความเสี่ยงของกลยุทธ์",desk_in_h:"ค่าที่ใส่",layout_full:"แดชบอร์ดเต็ม",layout_guided:"ทีละขั้น",
 gate_title:"ขอเช็กก่อนเริ่มนะ",
-ro_kick:"ข้าคือจารย์เหนียว หมอผีประจำพอร์ตแตก",ro_t:"เทรดเป็นจริงเหรอ?",ro_p:"ถ้าเป็นจริง ทำไมเติมเงินเข้าพอร์ตบ่อยกว่าเติมน้ำมันอีกล่ะ ⛽",ro_1:"Win rate 90% แต่พอร์ตเหลือ 0",ro_2:"\"อีกไม้เดียว เดี๋ยวได้คืน\"",ro_3:"Stop loss? ไม่รู้จัก",ro_no:"…ช่วยหน่อย",ro_jk:"หายใจลึกๆ พอร์ตเจ้ายังรักษาได้",ro_jk_p:"เทรดเดอร์ที่อยู่รอดทุกคนก็เคยเจ็บมาก่อน ตอบ 2 คำถามกับควิซสั้นๆ 5 ข้อ ใช้เวลาราวนาทีเดียว แล้วเจ้าจะรู้วิธีทำให้พอร์ตอยู่รอด",ro_go:"เริ่มเลย",
+ro_kick:"ข้าคือจารย์เหนียว หมอผีประจำพอร์ตแตก",ro_t:"เทรดเป็นจริงเหรอ?",ro_p:"ถ้าเป็นจริง ทำไมเติมเงินเข้าพอร์ตบ่อยกว่าเติมน้ำมันอีกล่ะ ⛽",ro_1:"Win rate 90% แต่พอร์ตเหลือ 0",ro_2:"\"อีกไม้เดียว เดี๋ยวได้คืน\"",ro_3:"Stop loss? ไม่รู้จัก",ro_no:"…ช่วยหน่อย",ro_jk:"หายใจลึกๆ พอร์ตเจ้ายังรักษาได้",ro_jk_p:"เทรดเดอร์ที่อยู่รอดทุกคนก็เคยเจ็บมาก่อน ตอบ 2 คำถามกับควิซสั้นๆ 6 ข้อ ใช้เวลาราวนาทีเดียว แล้วเจ้าจะรู้วิธีทำให้พอร์ตอยู่รอด",ro_go:"เริ่มเลย",
 wh_q:"กลยุทธ์ของใคร?",wh_me:"ของฉันเอง",wh_ot:"ของคนอื่น",
 ot_intro:"ซื้อมา Copy มา หรือเรียนมาจากคนอื่น? ถามคำถามเหล่านี้ก่อนจ่ายเงิน แล้วใส่คำตอบของเขาด้านล่าง",ot_src:"ได้มาจากไหน",
 ot_s_ea:"EA / บอท",ot_s_sig:"กลุ่มสัญญาณ",ot_s_copy:"Copy trade",ot_s_course:"คอร์สหรือเมนเทอร์",
@@ -2601,6 +2601,9 @@ fb_need:"เลือกเรื่อง หรือพิมพ์อะไ�
 fb_done_t:"ได้รับแล้ว ข้าจุดเทียนรับทราบ 🕯️",fb_done_p:"ข้าอ่านทุกข้อความ ถ้าทิ้งช่องทางติดต่อไว้ ข้าจะตอบกลับ (ASAP แบบช้าๆ นะ)",fb_done_praise:"จารย์เหนียวเขินเลย ขอบใจนะ",fb_cont:"ไปต่อ",
 fbl_open:"บอกจารย์เหนียวหน่อย",fbl_close:"ปิดแชต",fbl_tip:"ชู่ว… เจอบั๊กหรือมีไอเดีย? บอกข้าได้นะ",fbp_sub:"แชตทางเดียว ข้าจะตอบทางอีเมลหรือไลน์ ไม่ใช่ที่นี่",fbp_close:"ปิด",fbp_again:"ส่งอีกเรื่อง"
 });
+/* prop-firm payouts: start-up quiz question 6 and the flowchart branch */
+Object.assign(I18N.en,{gq6:"Someone sells an indicator and shows a prop-firm payout they made with it. Does that prove the indicator works?",gq6_a:"Yes, the prop firm really paid them",gq6_b:"No, it may be the one lucky account out of many they bought",gq6_r:"Right. A payout can be pure luck.",gq6_w:"Not quite. A payout can be pure luck.",gq6_k:"One payout proves one account got lucky once. Ask how many accounts they bought, failed ones included.",il_s6_p:"Imagine an indicator that is really a coin flip: it wins half its trades at 1:1, so it has no edge at all. Now one person buys 100 prop-firm challenges and trades every one with it, risking 2% per trade. Each dot is one challenge.",il_pf_all:"All 100 challenges they bought",il_pf_post:"What they post online",il_pf_paid:"Got a payout",il_pf_funded:"Passed, no payout yet",il_pf_fail2:"Failed step 2",il_pf_fail:"Failed step 1",il_pf_shown:"{n} payout certificates. “My indicator passes prop firms!”",il_pf_none:"No payout this time. Shuffle again: out of 100 accounts, one usually gets paid.",il_pf_hidden:"Not shown: the other {n} accounts.",il_pf_shuffle:"Shuffle: buy 100 new challenges",il_pf_buy_t:"Chance of at least one payout to post, with zero skill",il_pf_buy:"Buy {n}",il_pf_buy_tip:"Each challenge is another lottery ticket. The more you buy, the more likely one wins, even though the indicator has no edge. Challenges often cost about $100 to $500, so 20 of them cost less than selling the indicator to a few dozen people.",il_pf_a_tip:"Every dot traded the same coin-flip indicator under the same rules. Gold dots got paid by pure luck. Orange and red dots failed, and nobody posts those. Big risk helps the luck: at 0.5% per trade, the same indicator almost never reaches the target in time.",il_pf_b_tip:"The seller shows only the gold dots. Every certificate is real, so it looks like proof. What stays hidden is how many accounts were bought to get them.",il_pf_rules:"Rules used: pass at +8%, then +5%; fail at −10% in total or −5% in one day; 30 days per step; first payout at +4%. Three trades a day at 2% risk, with a small spread cost. Real firms' rules vary, but the idea is the same.",il_s6_k:"This time {paid} of 100 coin-flip accounts got paid. On average about {p} of challenges end in a payout, so buying {n90} gives a 90% chance of a payout screenshot, with no skill at all. You see the winners. You never see how many accounts were bought.",il_f_qp:"Is it a prop-firm payout, or are they selling something?",il_f_qp_tip:"A funded certificate, a payout, or a profit used to sell an indicator, a course or a signal group. Then the real question is how many tries it took.",il_f_e_prop:"Near 7 in 100, or won't show? That's luck.",il_f_e_prop_tip:"A coin-flip indicator with big risk gets paid on about 7 of every 100 challenges (the next question shows why). A rate near that, or a seller who hides the failed accounts, says nothing about skill. Don't pay for it. A real edge would pay out far more often, across many accounts.",il_f_pask:"Ask: how many accounts did they buy?",il_f_pask_tip:"Prop challenges are cheap lottery tickets: buy enough and even a coin flip gets a payout. Ask to see every account, failed ones included, not just the certificates.",il_f_pcount:"Count: payouts ÷ accounts",il_f_pcount_tip:"Example: 3 payouts from 40 accounts is 3 ÷ 40 = 7.5 in 100. Count only accounts traded with the same indicator."});
+Object.assign(I18N.th,{gq6:"มีคนขายอินดิเคเตอร์ แล้วโชว์ว่าใช้มันจนได้เงินถอนจากพร็อพเฟิร์ม แบบนี้พิสูจน์ได้ไหมว่าอินดิเคเตอร์ใช้ได้จริง?",gq6_a:"พิสูจน์ได้ พร็อพเฟิร์มจ่ายเงินให้จริง",gq6_b:"ยังไม่ได้ อาจเป็นบัญชีเดียวที่โชคดี จากที่ซื้อมาหลายบัญชี",gq6_r:"ถูกต้อง เงินถอนอาจมาจากโชคล้วนๆ",gq6_w:"ยังไม่ใช่ เงินถอนอาจมาจากโชคล้วนๆ",gq6_k:"เงินถอนครั้งเดียวพิสูจน์แค่ว่ามีบัญชีหนึ่งโชคดีครั้งหนึ่ง ถามว่าซื้อไปกี่บัญชี รวมบัญชีที่ตกด้วย",il_s6_p:"ลองนึกถึงอินดิเคเตอร์ที่จริงๆ แล้วคือการโยนเหรียญ ชนะครึ่งหนึ่ง ได้เสีย 1:1 ไม่มี Edge เลย แล้วมีคนหนึ่งซื้อชาเลนจ์พร็อพเฟิร์ม 100 บัญชี เทรดด้วยอินดิเคเตอร์ตัวนี้ทุกบัญชี เสี่ยงไม้ละ 2% แต่ละจุดคือชาเลนจ์หนึ่งบัญชี",il_pf_all:"ชาเลนจ์ทั้ง 100 บัญชีที่ซื้อ",il_pf_post:"สิ่งที่โพสต์ลงโซเชียล",il_pf_paid:"ได้เงินถอน",il_pf_funded:"ผ่านแล้ว แต่ยังไม่ได้เงิน",il_pf_fail2:"ตกขั้นที่ 2",il_pf_fail:"ตกขั้นที่ 1",il_pf_shown:"ใบเซอร์เงินถอน {n} ใบ “อินดิเคเตอร์ผมผ่านพร็อพเฟิร์ม!”",il_pf_none:"รอบนี้ไม่มีบัญชีไหนได้เงินถอน ลองสุ่มใหม่ ซื้อ 100 บัญชี ปกติจะได้สักบัญชี",il_pf_hidden:"ที่ไม่โชว์: อีก {n} บัญชีที่เหลือ",il_pf_shuffle:"สุ่มใหม่: ซื้อชาเลนจ์อีก 100 บัญชี",il_pf_buy_t:"โอกาสได้เงินถอนไว้โพสต์อย่างน้อยหนึ่งครั้ง โดยไม่ต้องมีฝีมือเลย",il_pf_buy:"ซื้อ {n} บัญชี",il_pf_buy_tip:"ชาเลนจ์แต่ละบัญชีก็เหมือนลอตเตอรี่หนึ่งใบ ยิ่งซื้อเยอะยิ่งมีโอกาสถูก ทั้งที่อินดิเคเตอร์ไม่มี Edge เลย ค่าชาเลนจ์มักอยู่ราว $100 ถึง $500 ซื้อ 20 บัญชียังจ่ายน้อยกว่ารายได้จากการขายอินดิเคเตอร์ให้คนไม่กี่สิบคน",il_pf_a_tip:"ทุกจุดเทรดด้วยอินดิเคเตอร์โยนเหรียญตัวเดียวกัน กฎเดียวกัน จุดสีทองได้เงินเพราะโชคล้วนๆ จุดสีส้มกับสีแดงคือบัญชีที่ตก ซึ่งไม่มีใครเอามาโพสต์ ความเสี่ยงสูงก็ช่วยให้โชคทำงานด้วย ถ้าเสี่ยงไม้ละ 0.5% อินดิเคเตอร์ตัวเดิมแทบไม่ถึงเป้าทันเวลาเลย",il_pf_b_tip:"คนขายโชว์แค่จุดสีทอง ใบเซอร์ทุกใบเป็นของจริง เลยดูเหมือนหลักฐาน สิ่งที่ถูกซ่อนไว้คือต้องซื้อไปกี่บัญชีกว่าจะได้มา",il_pf_rules:"กฎที่ใช้: ขั้นแรกผ่านที่ +8% ขั้นที่สอง +5% ตกเมื่อขาดทุนรวม 10% หรือขาดทุน 5% ในวันเดียว ขั้นละ 30 วัน ถอนครั้งแรกที่ +4% เทรดวันละ 3 ไม้ เสี่ยงไม้ละ 2% หักค่าสเปรดเล็กน้อย กฎของแต่ละเฟิร์มต่างกันไป แต่หลักการเหมือนกัน",il_s6_k:"รอบนี้ {paid} ใน 100 บัญชีที่ใช้อินดิเคเตอร์โยนเหรียญได้เงินถอน โดยเฉลี่ยชาเลนจ์ราว {p} จบด้วยเงินถอน ซื้อ {n90} บัญชีก็มีโอกาส 90% ที่จะได้ภาพเงินถอนไว้โพสต์ โดยไม่ต้องมีฝีมือเลย คุณเห็นแต่บัญชีที่ชนะ ไม่เคยเห็นว่าซื้อไปกี่บัญชี",il_f_qp:"เป็นเงินถอนจากพร็อพเฟิร์ม หรือเขากำลังขายของ?",il_f_qp_tip:"ใบเซอร์ผ่านชาเลนจ์ ภาพเงินถอน หรือกำไรที่เอามาใช้ขายอินดิเคเตอร์ คอร์ส หรือกลุ่มสัญญาณ ถ้าใช่ คำถามที่สำคัญคือต้องลองไปกี่ครั้งกว่าจะได้",il_f_e_prop:"ได้ราว 7 ใน 100 หรือไม่ยอมโชว์? นั่นคือโชค",il_f_e_prop_tip:"อินดิเคเตอร์โยนเหรียญที่เสี่ยงสูง ได้เงินถอนราว 7 จากทุก 100 ชาเลนจ์ (ข้อถัดไปจะบอกว่าทำไม) ถ้าอัตราใกล้ๆ นี้ หรือคนขายซ่อนบัญชีที่ตกไว้ ก็บอกอะไรเรื่องฝีมือไม่ได้เลย อย่าเสียเงินซื้อ ถ้ามี Edge จริง ต้องได้เงินถอนบ่อยกว่านี้มาก และได้ในหลายบัญชี",il_f_pask:"ถาม: ซื้อไปกี่บัญชี?",il_f_pask_tip:"ชาเลนจ์พร็อพเฟิร์มคือลอตเตอรี่ราคาถูก ซื้อมากพอ แม้แต่การโยนเหรียญก็ได้เงินถอน ขอดูทุกบัญชี รวมบัญชีที่ตกด้วย ไม่ใช่ดูแค่ใบเซอร์",il_f_pcount:"นับ: เงินถอน ÷ จำนวนบัญชี",il_f_pcount_tip:"ตัวอย่าง: ได้เงินถอน 3 ครั้งจาก 40 บัญชี คือ 3 ÷ 40 = 7.5 ใน 100 นับเฉพาะบัญชีที่เทรดด้วยอินดิเคเตอร์ตัวเดียวกัน"});
 Object.assign(I18N.en,{dtab_risk:"Risk calculator",dtab_lab:"Gold playground",lab_loading:"Loading the gold playground…",lab_load_err:"The gold playground couldn't load. Check your connection and open the tab again.",desk_loading:"Loading Expert mode…",desk_load_err:"Expert mode couldn't load. Check your connection and switch to Expert again. If you opened index.html from your computer, keep expert.js in the same folder."});
 Object.assign(I18N.th,{dtab_risk:"คำนวณความเสี่ยง",dtab_lab:"สนามทดลองทองคำ",lab_loading:"กำลังโหลดสนามทดลองทองคำ…",lab_load_err:"โหลดสนามทดลองทองคำไม่สำเร็จ ตรวจการเชื่อมต่อแล้วเปิดแท็บอีกครั้ง",desk_loading:"กำลังโหลดโหมดผู้เชี่ยวชาญ…",desk_load_err:"โหลดโหมดผู้เชี่ยวชาญไม่สำเร็จ ตรวจการเชื่อมต่อแล้วกดผู้เชี่ยวชาญอีกครั้ง ถ้าเปิด index.html จากเครื่อง ให้วาง expert.js ไว้ในโฟลเดอร์เดียวกัน"});
 function t(k,v){
@@ -3172,7 +3175,7 @@ return{init,render,readHash,shareURL,ot:()=>OT,syncInputs,setState,renderUnset,m
 const ILL=(function(){
 'use strict';
 const ICN={ok:'✓',warn:'!',bad:'✕'},ml=v=>`<span class="ml" data-v="${v}" aria-hidden="true">${ICN[v]}</span>`;
-const NQ=5,ans={},cv={profit:1000,bal:1000000,per:'day'};
+const NQ=6,ans={},cv={profit:1000,bal:1000000,per:'day'};
 const fmt$=v=>'$'+Math.round(v).toLocaleString('en-US');
 const pctS=v=>{const a=Math.abs(v*100);return(v<0?MINUS:'')+(a>=100?Math.round(a).toLocaleString('en-US'):a>=10?a.toFixed(0):a>=1?a.toFixed(1):a.toFixed(2))+'%';};
 const sp=v=>(v>0?'+':'')+pctS(v);
@@ -3231,6 +3234,30 @@ function crowd(){
     <button type="button" class="btn alt crbtn" id="il-shuffle">🎲 ${esc(t('il_cr_shuffle'))}</button>
     ${tip('il_cr_line_tip',`<p class="crct">${esc(t('il_cr_t'))}</p><div class="chart">${svg}</div><div class="legend"><span><i style="background:var(--bad)"></i>${esc(t('il_cr_hi'))}</span><span><i style="background:var(--ok)"></i>${esc(t('il_cr_lo'))}</span></div>`,'ilst')}
     <p class="ilkey" aria-live="polite">${esc(key)}</p></div>`;}
+/* prop-firm challenges traded with an indicator that has no edge: wins half its trades at 1:1, minus a 0.05R spread, 2% risk.
+   Step 1 +8%, step 2 +5%, first payout at +4%; each step fails at -10% overall or -5% in a day, 3 trades a day, 30 days per step (60 for the payout). */
+let prSeed=1,prRate=null;
+function propSim(seed,N){
+  let a=seed|0;const rnd=()=>{a=a+0x6D2B79F5|0;let x=Math.imul(a^a>>>15,1|a);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296;};
+  const step=(tg,days)=>{let b=1;for(let d=0;d<days;d++){const s0=b;for(let k=0;k<3;k++){b+=0.02*((rnd()<0.5?1:-1)-0.05);if(b<=0.9||b<=s0-0.05)return false;if(b>=1+tg)return true;}}return false;};
+  const out=[];for(let i=0;i<N;i++)out.push(!step(0.08,30)?'fail':!step(0.05,30)?'fail2':!step(0.04,60)?'funded':'paid');return out;}
+function propRate(){if(prRate===null){const r=propSim(9001,5000);prRate=r.filter(x=>x==='paid').length/r.length;}return prRate;}
+function prop(){
+  const R=propSim(prSeed,100),c={paid:0,funded:0,fail2:0,fail:0};R.forEach(x=>c[x]++);
+  const ord={paid:0,funded:1,fail2:2,fail:3},S=R.slice().sort((u,w)=>ord[u]-ord[w]),cat={paid:'x10',funded:'up',fail2:'dn',fail:'blow'};
+  const dots=L=>L.map(x=>`<i class="cd" data-c="${cat[x]}"></i>`).join('');
+  const leg=['paid','funded','fail2','fail'].map(x=>`<li><i class="cd" data-c="${cat[x]}"></i><span>${esc(t('il_pf_'+x))}</span><b>${c[x]}</b></li>`).join('');
+  const A=tip('il_pf_a_tip',`<div class="crh"><b>${esc(t('il_pf_all'))}</b></div><div class="crdots" aria-hidden="true">${dots(S)}</div><ul class="crleg">${leg}</ul>`,'crg');
+  const B=tip('il_pf_b_tip',`<div class="crh"><b>${esc(t('il_pf_post'))}</b></div><div class="crdots" aria-hidden="true">${dots(S.filter(x=>x==='paid'))}</div>
+    <p class="pfshow">${c.paid?esc(t('il_pf_shown',{n:c.paid})):esc(t('il_pf_none'))}</p><p class="pfhide">${esc(t('il_pf_hidden',{n:100-c.paid}))}</p>`,'crg');
+  const p=propRate(),buy=[1,5,10,20,50].map(n=>{const q=1-Math.pow(1-p,n);
+    return tip('il_pf_buy_tip',`<span class="ilcl">${esc(t('il_pf_buy',{n}))}</span><span class="ilcb"><i style="width:${Math.max(2,q*100)}%"></i></span><b>${pctS(q)}</b>`,'ilcrow');}).join('');
+  const n90=Math.ceil(Math.log(0.1)/Math.log(1-p));
+  return`<div id="il-prop"><div class="crowd">${A}${B}</div>
+    <button type="button" class="btn alt crbtn" id="il-pshuffle">🎲 ${esc(t('il_pf_shuffle'))}</button>
+    <p class="crct">${esc(t('il_pf_buy_t'))}</p><div class="ilcomp">${buy}</div>
+    <p class="small muted">${esc(t('il_pf_rules'))}</p>
+    <p class="ilkey" aria-live="polite">${esc(t('il_s6_k',{paid:c.paid,p:pctS(p),n90}))}</p></div>`;}
 function quad(){
   const c=(k,cls)=>tip('il_q_'+k+'_tip',`<b>${esc(t('il_q_'+k))}</b><span>${esc(t('il_q_'+k+'_s'))}</span>`,'qc '+cls);
   return`<div class="q4" role="group" aria-label="${esc(t('il_q_y'))} / ${esc(t('il_q_x'))}">
@@ -3240,9 +3267,9 @@ function quad(){
     <span></span><span></span>
     <div class="qax qx" aria-hidden="true"><span class="qe">${esc(t('il_q_small_s'))}</span><span class="qline"></span><span class="qe">${esc(t('il_q_big_s'))}</span></div>
     <span></span><span></span><div class="qxt" aria-hidden="true">${esc(t('il_q_x'))}</div></div>`;}
-const FN=[['start','start','1/1/2/5'],['q1','fq','2/1/3/5'],['ask','','3/1/4/3'],['pct','ghost','3/3/4/5'],['conv','','4/1/5/3'],['q2','fq','5/1/6/5'],
-  ['how','','6/1/7/3'],['q4','fq','6/3/7/5'],['q3','fq','7/1/8/3'],['e_real','end ok','7/3/8/4'],['e_wait','end meh','7/4/8/5'],['e_luck','end bad','8/1/9/2'],['e_rare','end warn','8/2/9/3']];
-const FE=[['start','q1'],['q1','ask','l_money'],['q1','pct','l_pct'],['ask','conv'],['conv','q2'],['pct','q2'],['q2','how','l_yes'],['q2','q4','l_no'],['how','q3'],
+const FN=[['start','start','1/1/2/5'],['qp','fq','2/1/3/5'],['q1','fq','3/1/4/4'],['pask','','3/4/4/5'],['ask','','4/1/5/3'],['pct','ghost','4/3/5/4'],['pcount','','4/4/5/5'],['conv','','5/1/6/3'],['e_prop','end bad','5/4/6/5'],['q2','fq','6/1/7/5'],
+  ['how','','7/1/8/3'],['q4','fq','7/3/8/5'],['q3','fq','8/1/9/3'],['e_real','end ok','8/3/9/4'],['e_wait','end meh','8/4/9/5'],['e_luck','end bad','9/1/10/2'],['e_rare','end warn','9/2/10/3']];
+const FE=[['start','qp'],['qp','pask','l_yes'],['pask','pcount'],['pcount','e_prop'],['qp','q1','l_no'],['q1','ask','l_money'],['q1','pct','l_pct'],['ask','conv'],['conv','q2'],['pct','q2'],['q2','how','l_yes'],['q2','q4','l_no'],['how','q3'],
   ['q3','e_luck','l_no'],['q3','e_rare','l_yes'],['q4','e_real','l_yes'],['q4','e_wait','l_no']];
 function flow(){
   return`<div class="fcw"><div class="fc2" id="fc2"><svg class="fcsvg" aria-hidden="true"></svg>${FN.map(([k,cls,area])=>`<div class="fcn ${cls} itp" data-itip="il_f_${k}_tip" data-n="${k}" tabindex="0" style="grid-area:${area}">${esc(t('il_f_'+k))}</div>`).join('')}</div></div><p class="small muted fcswipe" hidden>${esc(t('il_f_swipe'))}</p>`;}
@@ -3264,7 +3291,7 @@ function drawFlow(){
   svg.setAttribute('width',W);svg.setAttribute('height',H);svg.setAttribute('viewBox','0 0 '+W+' '+H);
   svg.innerHTML=`<defs><marker id="fcar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fcah"/></marker></defs><g class="fcp">${paths}</g>${labels}`;}
 const VIS={1:()=>`<p>${esc(t('il_s1_p'))}</p>`+moneyVis()+calc(),2:()=>`<p>${esc(t('il_s2_p'))}</p>`+compound()+`<p class="ilkey">${esc(t('il_s2_k'))}</p>`,
-  3:()=>`<p>${esc(t('il_s3_p'))}</p>`+crowd(),4:()=>`<p>${esc(t('il_s4_p'))}</p>`+quad(),5:()=>`<p>${esc(t('il_s5_p'))}</p>`+flow()};
+  3:()=>`<p>${esc(t('il_s3_p'))}</p>`+crowd(),4:()=>`<p>${esc(t('il_s4_p'))}</p>`+quad(),5:()=>`<p>${esc(t('il_s5_p'))}</p>`+flow(),6:()=>`<p>${esc(t('il_s6_p'))}</p>`+prop()};
 const RIGHT='b';
 function quizHtml(i){
   const a=ans[i];let h=`<p class="gkick">${esc(t('gq_h',{i,n:NQ}))}</p><h2 id="gate-qt">${esc(t('gq'+i))}</h2><div class="qopts" role="group">`+
@@ -3272,11 +3299,11 @@ function quizHtml(i){
   if(a)h+=`<div class="qfb" data-ok="${a===RIGHT}"><p class="qv">${ml(a===RIGHT?'ok':'bad')}${SPR(a===RIGHT?'shaman_happy':'shaman_angry')}<b>${esc(t(a===RIGHT?'gq'+i+'_r':'gq'+i+'_w'))}</b></p>${VIS[i]()}<p class="small muted" style="margin-top:.7rem">${esc(t('il_hover'))}</p></div>`;
   return h;}
 function summaryHtml(gk){
-  const done=[1,2,3,4,5].filter(i=>ans[i]),score=done.filter(i=>ans[i]===RIGHT).length,lvl=gk==='ok'?'ok':gk==='nn'?'bad':'warn';
+  const QS=Array.from({length:NQ},(_,k)=>k+1),done=QS.filter(i=>ans[i]),score=done.filter(i=>ans[i]===RIGHT).length,lvl=gk==='ok'?'ok':gk==='nn'?'bad':'warn';
   return`<h2 id="gate-qt">${esc(t('gs_t'))}</h2>
   <p class="gstest" data-l="${lvl}">${ml(lvl)} ${esc(t('gs_test_'+gk))}</p>
   ${done.length?`<p class="gsscore"><b>${esc(t('gs_score',{x:score,y:done.length}))}</b></p>`:''}
-  <h4>${esc(t('gs_your'))}</h4><ul class="gslist">${[1,2,3,4,5].map(i=>{const ok=ans[i]===RIGHT;return`<li>${ans[i]?ml(ok?'ok':'bad'):'<span class="ml" aria-hidden="true">\u2022</span>'}<span>${esc(t('gq'+i+'_k'))}</span></li>`;}).join('')}</ul>
+  <h4>${esc(t('gs_your'))}</h4><ul class="gslist">${QS.map(i=>{const ok=ans[i]===RIGHT;return`<li>${ans[i]?ml(ok?'ok':'bad'):'<span class="ml" aria-hidden="true">\u2022</span>'}<span>${esc(t('gq'+i+'_k'))}</span></li>`;}).join('')}</ul>
   ${gk==='nn'?`<div class="rdnudge"><p>${esc(t('rd_nudge'))}</p><button type="button" class="btn" data-rdgo>${esc(t('rd_nudge_go'))}</button></div>`:''}<h4>${esc(t('gs_rules'))}</h4>${rules()}<p class="small muted">${esc(t('gs_review'))}</p>`;}
 /* tooltip */
 let cur=null,host=null;
@@ -3292,7 +3319,7 @@ function bind(el){
   el.addEventListener('pointermove',e=>{if(e.pointerType==='mouse')touch=false;});
   el.addEventListener('focusin',e=>{const n=e.target.closest('[data-itip]');if(n)show(n);});
   el.addEventListener('focusout',e=>{if(!el.contains(e.relatedTarget))hide();});
-  el.addEventListener('click',e=>{if(e.target.closest('#il-shuffle')){crSeed++;const c=$('il-crowd');if(c){c.outerHTML=crowd();const b=$('il-shuffle');if(b)b.focus();}hide();return;}});
+  el.addEventListener('click',e=>{if(e.target.closest('#il-pshuffle')){prSeed++;const c=$('il-prop');if(c){c.outerHTML=prop();const b=$('il-pshuffle');if(b)b.focus();}hide();return;}if(e.target.closest('#il-shuffle')){crSeed++;const c=$('il-crowd');if(c){c.outerHTML=crowd();const b=$('il-shuffle');if(b)b.focus();}hide();return;}});
   el.addEventListener('click',e=>{const n=e.target.closest('[data-itip]');if(n&&!e.target.closest('input,select,summary'))show(n);else if(!n)hide();});
   el.addEventListener('scroll',()=>{if(cur)place(cur);},{passive:true});
   el.addEventListener('input',e=>{if(e.target.id==='il-p')cv.profit=parseFloat(e.target.value);else if(e.target.id==='il-b')cv.bal=parseFloat(e.target.value);else return;calcOut();});
