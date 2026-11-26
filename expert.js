@@ -837,7 +837,7 @@ function mdRules(){
     R.push(tx(`Risk ${risk}% of the account per trade, never more.`,`เสี่ยง ${risk}% ของทุนต่อไม้ ห้ามเกิน`));
     if(D.sl>0&&D.pv>0)R.push(tx(`Size each trade with lots = balance × ${risk}% ÷ (SL × ${D.pv}). At ${money(D.bal)} and a ${D.sl} stop that is ${(Math.floor(D.bal*risk/100/(D.sl*D.pv)*100)/100).toFixed(2)} lots.`,`คำนวณล็อตทุกไม้: ล็อต = ทุน × ${risk}% ÷ (SL × ${D.pv}) ที่ทุน ${money(D.bal)} และ SL ${D.sl} คือ ${(Math.floor(D.bal*risk/100/(D.sl*D.pv)*100)/100).toFixed(2)} ล็อต`));
     else R.push(tx(`Size each trade with lots = balance × ${risk}% ÷ (SL distance × value per unit per lot).`,`คำนวณล็อตทุกไม้: ล็อต = ทุน × ${risk}% ÷ (ระยะ SL × มูลค่าต่อหน่วยต่อล็อต)`));
-    if(k>0)R.push(tx(`Expect ${k} losses in a row at some point in ${D.hor} trades. That costs about ${dpc(drop)} and is normal, not a reason to change the system.`,`คาดไว้เลยว่าจะแพ้ติดกัน ${k} ไม้สักครั้งใน ${D.hor} ไม้ ซึ่งทำให้ทุนลดลงประมาณ ${dpc(drop)} เป็นเรื่องปกติ ไม่ใช่เหตุผลให้เปลี่ยนระบบ`));
+    if(k>0)R.push(tx(`Expect ${k} losses in a row at some point in ${D.hor} trades. That costs about ${dpc(drop)} and is normal, not a reason to change the system.`,`คาดไว้เลยว่าจะแพ้ติดกัน ${k} ไม้สักครั้งใน ${D.hor} ไม้ ซึ่งทำให้ทุนลดลงประมาณ ${dpc(drop)} ถือเป็นเรื่องปกติ ไม่ใช่เหตุผลให้เปลี่ยนระบบ`));
     R.push(D.dAfter>0?tx(`After ${D.dAfter} losses in a row, cut risk by ${D.dCut}% until the next win.`,`หลังแพ้ติดกัน ${D.dAfter} ไม้ ลดความเสี่ยงลง ${D.dCut}% จนกว่าจะชนะ`):tx(`Consider halving risk after ${Math.max(2,Math.round(k/2))} losses in a row (test it with the de-risk setting).`,`พิจารณาลดความเสี่ยงครึ่งหนึ่งหลังแพ้ติดกัน ${Math.max(2,Math.round(k/2))} ไม้ (ทดลองได้ที่ช่องลดความเสี่ยง)`));
     R.push(tx(`If the account falls more than ${dpc(F.dd95)} from its peak, stop and review. Only 1 simulated future in 20 falls that far.`,`ถ้าทุนลดลงเกิน ${dpc(F.dd95)} จากจุดสูงสุด ให้หยุดและทบทวน มีเพียง 1 ใน 20 อนาคตจำลองที่ลงลึกขนาดนี้`));
     R.push(tx(`Hard stop: at −${D.ruin}% from the start, stop trading this strategy.`,`จุดหยุดเด็ดขาด: ติดลบ ${D.ruin}% จากทุนเริ่มต้น เลิกเทรดกลยุทธ์นี้`));
@@ -868,7 +868,7 @@ function mdMethod(){
       ['Exposure maths','Floating loss = total lots × (distance − average entry) × value per pip + spread and commission on every order.']);
   let s=MD.table(['Piece','How it works'],rows,['l','l'])+'\n';
   if(st==='fixed')s+='```\nE[R]          = p·W − q·L\nbreak-even p  = L ÷ (W + L)\nKelly f*      = p/L − q/W\ngrowth g(f)   = p·ln(1 + f·W) + q·ln(1 − f·L)\nlots          = balance × risk ÷ (SL × value per unit)\n```\n\n';
-  return s+MD.p(tx('Every simulation uses a fixed seed, so the same inputs always give the same numbers. Re-enter the inputs above to reproduce this report.','ทุกการจำลองใช้ Seed คงที่ ค่าที่ใส่เหมือนเดิมจะได้ตัวเลขเหมือนเดิมเสมอ ใส่ค่าตามตารางด้านบนเพื่อสร้างรายงานนี้ซ้ำ'));}
+  return s+MD.p(tx('Every simulation uses a fixed seed, so the same inputs always give the same numbers. Re-enter the inputs above to reproduce this report.','ทุกการจำลองใช้ Seed คงที่ ใส่ค่าเหมือนเดิมก็จะได้ตัวเลขเหมือนเดิมเสมอ ใส่ค่าตามตารางด้านบนเพื่อสร้างรายงานนี้ซ้ำ'));}
 function mdLimits(){
   const tl=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k],li=a=>a.map(x=>'- **'+x[0]+'.** '+x[1]).join('\n')+'\n\n';let s='';
   tl('sc_cant').forEach(g=>{s+=MD.h(3,g[0])+li(g[1]);});
@@ -883,7 +883,7 @@ function mdReport(){
   const tpl=document.createElement('template');tpl.innerHTML=html;
   const gk=window.__sfxGate,errs=!$('desk-err').hidden?$('desk-err').textContent:'';
   let md='# Jarn Neow risk report: '+name+'\n\n';
-  md+=MD.quote(tx('A risk report for one trading strategy: how likely the account is to survive, how deep the falls can get and what size keeps the risk acceptable. It is not a profit forecast and not financial advice.','รายงานความเสี่ยงของกลยุทธ์เทรดหนึ่งระบบ: โอกาสที่พอร์ตจะรอด การย่อตัวลึกได้แค่ไหน และขนาดไม้ที่ทำให้ความเสี่ยงอยู่ในระดับรับได้ ไม่ใช่การทำนายกำไร และไม่ใช่คำแนะนำทางการเงิน'));
+  md+=MD.quote(tx('A risk report for one trading strategy: how likely the account is to survive, how deep the falls can get and what size keeps the risk acceptable. It is not a profit forecast and not financial advice.','รายงานความเสี่ยงของกลยุทธ์เทรดหนึ่งระบบ: โอกาสที่พอร์ตจะรอด พอร์ตอาจลดลงลึกแค่ไหน และขนาดไม้ที่ทำให้ความเสี่ยงอยู่ในระดับรับได้ ไม่ใช่การทำนายกำไร และไม่ใช่คำแนะนำทางการเงิน'));
   md+=MD.kv([['Generated',S.local],['App','Jarn Neow, Expert mode ('+MD.appUrl()+')'],['Strategy type',name+' ('+t(st==='fixed'?'st_fixed_d':st==='grid'?'st_grid_d':'st_nostop_d')+')'],['Language',LANG==='th'?'ไทย':'English'],
     ['Testing done',gk?t('gate_'+gk+'_t'):'not answered']],['Report','Detail']);
   if(errs)md+=MD.quote('⚠ '+errs+' '+tx('The last valid values were used.','ใช้ค่าล่าสุดที่ถูกต้องแทน'));
